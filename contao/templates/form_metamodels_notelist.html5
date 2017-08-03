@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * This file is part of MetaModels/notelist.
+ *
+ * (c) 2017 The MetaModels team.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This project is provided in good faith and hope to be usable by anyone.
+ *
+ * @package    MetaModels
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
+ * @copyright  2017 The MetaModels team.
+ * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
+ * @filesource
+ */
+
+$this->extend('form_row');
+?>
+<?php $this->block('field'); ?>
+<fieldset id="ctrl_<?= $this->id ?>" class="metamodels_notelist_container<?php if ($this->class) { echo ' ' . $this->class; } ?>">
+  <?php foreach ($this->parsed as $listName => $listItems): ?>
+    <?= $listItems ?>
+  <?php endforeach; ?>
+</fieldset>
+<?php if ($this->addSubmit) : ?>
+  <input type="submit" id="ctrl_<?= $this->id ?>_submit" class="submit" value="<?= $this->slabel ?>">
+<?php endif; ?>
+<?php $this->endblock(); ?>

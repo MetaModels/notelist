@@ -1,0 +1,7 @@
+copy-left:
+
+mapping:
+
+exclude:
+  - src/KiStA
+  - src/ELMA

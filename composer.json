@@ -1,0 +1,69 @@
+{
+  "name": "metamodels/notelist",
+  "description": "Notelist management for MetaModels",
+  "license": "LGPL-3.0",
+  "keywords":["contao", "metamodels", "notelist"],
+  "type":"contao-module",
+  "homepage":"http://now.metamodel.me/",
+  "authors":[
+    {
+      "name":"Christian Schiffler",
+      "email":"c.schiffler@cyberspectrum.de",
+      "homepage":"http://www.cyberspectrum.de",
+      "role":"Developer"
+    },
+    {
+      "name":"Stefan Heimes",
+      "email":"stefan_heimes@hotmail.com",
+      "role":"Developer"
+    }
+  ],
+  "support":{
+    "email":"mail@metamodel.me",
+    "issues":"https://github.com/MetaModels/attribute_select/issues",
+    "wiki":"http://de.contaowiki.org/MetaModels",
+    "irc":"irc://irc.freenode.org/contao.mm",
+    "source":"https://github.com/MetaModels/attribute_select"
+  },
+  "require":{
+    "php": "^7.0",
+    "contao/core": "^3.5.5",
+    "contao-community-alliance/composer-plugin": "^2.4",
+    "contao-community-alliance/dc-general": "^2.0@beta",
+    "contao-community-alliance/url-builder": "^1.2",
+    "metamodels/core":"dev-hotfix/2.0.0-alpha16 as 2.0.0",
+    "symfony/event-dispatcher": "^2.8 | ^3.0"
+  },
+  "require-dev": {
+    "cyberspectrum/contao-toolbox": "^0.7",
+    "phpcq/all-tasks": "dev-release/1.2.0 as 1.2.0",
+    "phpcq/phpcq": "dev-release/1.2.0 as 1.2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "MetaModels\\NoteList\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "MetaModels\\NoteList\\Test\\": "tests"
+    }
+  },
+  "extra":{
+    "contao": {
+      "sources":{
+        "contao": "system/modules/metamodels_notelist"
+      },
+      "transifex": {
+        "project": "metamodels",
+        "prefix": "notelist-",
+        "languages_cto": "contao/languages",
+        "languages_tx": ".tx"
+      }
+    },
+    "branch-alias": {
+      "dev-master": "1.0.x-dev",
+      "dev-develop": "1.1.x-dev"
+    }
+  }
+}
