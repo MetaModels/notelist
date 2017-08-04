@@ -13,17 +13,17 @@
       "role":"Developer"
     },
     {
-      "name":"Stefan Heimes",
-      "email":"stefan_heimes@hotmail.com",
+      "name":"Ingolf Steinhardt",
+      "email":"info@e-spin.de",
       "role":"Developer"
     }
   ],
   "support":{
     "email":"mail@metamodel.me",
-    "issues":"https://github.com/MetaModels/attribute_select/issues",
+    "issues":"https://github.com/MetaModels/metamodels_notelist",
     "wiki":"http://de.contaowiki.org/MetaModels",
     "irc":"irc://irc.freenode.org/contao.mm",
-    "source":"https://github.com/MetaModels/attribute_select"
+    "source":"https://github.com/MetaModels/metamodels_notelist"
   },
   "require":{
     "php": "^7.0",
