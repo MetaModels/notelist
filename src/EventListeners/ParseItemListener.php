@@ -173,14 +173,14 @@ class ParseItemListener
                     case 'add':
                         $noteList->add($item);
                         $this->redirect($list);
-                        break;
+                        return;
                     case 'remove':
                         $noteList->remove($item);
                         $this->redirect($list);
-                        break;
+                        return;
                     case 'clear':
                         $noteList->clear();
-                        break;
+                        return;
                     default:
                 }
                 throw new \InvalidArgumentException('Unknown action name ' . $action);
