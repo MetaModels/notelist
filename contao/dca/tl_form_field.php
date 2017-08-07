@@ -17,14 +17,14 @@
  * @filesource
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 $GLOBALS['TL_DCA']['tl_form_field']['palettes']['__selector__'][]     = 'metamodel';
 $GLOBALS['TL_DCA']['tl_form_field']['palettes']['metamodel_notelist'] =
     '{type_legend},type,name,label;' .
     '{fconfig_legend},metamodel,metamodel_notelist;' .
     '{expert_legend:hide},class;' .
-    '{template_legend:hide},customTpl;' .
+    '{template_legend:hide},customTpl,metamodel_customTplEmail;' .
     '{submit_legend},addSubmit';
 
 $GLOBALS['TL_DCA']['tl_form_field']['subpalettes']['metamodel'] = 'metamodel_notelist';
@@ -43,21 +43,6 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel'] = [
         'includeBlankOption' => true,
     ]
 ];
-/*
-$GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
-    'label'            => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist'],
-    'exclude'          => true,
-    'inputType'        => 'checkbox',
-    'options_callback' => [
-        MetaModels\NoteList\Bridge\DcaCallbackBridge::class,
-        'getNoteListOptions'
-    ],
-    'sql'              => 'text NULL',
-    'eval'             => [
-        'multiple' => true
-    ]
-];
-*/
 
 $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
     'label'            => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist'],
@@ -109,4 +94,18 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
         'getNoteListOptions'
     ],
     'sql'              => 'text NULL',
+];
+
+$GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_customTplEmail'] = [
+    'label'            => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_customTplEmail'],
+    'exclude'          => true,
+    'inputType'        => 'select',
+    'options_callback' => [
+        MetaModels\NoteList\Bridge\DcaCallbackBridge::class,
+        'getEmailTemplates'
+    ],
+    'sql'              => 'varchar(255) NULL',
+    'eval'             => [
+        'includeBlankOption' => true
+    ]
 ];

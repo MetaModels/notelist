@@ -25,5 +25,6 @@ use Contao\TemplateLoader;
  * Register the templates
  */
 TemplateLoader::addFiles([
-    'form_metamodels_notelist' => 'system/modules/metamodels_notelist/templates',
+    'email_metamodels_notelist' => 'system/modules/metamodels_notelist/templates',
+    'form_metamodels_notelist'  => 'system/modules/metamodels_notelist/templates',
 ]);

@@ -28,7 +28,8 @@ use MetaModels\NoteList\Form\FormRenderer;
 /**
  * This renders a form field listing all the items in the note list.
  *
- * @property string metamodel_notelist
+ * @property string      metamodel_notelist
+ * @property string|null metamodel_customTplEmail
  */
 class FormFieldBridge extends Widget
 {
@@ -56,6 +57,11 @@ class FormFieldBridge extends Widget
     /**
      * {@inheritDoc}
      */
+    protected $blnSubmitInput = true;
+
+    /**
+     * {@inheritDoc}
+     */
     protected $strTemplate = 'form_metamodels_notelist';
 
     /**
@@ -63,16 +69,20 @@ class FormFieldBridge extends Widget
      */
     public function __set($strKey, $varValue)
     {
-        if ('metamodel_notelist' === $strKey) {
-            $data = unserialize($varValue);
-            foreach ($data as $entry) {
-                $listId                             = $entry['notelist'];
-                $this->lists[]                      = $listId;
-                $this->renderSettings[$listId]      = $entry['frontend'];
-                $this->renderSettingsEmail[$listId] = $entry['email'];
-            }
-
-            return;
+        switch ($strKey) {
+            case 'metamodel_notelist':
+                $data = unserialize($varValue);
+                foreach ($data as $entry) {
+                    $listId                             = $entry['notelist'];
+                    $this->lists[]                      = $listId;
+                    $this->renderSettings[$listId]      = $entry['frontend'];
+                    $this->renderSettingsEmail[$listId] = $entry['email'];
+                }
+                return;
+            case 'value':
+                // Can not set value!
+                return;
+            default:
         }
         parent::__set($strKey, $varValue);
     }
@@ -82,17 +92,20 @@ class FormFieldBridge extends Widget
      */
     public function __get($strKey)
     {
-        if ('metamodel_notelist' === $strKey) {
-            $data = [];
-            foreach ($this->lists as $listId) {
-                $data[] = [
-                    'notelist' => $listId,
-                    'frontend' => $this->renderSettings[$listId],
-                    'email'    => $this->renderSettingsEmail[$listId]
-                ];
-            }
-
-            return serialize($data);
+        switch ($strKey) {
+            case 'metamodel_notelist':
+                $data = [];
+                foreach ($this->lists as $listId) {
+                    $data[] = [
+                        'notelist' => $listId,
+                        'frontend' => $this->renderSettings[$listId],
+                        'email'    => $this->renderSettingsEmail[$listId]
+                    ];
+                }
+                return serialize($data);
+            case 'value':
+                return $this->parseValue();
+            default:
         }
 
         return parent::__get($strKey);
@@ -110,12 +123,50 @@ class FormFieldBridge extends Widget
 
     /**
      * {@inheritDoc}
+     */
+    public function parse($arrAttributes = null)
+    {
+        return $this->abstractParse(
+            $this->renderSettings,
+            $this->strFormat,
+            $this->customTpl ?: $this->strTemplate
+        );
+    }
+
+    /**
+     * Parse the value and return it as string.
+     *
+     * @return string
+     */
+    public function parseValue()
+    {
+        return $this->abstractParse(
+            $this->renderSettingsEmail,
+            'text',
+            $this->metamodel_customTplEmail ?: 'email_metamodels_notelist'
+        );
+    }
+
+    /**
+     * Parse the list.
+     *
+     * @param string[] $renderSetting The render settings to use.
+     * @param string   $format        The format to use.
+     * @param string   $template      The template to use.
+     * @param null     $attributes    The attributes to use.
+     *
+     * @return string
      *
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    public function parse($arrAttributes = null)
+    private function abstractParse($renderSetting, $format, $template, $attributes = null)
     {
+        $keepTemplate    = $this->customTpl;
+        $keepFormat      = $this->strFormat;
+        $this->customTpl = $template;
+        $this->strFormat = $format;
+
         /** @var IFactory $factory */
         $factory     = $GLOBALS['container']['metamodels-factory.factory'];
         $metaModelId = $this->arrConfiguration['metamodel'];
@@ -129,7 +180,7 @@ class FormFieldBridge extends Widget
         }
 
         $metaModel = $factory->getMetaModel(
-            $factory->translateIdToMetaModelName($this->arrConfiguration['metamodel'])
+            $factory->translateIdToMetaModelName($metaModelId)
         );
 
         if (!$metaModel) {
@@ -145,21 +196,14 @@ class FormFieldBridge extends Widget
 
         $parsed = [];
         foreach ($this->lists as $listId) {
-            $parsed[$listId] = $renderer->render($listId, $this->renderSettings[$listId], $this->strFormat);
+            $parsed[$listId] = $renderer->render($listId, $renderSetting[$listId], $format);
         }
 
-        $this->parsed = $parsed;
+        $this->parsed    = $parsed;
+        $result          = parent::parse($attributes);
+        $this->customTpl = $keepTemplate;
+        $this->strFormat = $keepFormat;
 
-        return parent::parse($arrAttributes);
-    }
-
-    /**
-     * Retrieve the configured list ids.
-     *
-     * @return array
-     */
-    protected function getLists()
-    {
-        return $this->lists;
+        return $result;
     }
 }

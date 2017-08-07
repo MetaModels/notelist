@@ -22,6 +22,7 @@ declare(strict_types = 1);
 namespace MetaModels\NoteList\Bridge;
 
 use Contao\DataContainer;
+use MetaModels\BackendIntegration\TemplateList;
 use MetaModels\IFactory;
 use MetaModels\MetaModelsServiceContainer;
 use MetaModels\NoteList\NoteListFactory;
@@ -145,5 +146,21 @@ class DcaCallbackBridge
         // Sort the render settings.
         asort($result);
         return $result;
+    }
+
+    /**
+     * Fetch the template group for the form field.
+     *
+     * @return array
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+     */
+    public function getEmailTemplates()
+    {
+        $list = new TemplateList();
+        $list->setServiceContainer($GLOBALS['container']['metamodels-service-container']);
+
+        return $list->getTemplatesForBase('email_metamodels_notelist');
     }
 }
