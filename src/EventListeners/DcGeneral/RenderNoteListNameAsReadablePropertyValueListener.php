@@ -45,6 +45,10 @@ class RenderNoteListNameAsReadablePropertyValueListener
         }
 
         $value = $event->getValue();
+        if (!is_array($value)) {
+            $event->setRendered($value);
+            return;
+        }
 
         if (isset($value[$GLOBALS['TL_LANGUAGE']])) {
             $event->setRendered($value[$GLOBALS['TL_LANGUAGE']]);

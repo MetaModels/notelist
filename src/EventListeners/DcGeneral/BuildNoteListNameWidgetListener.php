@@ -75,6 +75,7 @@ class BuildNoteListNameWidgetListener
         if (!$metaModel->isTranslated()) {
             // If we have an array, return the first value and exit, if not an array, return the value itself.
             $event->setValue(is_array($value) ? $value[key($value)] : $value);
+            return;
         }
 
         // Sort like in MetaModel definition.
