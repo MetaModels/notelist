@@ -19,14 +19,14 @@
 
 declare(strict_types = 1);
 
-use MetaModels\NoteList\EventListeners\DcGeneral\BreadCrumbNoteList;
-use MetaModels\NoteList\EventListeners\DcGeneral\BuildNoteListNameWidgetListener;
-use MetaModels\NoteList\EventListeners\DcGeneral\FilterSettingTypeRenderer;
-use MetaModels\NoteList\EventListeners\DcGeneral\NoteListListListener;
-use MetaModels\NoteList\EventListeners\DcGeneral\RenderNoteListNameAsReadablePropertyValueListener;
+use MetaModels\NoteList\EventListener\DcGeneral\BreadCrumbNoteList;
+use MetaModels\NoteList\EventListener\DcGeneral\BuildNoteListNameWidgetListener;
+use MetaModels\NoteList\EventListener\DcGeneral\FilterSettingTypeRenderer;
+use MetaModels\NoteList\EventListener\DcGeneral\NoteListListListener;
+use MetaModels\NoteList\EventListener\DcGeneral\RenderNoteListNameAsReadablePropertyValueListener;
 use MetaModels\NoteList\Filter\NoteListFilterSettingTypeFactory;
-use MetaModels\NoteList\EventListeners\DcGeneral\AdapterListListener;
-use MetaModels\NoteList\EventListeners\ParseItemListener;
+use MetaModels\NoteList\EventListener\DcGeneral\AdapterListListener;
+use MetaModels\NoteList\EventListener\ParseItemListener;
 use MetaModels\NoteList\NoteListFactory;
 use MetaModels\NoteList\Storage\StorageAdapterFactory;
 

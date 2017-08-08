@@ -32,21 +32,21 @@ use MetaModels\Filter\Setting\Events\CreateFilterSettingFactoryEvent;
 use MetaModels\MetaModelsEvents;
 use MetaModels\NoteList\Event\NoteListEvents;
 use MetaModels\NoteList\Event\ParseNoteListFormEvent;
-use MetaModels\NoteList\EventListeners\DcGeneral\BreadCrumbNoteList;
-use MetaModels\NoteList\EventListeners\DcGeneral\FilterSettingTypeRenderer;
-use MetaModels\NoteList\EventListeners\ParseItemListener;
+use MetaModels\NoteList\EventListener\DcGeneral\BreadCrumbNoteList;
+use MetaModels\NoteList\EventListener\DcGeneral\FilterSettingTypeRenderer;
+use MetaModels\NoteList\EventListener\ParseItemListener;
 
 return [
     GetPropertyOptionsEvent::NAME => [
         function (GetPropertyOptionsEvent $event) {
             // Forcing lazy initialization here as otherwise we will end up in endless recursion. Change for Contao 4!
-            /** @var MetaModels\NoteList\EventListeners\DcGeneral\AdapterListListener $handler */
+            /** @var MetaModels\NoteList\EventListener\DcGeneral\AdapterListListener $handler */
             $handler = $GLOBALS['container']['metamodels-notelist.backend.adapter-option-listener'];
             $handler->getAdapterListOptions($event);
         },
         function (GetPropertyOptionsEvent $event) {
             // Forcing lazy initialization here as otherwise we will end up in endless recursion. Change for Contao 4!
-            /** @var MetaModels\NoteList\EventListeners\DcGeneral\NoteListListListener $handler */
+            /** @var MetaModels\NoteList\EventListener\DcGeneral\NoteListListListener $handler */
             $handler = $GLOBALS['container']['metamodels-notelist.backend.notelist-list-option-listener'];
             $handler->getOptions($event);
         }

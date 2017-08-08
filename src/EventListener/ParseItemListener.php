@@ -20,7 +20,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListeners;
+namespace MetaModels\NoteList\EventListener;
 
 use Contao\Environment;
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;

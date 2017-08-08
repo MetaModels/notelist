@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListeners\DcGeneral;
+namespace MetaModels\NoteList\EventListener\DcGeneral;
 
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
 use ContaoCommunityAlliance\Translator\TranslatorInterface;
