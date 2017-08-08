@@ -138,7 +138,7 @@ return [
             /** @var ParseItemListener $handler */
             $handler = $GLOBALS['container']['metamodels-notelist.parse-item-listener'];
 
-            $handler->handleFrontendEditingInListRendering($event);
+            $handler->handleListRendering($event);
         }
     ],
     NoteListEvents::PARSE_NOTE_LIST_FORM => [
@@ -146,7 +146,7 @@ return [
             /** @var ParseItemListener $handler */
             $handler = $GLOBALS['container']['metamodels-notelist.parse-item-listener'];
 
-            $handler->handleFrontendEditingInFormRendering($event);
+            $handler->handleFormRendering($event);
         }
     ]
 ];

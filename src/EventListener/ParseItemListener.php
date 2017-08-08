@@ -83,7 +83,7 @@ class ParseItemListener
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    public function handleFrontendEditingInListRendering(RenderItemListEvent $event)
+    public function handleListRendering(RenderItemListEvent $event)
     {
         $caller = $event->getCaller();
         if (!(($caller instanceof HybridList) || ($caller instanceof FormRenderer))) {
@@ -111,7 +111,7 @@ class ParseItemListener
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    public function handleFrontendEditingInFormRendering(ParseNoteListFormEvent $event)
+    public function handleFormRendering(ParseNoteListFormEvent $event)
     {
         $renderSetting = $event->getRenderSetting();
 
