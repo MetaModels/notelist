@@ -94,7 +94,7 @@ class ParseItemListener
             return;
         }
 
-        $lists = !empty($caller->metamodel_notelist) ? unserialize($caller->metamodel_notelist) : [];
+        $lists = !empty($tmp = $caller->metamodel_notelist) ? unserialize($tmp) : [];
 
         $this->processActions($event->getList()->getMetaModel(), $lists);
 
@@ -165,22 +165,25 @@ class ParseItemListener
         foreach ($lists as $list) {
             if ($url->hasQueryParameter('notelist_' . $list . '_action')) {
                 $action   = $url->getQueryParameter('notelist_' . $list . '_action');
-                $item     = $this->getItemFromMetaModel(
-                    $metaModel,
-                    $url->getQueryParameter('notelist_' . $list . '_item')
-                );
                 $noteList = $this->factory->getList($metaModel, $list);
                 switch ($action) {
                     case 'add':
-                        $noteList->add($item);
+                        $noteList->add($this->getItemFromMetaModel(
+                            $metaModel,
+                            $url->getQueryParameter('notelist_' . $list . '_item')
+                        ));
                         $this->redirect($list);
                         return;
                     case 'remove':
-                        $noteList->remove($item);
+                        $noteList->remove($this->getItemFromMetaModel(
+                            $metaModel,
+                            $url->getQueryParameter('notelist_' . $list . '_item')
+                        ));
                         $this->redirect($list);
                         return;
                     case 'clear':
                         $noteList->clear();
+                        $this->redirect($list);
                         return;
                     default:
                 }
@@ -258,8 +261,10 @@ class ParseItemListener
      * Retrieve an URL builder containing the current URL.
      *
      * @return UrlBuilder
+     *
+     * @internal
      */
-    private function getCurrentUrl()
+    protected function getCurrentUrl()
     {
         return new UrlBuilder(Environment::getInstance()->get('requestUri'));
     }
