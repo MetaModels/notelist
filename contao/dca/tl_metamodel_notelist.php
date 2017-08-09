@@ -119,7 +119,8 @@ $GLOBALS['TL_DCA']['tl_metamodel_notelist'] = [
         'default' => [
             'config' => [
                 'name',
-                'storageAdapter'
+                'storageAdapter',
+                'filter'
             ],
         ]
     ],
@@ -160,6 +161,19 @@ $GLOBALS['TL_DCA']['tl_metamodel_notelist'] = [
             ],
             'sql'       => "varchar(64) NOT NULL default ''"
         ],
-        // FIXME: add filter support here.
+        'filter' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_notelist']['filter'],
+            'exclude'   => true,
+            'inputType' => 'select',
+            'eval'      => [
+                'fetchOptions'       => true,
+                'includeBlankOption' => true,
+                'mandatory'          => true,
+                'maxlength'          => 64,
+                'doNotCopy'          => true,
+                'tl_class'           => 'w50'
+            ],
+            'sql' => "int(10) unsigned NOT NULL default '0'"
+        ]
     ],
 ];

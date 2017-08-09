@@ -142,7 +142,9 @@ class ParseItemListener
 
         foreach ($lists as $list) {
             $storage = $this->factory->getList($model, $list);
-
+            if (!$storage->accepts($item)) {
+                continue;
+            }
             $parsed['actions']['notelist_' . $list] = $this->generateButton($item, $storage);
         }
 

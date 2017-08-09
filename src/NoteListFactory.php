@@ -22,6 +22,7 @@ declare(strict_types = 1);
 namespace MetaModels\NoteList;
 
 use Contao\Database;
+use MetaModels\Filter\Setting\FilterSettingFactory;
 use MetaModels\IMetaModel;
 use MetaModels\NoteList\Storage\NoteListStorage;
 use MetaModels\NoteList\Storage\StorageAdapterFactory;
@@ -53,15 +54,25 @@ class NoteListFactory
     private $instances = [];
 
     /**
+     * @var FilterSettingFactory
+     */
+    private $filterFactory;
+
+    /**
      * Create a new instance.
      *
      * @param Database              $database       The database to use.
      * @param StorageAdapterFactory $storageFactory The storage factory.
+     * @param FilterSettingFactory  $filterFactory  The filter setting factory.
      */
-    public function __construct(Database $database, StorageAdapterFactory $storageFactory)
-    {
+    public function __construct(
+        Database $database,
+        StorageAdapterFactory $storageFactory,
+        FilterSettingFactory $filterFactory
+    ) {
         $this->database       = $database;
         $this->storageFactory = $storageFactory;
+        $this->filterFactory = $filterFactory;
     }
 
     /**
@@ -128,7 +139,8 @@ class NoteListFactory
             $metaModel,
             $adapter,
             $identifier,
-            deserialize($noteList->name, true)
+            deserialize($noteList->name, true),
+            $noteList->filter ? $this->filterFactory->createCollection($noteList->filter) : null
         );
     }
 

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 use MetaModels\NoteList\EventListener\DcGeneral\BreadCrumbNoteList;
 use MetaModels\NoteList\EventListener\DcGeneral\BuildNoteListNameWidgetListener;
+use MetaModels\NoteList\EventListener\DcGeneral\FilterSettingsListListener;
 use MetaModels\NoteList\EventListener\DcGeneral\FilterSettingTypeRenderer;
 use MetaModels\NoteList\EventListener\DcGeneral\NoteListListListener;
 use MetaModels\NoteList\EventListener\DcGeneral\RenderNoteListNameAsReadablePropertyValueListener;
@@ -42,7 +43,8 @@ $container['metamodels-notelist.factory'] = $container->share(
     function ($container) {
         return new NoteListFactory(
             $container['database.connection'],
-            $container['metamodels-notelist.storage-factory']
+            $container['metamodels-notelist.storage-factory'],
+            $container['metamodels-filter-setting-factory.factory']
         );
     }
 );
@@ -77,6 +79,14 @@ $container['metamodels-notelist.backend.notelist-list-option-listener'] = $conta
         return new NoteListListListener(
             $container['metamodels-factory.factory'],
             $container['metamodels-notelist.factory'],
+            $container['database.connection']
+        );
+    }
+);
+
+$container['metamodels-notelist.backend.filter-settings-option-listener'] = $container->share(
+    function ($container) {
+        return new FilterSettingsListListener(
             $container['database.connection']
         );
     }

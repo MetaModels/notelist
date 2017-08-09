@@ -40,3 +40,5 @@ $GLOBALS['TL_LANG']['tl_metamodel_notelist']['name_value'][1]     = 'The name of
 $GLOBALS['TL_LANG']['tl_metamodel_notelist']['config_legend']     = 'Configuration';
 $GLOBALS['TL_LANG']['tl_metamodel_notelist']['storageAdapter'][0] = 'Storage adapter';
 $GLOBALS['TL_LANG']['tl_metamodel_notelist']['storageAdapter'][1] = 'Choose the storage adapter to use.';
+$GLOBALS['TL_LANG']['tl_metamodel_notelist']['filter'][0]         = 'Filter';
+$GLOBALS['TL_LANG']['tl_metamodel_notelist']['filter'][1]         = 'Choose the filter setting to use for item acceptance.';

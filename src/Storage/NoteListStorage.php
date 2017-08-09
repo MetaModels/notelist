@@ -21,7 +21,9 @@ declare(strict_types = 1);
 
 namespace MetaModels\NoteList\Storage;
 
+use MetaModels\Filter\Rules\Condition\ConditionAnd;
 use MetaModels\Filter\Rules\StaticIdList;
+use MetaModels\Filter\Setting\ICollection;
 use MetaModels\IItem;
 use MetaModels\IItems;
 use MetaModels\IMetaModel;
@@ -60,23 +62,40 @@ class NoteListStorage
     private $names;
 
     /**
+     * The filter setting the items must match agains.
+     *
+     * @var ICollection|null
+     */
+    private $filter;
+
+    /**
+     * The cached item count.
+     *
+     * @var bool|string[]|null
+     */
+    private $filterCache = false;
+
+    /**
      * Create a new instance.
      *
      * @param IMetaModel       $metaModel      The metamodel this storage tracks.
      * @param AdapterInterface $storageAdapter The storage adapter to use.
      * @param string           $storageKey     The key to use in the session adapter.
      * @param array            $names          The human readable names as array locale => value.
+     * @param ICollection|null $filter         The filter setting.
      */
     public function __construct(
         IMetaModel $metaModel,
         AdapterInterface $storageAdapter,
         string $storageKey,
-        array $names
+        array $names,
+        ICollection $filter = null
     ) {
         $this->metaModel      = $metaModel;
         $this->storageAdapter = $storageAdapter;
         $this->storageKey     = $storageKey;
         $this->names          = $names;
+        $this->filter         = $filter;
     }
 
     /**
@@ -90,6 +109,27 @@ class NoteListStorage
     }
 
     /**
+     * Check if the note list accepts the passed item.
+     *
+     * @param IItem $item The item to test.
+     *
+     * @return bool
+     */
+    public function accepts(IItem $item)
+    {
+        if (!$this->filter) {
+            return true;
+        }
+        if (false === $this->filterCache) {
+            $filter = $this->metaModel->getEmptyFilter();
+            // Check if we accept the item.
+            $this->filter->addRules($filter, []);
+            $this->filterCache = $filter->getMatchingIds();
+        }
+        return ($this->filterCache === null) || in_array($item->get('id'), $this->filterCache);
+    }
+
+    /**
      * Add an item.
      *
      * @param IItem $item The item to add.
@@ -98,6 +138,10 @@ class NoteListStorage
      */
     public function add(IItem $item)
     {
+        if (!$this->accepts($item)) {
+            return;
+        }
+
         $this->storageAdapter->setKey(
             $this->storageKey,
             array_unique(array_merge($this->getItemIds(), [$item->get('id')]))

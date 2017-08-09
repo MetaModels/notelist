@@ -381,4 +381,30 @@ class ParseItemListenerTest extends TestCase
         /** @var ParseItemListener $listener */
         $listener->handleListRendering(new RenderItemListEvent($list, $template, $caller));
     }
+
+    /**
+     * Test the parsing.
+     *
+     * @return void
+     */
+    public function testHandleFormRendering()
+    {
+        $this->markTestIncomplete();
+
+        $factory = $this
+            ->getMockBuilder(NoteListFactory::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getConfiguredListsFor', 'getList', 'getName'])
+            ->getMock();
+
+        $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
+
+        $listener = new ParseItemListener($factory, $dispatcher);
+
+        $metaModel = $this->getMockForAbstractClass(IMetaModel::class);
+        $renderSetting = $this->getMockForAbstractClass(ICollection::class);
+        $notelistId = '23';
+
+        $listener->handleFormRendering(new ParseNoteListFormEvent($metaModel, $renderSetting, $notelistId));
+    }
 }
