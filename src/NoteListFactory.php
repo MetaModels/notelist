@@ -54,6 +54,8 @@ class NoteListFactory
     private $instances = [];
 
     /**
+     * The filter setting factory.
+     *
      * @var FilterSettingFactory
      */
     private $filterFactory;
@@ -72,7 +74,7 @@ class NoteListFactory
     ) {
         $this->database       = $database;
         $this->storageFactory = $storageFactory;
-        $this->filterFactory = $filterFactory;
+        $this->filterFactory  = $filterFactory;
     }
 
     /**
