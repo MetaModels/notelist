@@ -110,11 +110,8 @@ $container['metamodels-notelist.backend.prepare-name-widget'] = $container->shar
 );
 
 $container['metamodels-notelist.backend.render-name-widget'] = $container->share(
-    function ($container) {
-        return new RenderNoteListNameAsReadablePropertyValueListener(
-            $container['metamodels-factory.factory'],
-            $container['translator']
-        );
+    function () {
+        return new RenderNoteListNameAsReadablePropertyValueListener();
     }
 );
 
