@@ -12,6 +12,7 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @copyright  2017 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
@@ -61,7 +62,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
                 ],
                 'eval'      => [
                     'includeBlankOption' => true,
-                    'style'              => 'width:115px',
+                    'style'              => 'width:200px',
                     'chosen'             => 'true'
                 ],
             ],
@@ -72,7 +73,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
                 'options_callback' => [MetaModels\NoteList\Bridge\DcaCallbackBridge::class, 'getRenderSettingsMcw'],
                 'eval'      => [
                     'includeBlankOption' => true,
-                    'style'              => 'width:115px',
+                    'style'              => 'width:200px',
                     'chosen'             => 'true'
                 ],
             ],
@@ -83,7 +84,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
                 'options_callback' => [MetaModels\NoteList\Bridge\DcaCallbackBridge::class, 'getRenderSettingsMcw'],
                 'eval'      => [
                     'includeBlankOption' => true,
-                    'style'  => 'width:180px',
+                    'style'  => 'width:200px',
                     'chosen' => 'true'
                 ],
             ],
