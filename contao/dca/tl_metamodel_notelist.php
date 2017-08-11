@@ -168,7 +168,6 @@ $GLOBALS['TL_DCA']['tl_metamodel_notelist'] = [
             'eval'      => [
                 'fetchOptions'       => true,
                 'includeBlankOption' => true,
-                'mandatory'          => true,
                 'maxlength'          => 64,
                 'doNotCopy'          => true,
                 'tl_class'           => 'w50'
