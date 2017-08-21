@@ -256,6 +256,16 @@ class NoteListStorage
     }
 
     /**
+     * Retrieve the amount of items stored in the list.
+     *
+     * @return int
+     */
+    public function getCount()
+    {
+        return count($this->getItemIds());
+    }
+
+    /**
      * Retrieve the name of this storage.
      *
      * @return string

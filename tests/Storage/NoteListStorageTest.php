@@ -130,4 +130,22 @@ class NoteListStorageTest extends TestCase
             );
         $list->clear();
     }
+
+    /**
+     * Test that retrieval of count returns the correct amount.
+     *
+     * @return void
+     */
+    public function testGetCountReturnsAmountOfStoredIds()
+    {
+        $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
+        $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
+        $adapter    = $this->getMockForAbstractClass(AdapterInterface::class);
+
+        $adapter->expects($this->once())->method('getKey')->with('storage-key')->willReturn(['23', '42']);
+
+        $list = new NoteListStorage($dispatcher, $metaModel, $adapter, 'storage-key', []);
+
+        $this->assertSame(2, $list->getCount());
+    }
 }
