@@ -20,7 +20,10 @@
 declare(strict_types = 1);
 
 use MetaModels\NoteList\Bridge\FormFieldBridge;
+use MetaModels\NoteList\Bridge\InsertTagBridge;
 
 $GLOBALS['BE_MOD']['metamodels']['metamodels']['tables'][] = 'tl_metamodel_notelist';
 
 $GLOBALS['TL_FFL']['metamodel_notelist'] = FormFieldBridge::class;
+
+$GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array(InsertTagBridge::class, 'replaceInsertTags');

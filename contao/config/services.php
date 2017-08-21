@@ -28,6 +28,7 @@ use MetaModels\NoteList\EventListener\DcGeneral\RenderNoteListNameAsReadableProp
 use MetaModels\NoteList\Filter\NoteListFilterSettingTypeFactory;
 use MetaModels\NoteList\EventListener\DcGeneral\AdapterListListener;
 use MetaModels\NoteList\EventListener\ParseItemListener;
+use MetaModels\NoteList\InsertTags;
 use MetaModels\NoteList\NoteListFactory;
 use MetaModels\NoteList\Storage\StorageAdapterFactory;
 
@@ -59,6 +60,12 @@ $container['metamodels-notelist.filter-setting-factory'] = $container->share(
 $container['metamodels-notelist.parse-item-listener'] = $container->share(
     function ($container) {
         return new ParseItemListener($container['metamodels-notelist.factory'], $container['event-dispatcher']);
+    }
+);
+
+$container['metamodels-notelist.insert-tags'] = $container->share(
+    function ($container) {
+        return new InsertTags($container['metamodels-notelist.factory'], $container['metamodels-factory.factory']);
     }
 );
 
