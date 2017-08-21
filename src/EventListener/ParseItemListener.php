@@ -161,7 +161,7 @@ class ParseItemListener
      *
      * @throws \InvalidArgumentException When the item could not be found or the action is unknown.
      */
-    private function processActions(IMetaModel $metaModel, $lists)
+    private function processActions(IMetaModel $metaModel, array $lists)
     {
         $url = $this->getCurrentUrl();
         foreach ($lists as $list) {
@@ -249,7 +249,7 @@ class ParseItemListener
      *
      * @throws \InvalidArgumentException When the item could not be found.
      */
-    private function getItemFromMetaModel(IMetaModel $metaModel, $itemId)
+    private function getItemFromMetaModel(IMetaModel $metaModel, string $itemId)
     {
         $item = $metaModel->findById($itemId);
         if (null === $item) {
