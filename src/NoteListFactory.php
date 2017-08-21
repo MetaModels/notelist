@@ -26,6 +26,7 @@ use MetaModels\Filter\Setting\FilterSettingFactory;
 use MetaModels\IMetaModel;
 use MetaModels\NoteList\Storage\NoteListStorage;
 use MetaModels\NoteList\Storage\StorageAdapterFactory;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This class takes care of configuring and obtaining note list instances.
@@ -61,17 +62,27 @@ class NoteListFactory
     private $filterFactory;
 
     /**
+     * The event dispatcher.
+     *
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
      * Create a new instance.
      *
-     * @param Database              $database       The database to use.
-     * @param StorageAdapterFactory $storageFactory The storage factory.
-     * @param FilterSettingFactory  $filterFactory  The filter setting factory.
+     * @param EventDispatcherInterface $dispatcher     The event disapatcher.
+     * @param Database                 $database       The database to use.
+     * @param StorageAdapterFactory    $storageFactory The storage factory.
+     * @param FilterSettingFactory     $filterFactory  The filter setting factory.
      */
     public function __construct(
+        EventDispatcherInterface $dispatcher,
         Database $database,
         StorageAdapterFactory $storageFactory,
         FilterSettingFactory $filterFactory
     ) {
+        $this->dispatcher     = $dispatcher;
         $this->database       = $database;
         $this->storageFactory = $storageFactory;
         $this->filterFactory  = $filterFactory;
@@ -138,6 +149,7 @@ class NoteListFactory
         $adapter = $this->storageFactory->getAdapter((string) $noteList->storageAdapter);
 
         return $this->instances[$identifier] = new NoteListStorage(
+            $this->dispatcher,
             $metaModel,
             $adapter,
             $identifier,

@@ -30,4 +30,9 @@ class NoteListEvents
      * This event gets triggered when a note list gets rendered in a frontend form.
      */
     const PARSE_NOTE_LIST_FORM = 'metamodels.note-list.parse-note-list-form';
+
+    /**
+     * This event gets triggered when a note list gets manipulated.
+     */
+    const MANIPULATE_NOTE_LIST = 'metamodels.note-list.manipulate';
 }

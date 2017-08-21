@@ -21,18 +21,27 @@ declare(strict_types = 1);
 
 namespace MetaModels\NoteList\Storage;
 
-use MetaModels\Filter\Rules\Condition\ConditionAnd;
 use MetaModels\Filter\Rules\StaticIdList;
 use MetaModels\Filter\Setting\ICollection;
 use MetaModels\IItem;
 use MetaModels\IItems;
 use MetaModels\IMetaModel;
+use MetaModels\NoteList\Event\ManipulateNoteListEvent;
+use MetaModels\NoteList\Event\NoteListEvents;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This class abstracts the storage of items.
  */
 class NoteListStorage
 {
+    /**
+     * The event dispatcher.
+     *
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
     /**
      * The MetaModel this storage tracks.
      *
@@ -78,19 +87,22 @@ class NoteListStorage
     /**
      * Create a new instance.
      *
-     * @param IMetaModel       $metaModel      The metamodel this storage tracks.
-     * @param AdapterInterface $storageAdapter The storage adapter to use.
-     * @param string           $storageKey     The key to use in the session adapter.
-     * @param array            $names          The human readable names as array locale => value.
-     * @param ICollection|null $filter         The filter setting.
+     * @param EventDispatcherInterface $dispatcher     The event dispatcher.
+     * @param IMetaModel               $metaModel      The metamodel this storage tracks.
+     * @param AdapterInterface         $storageAdapter The storage adapter to use.
+     * @param string                   $storageKey     The key to use in the session adapter.
+     * @param array                    $names          The human readable names as array locale => value.
+     * @param ICollection|null         $filter         The filter setting.
      */
     public function __construct(
+        EventDispatcherInterface $dispatcher,
         IMetaModel $metaModel,
         AdapterInterface $storageAdapter,
         string $storageKey,
         array $names,
         ICollection $filter = null
     ) {
+        $this->dispatcher     = $dispatcher;
         $this->metaModel      = $metaModel;
         $this->storageAdapter = $storageAdapter;
         $this->storageKey     = $storageKey;
@@ -146,6 +158,15 @@ class NoteListStorage
             $this->storageKey,
             array_unique(array_merge($this->getItemIds(), [$item->get('id')]))
         );
+        $this->dispatcher->dispatch(
+            NoteListEvents::MANIPULATE_NOTE_LIST,
+            new ManipulateNoteListEvent(
+                $this->metaModel,
+                $this,
+                ManipulateNoteListEvent::OPERATION_ADD,
+                $item
+            )
+        );
     }
 
     /**
@@ -162,6 +183,15 @@ class NoteListStorage
         foreach ($idList as $key => $candidate) {
             if ($search === $candidate) {
                 unset($idList[$key]);
+                $this->dispatcher->dispatch(
+                    NoteListEvents::MANIPULATE_NOTE_LIST,
+                    new ManipulateNoteListEvent(
+                        $this->metaModel,
+                        $this,
+                        ManipulateNoteListEvent::OPERATION_REMOVE,
+                        $item
+                    )
+                );
                 break;
             }
         }
@@ -195,6 +225,10 @@ class NoteListStorage
     public function clear()
     {
         $this->storageAdapter->setKey($this->storageKey, []);
+        $this->dispatcher->dispatch(
+            NoteListEvents::MANIPULATE_NOTE_LIST,
+            new ManipulateNoteListEvent($this->metaModel, $this, ManipulateNoteListEvent::OPERATION_CLEAR)
+        );
     }
 
     /**

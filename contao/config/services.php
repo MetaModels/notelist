@@ -42,6 +42,7 @@ $container['metamodels-notelist.storage-factory'] = $container->share(
 $container['metamodels-notelist.factory'] = $container->share(
     function ($container) {
         return new NoteListFactory(
+            $container['event-dispatcher'],
             $container['database.connection'],
             $container['metamodels-notelist.storage-factory'],
             $container['metamodels-filter-setting-factory.factory']

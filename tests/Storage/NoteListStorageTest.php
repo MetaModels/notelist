@@ -23,9 +23,12 @@ namespace MetaModels\NoteList\Test\Storage;
 
 use MetaModels\IItem;
 use MetaModels\IMetaModel;
+use MetaModels\NoteList\Event\ManipulateNoteListEvent;
+use MetaModels\NoteList\Event\NoteListEvents;
 use MetaModels\NoteList\Storage\AdapterInterface;
 use MetaModels\NoteList\Storage\NoteListStorage;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This tests the NoteListStorage class.
@@ -39,10 +42,11 @@ class NoteListStorageTest extends TestCase
      */
     public function testInstantiation()
     {
-        $metaModel = $this->getMockForAbstractClass(IMetaModel::class);
-        $adapter   = $this->getMockForAbstractClass(AdapterInterface::class);
+        $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
+        $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
+        $adapter    = $this->getMockForAbstractClass(AdapterInterface::class);
 
-        $list = new NoteListStorage($metaModel, $adapter, 'storage-key', []);
+        $list = new NoteListStorage($dispatcher, $metaModel, $adapter, 'storage-key', []);
 
         $this->assertInstanceOf('MetaModels\NoteList\Storage\NoteListStorage', $list);
     }
@@ -54,15 +58,24 @@ class NoteListStorageTest extends TestCase
      */
     public function testAddingOfItemAdds()
     {
-        $metaModel = $this->getMockForAbstractClass(IMetaModel::class);
-        $adapter   = $this->getMockForAbstractClass(AdapterInterface::class);
-        $item      = $this->getMockForAbstractClass(IItem::class);
+        $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
+        $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
+        $adapter    = $this->getMockForAbstractClass(AdapterInterface::class);
+        $item       = $this->getMockForAbstractClass(IItem::class);
 
         $adapter->expects($this->once())->method('getKey')->with('storage-key')->willReturn(['23']);
         $adapter->expects($this->once())->method('setKey')->with('storage-key', ['23', '42']);
         $item->expects($this->once())->method('get')->with('id')->willReturn('42');
 
-        $list = new NoteListStorage($metaModel, $adapter, 'storage-key', []);
+        $list = new NoteListStorage($dispatcher, $metaModel, $adapter, 'storage-key', []);
+        $dispatcher
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with(
+                NoteListEvents::MANIPULATE_NOTE_LIST,
+                new ManipulateNoteListEvent($metaModel, $list, ManipulateNoteListEvent::OPERATION_ADD, $item)
+            );
+
         $list->add($item);
     }
 
@@ -73,15 +86,24 @@ class NoteListStorageTest extends TestCase
      */
     public function testRemovalOfItemRemoves()
     {
-        $metaModel = $this->getMockForAbstractClass(IMetaModel::class);
-        $adapter   = $this->getMockForAbstractClass(AdapterInterface::class);
-        $item      = $this->getMockForAbstractClass(IItem::class);
+        $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
+        $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
+        $adapter    = $this->getMockForAbstractClass(AdapterInterface::class);
+        $item       = $this->getMockForAbstractClass(IItem::class);
 
         $adapter->expects($this->once())->method('getKey')->with('storage-key')->willReturn(['23', '42']);
         $adapter->expects($this->once())->method('setKey')->with('storage-key', ['23']);
         $item->expects($this->once())->method('get')->with('id')->willReturn('42');
 
-        $list = new NoteListStorage($metaModel, $adapter, 'storage-key', []);
+        $list = new NoteListStorage($dispatcher, $metaModel, $adapter, 'storage-key', []);
+        $dispatcher
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with(
+                NoteListEvents::MANIPULATE_NOTE_LIST,
+                new ManipulateNoteListEvent($metaModel, $list, ManipulateNoteListEvent::OPERATION_REMOVE, $item)
+            );
+
         $list->remove($item);
     }
 
@@ -92,12 +114,20 @@ class NoteListStorageTest extends TestCase
      */
     public function testClearingWorks()
     {
-        $metaModel = $this->getMockForAbstractClass(IMetaModel::class);
-        $adapter   = $this->getMockForAbstractClass(AdapterInterface::class);
+        $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
+        $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
+        $adapter    = $this->getMockForAbstractClass(AdapterInterface::class);
 
         $adapter->expects($this->once())->method('setKey')->with('storage-key', []);
 
-        $list = new NoteListStorage($metaModel, $adapter, 'storage-key', []);
+        $list = new NoteListStorage($dispatcher, $metaModel, $adapter, 'storage-key', []);
+        $dispatcher
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with(
+                NoteListEvents::MANIPULATE_NOTE_LIST,
+                new ManipulateNoteListEvent($metaModel, $list, ManipulateNoteListEvent::OPERATION_CLEAR)
+            );
         $list->clear();
     }
 }
