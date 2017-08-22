@@ -76,7 +76,7 @@ class InsertTags
 
         $sum = 0;
         foreach ($lists as $list) {
-            $sum += $this->factory->getList($metaModel, $list)->getCount();
+            $sum += $this->factory->getList($metaModel, (string) $list)->getCount();
         }
 
         return $sum;
