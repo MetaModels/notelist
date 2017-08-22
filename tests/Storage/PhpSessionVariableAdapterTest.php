@@ -51,7 +51,7 @@ class PhpSessionVariableAdapterTest extends TestCase
      */
     public function testGetter()
     {
-        $_SESSION = ['metamodel_notelist_foo' => ['bar']];
+        $_SESSION = ['metamodel_notelists' => ['metamodel_notelist_foo' => ['bar']]];
 
         $adapter = new PhpSessionVariableAdapter();
 
@@ -74,6 +74,6 @@ class PhpSessionVariableAdapterTest extends TestCase
 
         $adapter->setKey('foo', ['bar']);
 
-        $this->assertEquals($_SESSION['metamodel_notelist_foo'], ['bar']);
+        $this->assertEquals($_SESSION['metamodel_notelists']['metamodel_notelist_foo'], ['bar']);
     }
 }
