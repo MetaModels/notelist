@@ -23,6 +23,10 @@ namespace MetaModels\NoteList\Storage;
 
 /**
  * This interface describes an storage adapter for note lists.
+ *
+ * The adapter must accept arrays of arbitrary depth containing literals (int, string, ...)
+ *
+ * The passed arrays MUST NOT contain object instances.
  */
 interface AdapterInterface
 {

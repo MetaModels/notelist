@@ -63,8 +63,20 @@ class NoteListStorageTest extends TestCase
         $adapter    = $this->getMockForAbstractClass(AdapterInterface::class);
         $item       = $this->getMockForAbstractClass(IItem::class);
 
-        $adapter->expects($this->once())->method('getKey')->with('storage-key')->willReturn(['23']);
-        $adapter->expects($this->once())->method('setKey')->with('storage-key', ['23', '42']);
+        $adapter->expects($this->once())->method('getKey')->with('storage-key')->willReturn([
+            NoteListStorage::ITEMS_KEY => ['23'],
+            NoteListStorage::META_KEY  => ['23' => []]
+        ]);
+        $adapter->expects($this->once())->method('setKey')->with(
+            'storage-key',
+            [
+                NoteListStorage::ITEMS_KEY => ['23', '42'],
+                NoteListStorage::META_KEY  => [
+                    '23' => [],
+                    '42' => []
+                ]
+            ]
+        );
         $item->expects($this->once())->method('get')->with('id')->willReturn('42');
 
         $list = new NoteListStorage($dispatcher, $metaModel, $adapter, 'storage-key', []);
@@ -91,8 +103,20 @@ class NoteListStorageTest extends TestCase
         $adapter    = $this->getMockForAbstractClass(AdapterInterface::class);
         $item       = $this->getMockForAbstractClass(IItem::class);
 
-        $adapter->expects($this->once())->method('getKey')->with('storage-key')->willReturn(['23', '42']);
-        $adapter->expects($this->once())->method('setKey')->with('storage-key', ['23']);
+        $adapter->expects($this->once())->method('getKey')->with('storage-key')->willReturn([
+            NoteListStorage::ITEMS_KEY => ['23', '42'],
+            NoteListStorage::META_KEY  => [
+                '23' => [],
+                '42' => []
+            ]
+        ]);
+        $adapter->expects($this->once())->method('setKey')->with(
+            'storage-key',
+            [
+                NoteListStorage::ITEMS_KEY => ['23'],
+                NoteListStorage::META_KEY  => ['23' => []]
+            ]
+        );
         $item->expects($this->once())->method('get')->with('id')->willReturn('42');
 
         $list = new NoteListStorage($dispatcher, $metaModel, $adapter, 'storage-key', []);
@@ -142,7 +166,13 @@ class NoteListStorageTest extends TestCase
         $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
         $adapter    = $this->getMockForAbstractClass(AdapterInterface::class);
 
-        $adapter->expects($this->once())->method('getKey')->with('storage-key')->willReturn(['23', '42']);
+        $adapter->expects($this->once())->method('getKey')->with('storage-key')->willReturn([
+            NoteListStorage::ITEMS_KEY => ['23', '42'],
+            NoteListStorage::META_KEY  => [
+                '23' => [],
+                '42' => []
+            ]
+        ]);
 
         $list = new NoteListStorage($dispatcher, $metaModel, $adapter, 'storage-key', []);
 

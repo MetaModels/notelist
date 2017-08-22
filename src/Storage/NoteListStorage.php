@@ -32,9 +32,29 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This class abstracts the storage of items.
+ *
+ * The stored data in the adapter is built as follows:
+ * [
+ *   'items' => ['item1', 'item2', ... ],
+ *   'meta-data' => [
+ *     'item1' => [
+ *       'foo' => 'bar'
+ *     ]
+ *   ]
+ * ]
  */
 class NoteListStorage
 {
+    /**
+     * The key to use in the storage array for meta data.
+     */
+    const META_KEY = 'meta-data';
+
+    /**
+     * The key to use in the storage array for item ids.
+     */
+    const ITEMS_KEY = 'items';
+
     /**
      * The event dispatcher.
      *
@@ -146,18 +166,24 @@ class NoteListStorage
      *
      * @param IItem $item The item to add.
      *
+     * @param array $meta The meta data to set.
+     *
      * @return void
      */
-    public function add(IItem $item)
+    public function add(IItem $item, array $meta = [])
     {
         if (!$this->accepts($item)) {
             return;
         }
 
-        $this->storageAdapter->setKey(
-            $this->storageKey,
-            array_unique(array_merge($this->getItemIds(), [$item->get('id')]))
-        );
+        $itemId = $item->get('id');
+        $data   = $this->getData();
+
+        $data[self::META_KEY][$itemId] = $meta;
+        $this->setData([
+            self::ITEMS_KEY => array_unique(array_merge($data[self::ITEMS_KEY], [$itemId])),
+            self::META_KEY  => $data[self::META_KEY]
+        ]);
         $this->dispatcher->dispatch(
             NoteListEvents::MANIPULATE_NOTE_LIST,
             new ManipulateNoteListEvent(
@@ -179,10 +205,11 @@ class NoteListStorage
     public function remove(IItem $item)
     {
         $search = $item->get('id');
-        $idList = $this->getItemIds();
-        foreach ($idList as $key => $candidate) {
+        $data   = $this->getData();
+        foreach ($data[self::ITEMS_KEY] as $key => $candidate) {
             if ($search === $candidate) {
-                unset($idList[$key]);
+                unset($data[self::ITEMS_KEY][$key]);
+                unset($data[self::META_KEY][$search]);
                 $this->dispatcher->dispatch(
                     NoteListEvents::MANIPULATE_NOTE_LIST,
                     new ManipulateNoteListEvent(
@@ -195,7 +222,39 @@ class NoteListStorage
                 break;
             }
         }
-        $this->storageAdapter->setKey($this->storageKey, $idList);
+        $this->setData($data);
+    }
+
+    /**
+     * Retrieve the meta data information for an item.
+     *
+     * @param IItem $item The item to retrieve the meta data for.
+     *
+     * @return array
+     */
+    public function getMetaDataFor(IItem $item)
+    {
+        $data = $this->getData();
+
+        return ($data[self::META_KEY][$item->get('id')] ?? []);
+    }
+
+    /**
+     * Update the meta data information for an item.
+     *
+     * @param IItem $item The item to retrieve the meta data for.
+     *
+     * @param array $meta The meta information to store.
+     *
+     * @return void
+     */
+    public function updateMetaDataFor(IItem $item, array $meta)
+    {
+        $data = $this->getData();
+
+        $data[self::META_KEY][$item->get('id')] = $meta;
+
+        $this->setData($data);
     }
 
     /**
@@ -238,7 +297,7 @@ class NoteListStorage
      */
     public function getItemIds()
     {
-        return $this->storageAdapter->getKey($this->storageKey);
+        return $this->getData()[self::ITEMS_KEY];
     }
 
     /**
@@ -282,5 +341,30 @@ class NoteListStorage
         }
 
         return current($this->names);
+    }
+
+    /**
+     * Retrieve the data from the storage.
+     *
+     * @return array
+     */
+    private function getData()
+    {
+        return $this->storageAdapter->getKey($this->storageKey) ?: [
+            self::ITEMS_KEY => [],
+            self::META_KEY  => [],
+        ];
+    }
+
+    /**
+     * Set the key in the storage.
+     *
+     * @param array $data The data to set.
+     *
+     * @return void
+     */
+    private function setData(array $data)
+    {
+        $this->storageAdapter->setKey($this->storageKey, $data);
     }
 }
