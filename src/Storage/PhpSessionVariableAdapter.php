@@ -12,6 +12,7 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @copyright  2017 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
@@ -34,8 +35,8 @@ class PhpSessionVariableAdapter implements AdapterInterface
      */
     public function getKey(string $key): array
     {
-        if (isset($_SESSION['metamodel_notelist_' . $key])) {
-            return (array) $_SESSION['metamodel_notelist_' . $key];
+        if (isset($_SESSION['metamodel_notelists']['metamodel_notelist_' . $key])) {
+            return (array) $_SESSION['metamodel_notelists']['metamodel_notelist_' . $key];
         }
 
         return [];
@@ -49,6 +50,6 @@ class PhpSessionVariableAdapter implements AdapterInterface
      */
     public function setKey(string $key, array $value)
     {
-        $_SESSION['metamodel_notelist_' . $key] = $value;
+        $_SESSION['metamodel_notelists']['metamodel_notelist_' . $key] = $value;
     }
 }
