@@ -215,9 +215,11 @@ class ParseItemListener
 
         // Obtain list and generate button for it.
         return [
+            'name'  => $storage->getName(),
             'label' => sprintf($GLOBALS['TL_LANG']['MSC']['metamodel_notelist_' . $action], $storage->getName()),
             'href'  => $url->getUrl(),
             'class' => $action,
+            'meta'  => $storage->getMetaDataFor($item),
         ];
     }
 
