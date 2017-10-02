@@ -60,7 +60,7 @@ class InsertTags
      *
      * @param array $arguments The arguments.
      *
-     * @return bool|string
+     * @return bool|int
      */
     public function processNoteListSum(array $arguments)
     {
