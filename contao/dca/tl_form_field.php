@@ -18,8 +18,6 @@
  * @filesource
  */
 
-declare(strict_types = 1);
-
 $GLOBALS['TL_DCA']['tl_form_field']['palettes']['__selector__'][]     = 'metamodel';
 $GLOBALS['TL_DCA']['tl_form_field']['palettes']['metamodel_notelist'] =
     '{type_legend},type,name,label;' .

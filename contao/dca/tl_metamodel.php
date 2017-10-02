@@ -17,8 +17,6 @@
  * @filesource
  */
 
-declare(strict_types = 1);
-
 $GLOBALS['TL_DCA']['tl_metamodel']['list']['operations']['notelist'] = [
     'label'   => &$GLOBALS['TL_LANG']['tl_metamodel']['notelist'],
     'href'    => 'table=tl_metamodel_notelist',

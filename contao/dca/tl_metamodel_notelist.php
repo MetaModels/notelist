@@ -18,8 +18,6 @@
  * @filesource
  */
 
-declare(strict_types=1);
-
 $GLOBALS['TL_DCA']['tl_metamodel_notelist'] = [
     'config'       => [
         'dataContainer'    => 'General',

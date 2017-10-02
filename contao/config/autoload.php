@@ -17,13 +17,9 @@
  * @filesource
  */
 
-declare(strict_types = 1);
-
 use Contao\TemplateLoader;
 
-/**
- * Register the templates
- */
+// Register the templates
 TemplateLoader::addFiles([
     'email_metamodels_notelist' => 'system/modules/metamodels_notelist/templates',
     'form_metamodels_notelist'  => 'system/modules/metamodels_notelist/templates',

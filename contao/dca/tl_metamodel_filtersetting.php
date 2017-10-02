@@ -17,8 +17,6 @@
  * @filesource
  */
 
-declare(strict_types = 1);
-
 $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['notelist extends default'] = [
     '+config' => [
         'notelist'

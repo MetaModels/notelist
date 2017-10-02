@@ -17,8 +17,6 @@
  * @filesource
  */
 
-declare(strict_types = 1);
-
 use MetaModels\NoteList\Bridge\FormFieldBridge;
 use MetaModels\NoteList\Bridge\InsertTagBridge;
 

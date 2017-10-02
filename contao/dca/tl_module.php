@@ -18,8 +18,6 @@
  * @filesource
  */
 
-declare(strict_types = 1);
-
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'metamodel_add_notelist';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['metamodel_list'] =
     str_replace(
