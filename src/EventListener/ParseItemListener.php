@@ -31,7 +31,9 @@ use MetaModels\Events\RenderItemListEvent;
 use MetaModels\FrontendIntegration\HybridList;
 use MetaModels\IItem;
 use MetaModels\IMetaModel;
+use MetaModels\NoteList\Event\NoteListEvents;
 use MetaModels\NoteList\Event\ParseNoteListFormEvent;
+use MetaModels\NoteList\Event\ProcessActionEvent;
 use MetaModels\NoteList\Form\FormRenderer;
 use MetaModels\NoteList\NoteListFactory;
 use MetaModels\NoteList\Storage\NoteListStorage;
@@ -86,7 +88,7 @@ class ParseItemListener
     public function handleListRendering(RenderItemListEvent $event)
     {
         $caller = $event->getCaller();
-        if (!(($caller instanceof HybridList) || ($caller instanceof FormRenderer))) {
+        if (!($caller instanceof HybridList)) {
             return;
         }
 
@@ -96,9 +98,9 @@ class ParseItemListener
 
         $lists = !empty($tmp = $caller->metamodel_notelist) ? unserialize($tmp) : [];
 
-        $this->processActions($event->getList()->getMetaModel(), $lists);
-
-        $event->getList()->getView()->set(self::NOTELIST_LIST, $lists);
+        if (!$this->processActions($event->getList()->getMetaModel(), $lists)) {
+            $event->getList()->getView()->set(self::NOTELIST_LIST, $lists);
+        }
     }
 
     /**
@@ -117,9 +119,9 @@ class ParseItemListener
 
         $lists = [$event->getNoteListId()];
 
-        $this->processActions($event->getMetaModel(), $lists);
-
-        $renderSetting->set(self::NOTELIST_LIST, $lists);
+        if (!$this->processActions($event->getMetaModel(), $lists)) {
+            $renderSetting->set(self::NOTELIST_LIST, $lists);
+        }
     }
 
     /**
@@ -157,7 +159,7 @@ class ParseItemListener
      * @param IMetaModel $metaModel The MetaModel instance.
      * @param string[]   $lists     The identifier list.
      *
-     * @return void
+     * @return bool
      *
      * @throws \InvalidArgumentException When the item could not be found or the action is unknown.
      */
@@ -165,33 +167,27 @@ class ParseItemListener
     {
         $url = $this->getCurrentUrl();
         foreach ($lists as $list) {
+            // FIXME: need to add form POST handling here.
+            // FIXME: we need a way to assemble payload array.
             if ($url->hasQueryParameter('notelist_' . $list . '_action')) {
                 $action   = $url->getQueryParameter('notelist_' . $list . '_action');
                 $noteList = $this->factory->getList($metaModel, $list);
-                switch ($action) {
-                    case 'add':
-                        $noteList->add($this->getItemFromMetaModel(
-                            $metaModel,
-                            $url->getQueryParameter('notelist_' . $list . '_item')
-                        ));
-                        $this->redirect($list);
-                        return;
-                    case 'remove':
-                        $noteList->remove($this->getItemFromMetaModel(
-                            $metaModel,
-                            $url->getQueryParameter('notelist_' . $list . '_item')
-                        ));
-                        $this->redirect($list);
-                        return;
-                    case 'clear':
-                        $noteList->clear();
-                        $this->redirect($list);
-                        return;
-                    default:
+                $payload  = [
+                    'item' => $url->getQueryParameter('notelist_' . $list . '_item')
+                ];
+
+                $event = new ProcessActionEvent($action, $payload, $noteList, $metaModel);
+                $this->dispatcher->dispatch(NoteListEvents::PROCESS_NOTE_LIST_ACTION, $event);
+                if ($event->isSuccess()) {
+                    $this->redirect($list);
+                    return true;
                 }
-                throw new \InvalidArgumentException('Unknown action name ' . $action);
+
+                throw new \InvalidArgumentException('Failed to process action ' . $action . ' for list ' . $list);
             }
         }
+
+        return false;
     }
 
     /**
@@ -237,26 +233,6 @@ class ParseItemListener
             ->getUrl();
 
         $this->dispatcher->dispatch(ContaoEvents::CONTROLLER_REDIRECT, new RedirectEvent($url));
-    }
-
-    /**
-     * Retrieve an item from the MetaModel.
-     *
-     * @param IMetaModel $metaModel The MetaModel instance to retrieve the item from.
-     * @param string     $itemId    The item id to retrieve.
-     *
-     * @return IItem
-     *
-     * @throws \InvalidArgumentException When the item could not be found.
-     */
-    private function getItemFromMetaModel(IMetaModel $metaModel, string $itemId)
-    {
-        $item = $metaModel->findById($itemId);
-        if (null === $item) {
-            throw new \InvalidArgumentException('Item ' . $itemId . ' could not be found.');
-        }
-
-        return $item;
     }
 
     /**

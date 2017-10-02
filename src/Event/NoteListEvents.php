@@ -35,4 +35,6 @@ class NoteListEvents
      * This event gets triggered when a note list gets manipulated.
      */
     const MANIPULATE_NOTE_LIST = 'metamodels.note-list.manipulate';
+
+    const PROCESS_NOTE_LIST_ACTION = 'metamodels.note-list.process-action';
 }
