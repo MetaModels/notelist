@@ -30,6 +30,7 @@ use MetaModels\NoteList\Form\FormRenderer;
  *
  * @property string      metamodel_notelist
  * @property string|null metamodel_customTplEmail
+ * @property string[]    parsed
  */
 class FormFieldBridge extends Widget
 {
