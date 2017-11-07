@@ -25,6 +25,7 @@ use MetaModels\NoteList\EventListener\DcGeneral\FilterSettingsListListener;
 use MetaModels\NoteList\EventListener\DcGeneral\FilterSettingTypeRenderer;
 use MetaModels\NoteList\EventListener\DcGeneral\NoteListListListener;
 use MetaModels\NoteList\EventListener\DcGeneral\RenderNoteListNameAsReadablePropertyValueListener;
+use MetaModels\NoteList\EventListener\ProcessActionListener;
 use MetaModels\NoteList\Filter\NoteListFilterSettingTypeFactory;
 use MetaModels\NoteList\EventListener\DcGeneral\AdapterListListener;
 use MetaModels\NoteList\EventListener\ParseItemListener;
@@ -60,6 +61,12 @@ $container['metamodels-notelist.filter-setting-factory'] = $container->share(
 $container['metamodels-notelist.parse-item-listener'] = $container->share(
     function ($container) {
         return new ParseItemListener($container['metamodels-notelist.factory'], $container['event-dispatcher']);
+    }
+);
+
+$container['metamodels-notelist.process-action-listener'] = $container->share(
+    function () {
+        return new ProcessActionListener();
     }
 );
 

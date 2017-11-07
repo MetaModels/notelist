@@ -32,9 +32,11 @@ use MetaModels\Filter\Setting\Events\CreateFilterSettingFactoryEvent;
 use MetaModels\MetaModelsEvents;
 use MetaModels\NoteList\Event\NoteListEvents;
 use MetaModels\NoteList\Event\ParseNoteListFormEvent;
+use MetaModels\NoteList\Event\ProcessActionEvent;
 use MetaModels\NoteList\EventListener\DcGeneral\BreadCrumbNoteList;
 use MetaModels\NoteList\EventListener\DcGeneral\FilterSettingTypeRenderer;
 use MetaModels\NoteList\EventListener\ParseItemListener;
+use MetaModels\NoteList\EventListener\ProcessActionListener;
 
 return [
     GetPropertyOptionsEvent::NAME => [
@@ -75,7 +77,7 @@ return [
                 $handler->modelToLabel($event);
             },
             // Priority must be lower than the renderer by MetaModels core as that one always override unknown values.
-            -1
+            (-1)
         ]
     ],
     BuildWidgetEvent::NAME => [
@@ -153,6 +155,14 @@ return [
             $handler = $GLOBALS['container']['metamodels-notelist.parse-item-listener'];
 
             $handler->handleFormRendering($event);
+        }
+    ],
+    NoteListEvents::PROCESS_NOTE_LIST_ACTION => [
+        function (ProcessActionEvent $event) {
+            /** @var ProcessActionListener $handler */
+            $handler = $GLOBALS['container']['metamodels-notelist.process-action-listener'];
+
+            $handler->handleEvent($event);
         }
     ]
 ];
