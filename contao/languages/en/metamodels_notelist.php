@@ -12,6 +12,7 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @copyright  2017 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
@@ -19,4 +20,5 @@
 
 declare(strict_types = 1);
 
-$GLOBALS['TL_LANG']['metamodels_notelist']['adapter']['php-session'] = 'PHP Session variable';
+$GLOBALS['TL_LANG']['metamodels_notelist']['adapter']['php-session']    = 'PHP Session variable';
+$GLOBALS['TL_LANG']['metamodels_notelist']['adapter']['contao-session'] = 'Contao Session';
