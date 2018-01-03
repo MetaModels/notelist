@@ -26,6 +26,7 @@ use MetaModels\Filter\Setting\FilterSettingFactory;
 use MetaModels\IMetaModel;
 use MetaModels\NoteList\Storage\NoteListStorage;
 use MetaModels\NoteList\Storage\StorageAdapterFactory;
+use MetaModels\NoteList\Storage\ValueBag;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -154,7 +155,8 @@ class NoteListFactory
             $adapter,
             $identifier,
             deserialize($noteList->name, true),
-            $noteList->filter ? $this->filterFactory->createCollection($noteList->filter) : null
+            $noteList->filter ? $this->filterFactory->createCollection($noteList->filter) : null,
+            new ValueBag($noteList->row())
         );
     }
 

@@ -34,7 +34,7 @@ use MetaModels\IMetaModel;
 use MetaModels\NoteList\Event\NoteListEvents;
 use MetaModels\NoteList\Event\ParseNoteListFormEvent;
 use MetaModels\NoteList\Event\ProcessActionEvent;
-use MetaModels\NoteList\Form\FormRenderer;
+use MetaModels\NoteList\Form\FormBuilder;
 use MetaModels\NoteList\NoteListFactory;
 use MetaModels\NoteList\Storage\NoteListStorage;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -64,15 +64,27 @@ class ParseItemListener
     private $dispatcher;
 
     /**
+     * The form builder.
+     *
+     * @var FormBuilder
+     */
+    private $formBuilder;
+
+    /**
      * Create a new instance.
      *
-     * @param NoteListFactory          $factory    The factory.
-     * @param EventDispatcherInterface $dispatcher The event dispatcher.
+     * @param NoteListFactory          $factory     The factory.
+     * @param EventDispatcherInterface $dispatcher  The event dispatcher.
+     * @param FormBuilder              $formBuilder The form builder.
      */
-    public function __construct(NoteListFactory $factory, EventDispatcherInterface $dispatcher)
-    {
-        $this->factory    = $factory;
-        $this->dispatcher = $dispatcher;
+    public function __construct(
+        NoteListFactory $factory,
+        EventDispatcherInterface $dispatcher,
+        FormBuilder $formBuilder
+    ) {
+        $this->factory     = $factory;
+        $this->dispatcher  = $dispatcher;
+        $this->formBuilder = $formBuilder;
     }
 
     /**
@@ -109,9 +121,6 @@ class ParseItemListener
      * @param ParseNoteListFormEvent $event The event to process.
      *
      * @return void
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public function handleFormRendering(ParseNoteListFormEvent $event)
     {
@@ -147,6 +156,11 @@ class ParseItemListener
             if (!$storage->accepts($item)) {
                 continue;
             }
+            if ($formId = $storage->getMeta()->get('form')) {
+                // Need to render the form here.
+                $parsed['actions']['notelist_' . $list] = $this->generateForm($item, $storage, intval($formId));
+                continue;
+            }
             $parsed['actions']['notelist_' . $list] = $this->generateButton($item, $storage);
         }
 
@@ -165,29 +179,58 @@ class ParseItemListener
      */
     private function processActions(IMetaModel $metaModel, array $lists)
     {
-        $url = $this->getCurrentUrl();
         foreach ($lists as $list) {
-            // FIXME: need to add form POST handling here.
-            // FIXME: we need a way to assemble payload array.
-            if ($url->hasQueryParameter('notelist_' . $list . '_action')) {
-                $action   = $url->getQueryParameter('notelist_' . $list . '_action');
-                $noteList = $this->factory->getList($metaModel, $list);
-                $payload  = [
-                    'item' => $url->getQueryParameter('notelist_' . $list . '_item')
-                ];
-
-                $event = new ProcessActionEvent($action, $payload, $noteList, $metaModel);
+            if ($event = $this->buildActionEvent($metaModel, $list)) {
                 $this->dispatcher->dispatch(NoteListEvents::PROCESS_NOTE_LIST_ACTION, $event);
                 if ($event->isSuccess()) {
                     $this->redirect($list);
                     return true;
                 }
 
-                throw new \InvalidArgumentException('Failed to process action ' . $action . ' for list ' . $list);
+                throw new \InvalidArgumentException(
+                    'Failed to process action ' . $event->getAction() . ' for list ' . $list
+                );
             }
         }
 
         return false;
+    }
+
+    /**
+     * Try to obtain payload parameters for action event.
+     *
+     * @param IMetaModel $metaModel The MetaModel.
+     * @param string     $list      The note list id.
+     *
+     * @return ProcessActionEvent|null
+     */
+    private function buildActionEvent(IMetaModel $metaModel, string $list)
+    {
+        $url = $this->getCurrentUrl();
+        if ($url->hasQueryParameter('notelist_' . $list . '_action')) {
+            return new ProcessActionEvent(
+                $url->getQueryParameter('notelist_' . $list . '_action'),
+                ['item' => $url->getQueryParameter('notelist_' . $list . '_item')],
+                $this->factory->getList($metaModel, $list),
+                $metaModel
+            );
+        }
+        if (!($noteList = $this->factory->getList($metaModel, $list))) {
+            return null;
+        }
+        $valueBag = $noteList->getMeta();
+        if ($valueBag->has('form') && ($formId = $valueBag->get('form'))) {
+            $form = $this->formBuilder->getForm(intval($formId), $noteList, $this->getCurrentUrl()->getUrl());
+            if ($data = $form->getSubmittedData()) {
+                return new ProcessActionEvent(
+                    'add',
+                    $data,
+                    $noteList,
+                    $metaModel
+                );
+            }
+        }
+        return null;
     }
 
     /**
@@ -217,6 +260,22 @@ class ParseItemListener
             'class' => $action,
             'meta'  => $storage->getMetaDataFor($item),
         ];
+    }
+
+    /**
+     * Generate a form for the passed item.
+     *
+     * @param IItem           $item    The item to generate the button for.
+     * @param NoteListStorage $storage The storage to use.
+     * @param int             $formId  The form id.
+     *
+     * @return array
+     */
+    private function generateForm(IItem $item, NoteListStorage $storage, int $formId)
+    {
+        $form = $this->formBuilder->getForm($formId, $storage, $this->getCurrentUrl()->getUrl());
+
+        return ['html' => $form->render($item)];
     }
 
     /**

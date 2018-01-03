@@ -119,7 +119,8 @@ $GLOBALS['TL_DCA']['tl_metamodel_notelist'] = [
             'config' => [
                 'name',
                 'storageAdapter',
-                'filter'
+                'filter',
+                'form'
             ],
         ]
     ],
@@ -172,6 +173,19 @@ $GLOBALS['TL_DCA']['tl_metamodel_notelist'] = [
                 'tl_class'           => 'w50'
             ],
             'sql' => "int(10) unsigned NOT NULL default '0'"
-        ]
+        ],
+        'form' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_notelist']['form'],
+            'exclude'   => true,
+            'inputType' => 'select',
+            'eval'      => [
+                'fetchOptions'       => true,
+                'includeBlankOption' => true,
+                'maxlength'          => 64,
+                'doNotCopy'          => true,
+                'tl_class'           => 'w50'
+            ],
+            'sql' => "int(10) unsigned NOT NULL default '0'"
+        ],
     ],
 ];

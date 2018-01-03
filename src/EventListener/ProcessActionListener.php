@@ -40,7 +40,9 @@ class ProcessActionListener
     {
         switch ($event->getAction()) {
             case 'add':
-                $event->getNoteList()->add($this->getItemFromMetaModel($event));
+                $payload = $event->getPayload();
+                unset($payload['item']);
+                $event->getNoteList()->add($this->getItemFromMetaModel($event), $payload);
                 $event->setSuccess();
                 return;
             case 'remove':

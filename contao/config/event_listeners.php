@@ -54,6 +54,12 @@ return [
         },
         function (GetPropertyOptionsEvent $event) {
             // Forcing lazy initialization here as otherwise we will end up in endless recursion. Change for Contao 4!
+            /** @var MetaModels\NoteList\EventListener\DcGeneral\FormListListener $handler */
+            $handler = $GLOBALS['container']['metamodels-notelist.backend.notelist-form-option-listener'];
+            $handler->getOptions($event);
+        },
+        function (GetPropertyOptionsEvent $event) {
+            // Forcing lazy initialization here as otherwise we will end up in endless recursion. Change for Contao 4!
             /** @var MetaModels\NoteList\EventListener\DcGeneral\FilterSettingsListListener $handler */
             $handler = $GLOBALS['container']['metamodels-notelist.backend.filter-settings-option-listener'];
             $handler->getOptions($event);

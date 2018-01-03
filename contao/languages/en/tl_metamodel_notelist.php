@@ -42,3 +42,5 @@ $GLOBALS['TL_LANG']['tl_metamodel_notelist']['storageAdapter'][0] = 'Storage ada
 $GLOBALS['TL_LANG']['tl_metamodel_notelist']['storageAdapter'][1] = 'Choose the storage adapter to use.';
 $GLOBALS['TL_LANG']['tl_metamodel_notelist']['filter'][0]         = 'Filter';
 $GLOBALS['TL_LANG']['tl_metamodel_notelist']['filter'][1]         = 'Choose the filter setting to use for item acceptance.';
+$GLOBALS['TL_LANG']['tl_metamodel_notelist']['form'][0]           = 'Form';
+$GLOBALS['TL_LANG']['tl_metamodel_notelist']['form'][1]           = 'Choose the form to use for meta data handling (if none selected, simple links for add/remove will get used).';

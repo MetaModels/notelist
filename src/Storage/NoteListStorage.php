@@ -105,6 +105,13 @@ class NoteListStorage
     private $filterCache = false;
 
     /**
+     * The meta data for the note list.
+     *
+     * @var ValueBag
+     */
+    private $meta;
+
+    /**
      * Create a new instance.
      *
      * @param EventDispatcherInterface $dispatcher     The event dispatcher.
@@ -113,6 +120,7 @@ class NoteListStorage
      * @param string                   $storageKey     The key to use in the session adapter.
      * @param array                    $names          The human readable names as array locale => value.
      * @param ICollection|null         $filter         The filter setting.
+     * @param ValueBag                 $meta           The meta data for the note list.
      */
     public function __construct(
         EventDispatcherInterface $dispatcher,
@@ -120,7 +128,8 @@ class NoteListStorage
         AdapterInterface $storageAdapter,
         string $storageKey,
         array $names,
-        ICollection $filter = null
+        ICollection $filter = null,
+        ValueBag $meta = null
     ) {
         $this->dispatcher     = $dispatcher;
         $this->metaModel      = $metaModel;
@@ -128,6 +137,7 @@ class NoteListStorage
         $this->storageKey     = $storageKey;
         $this->names          = $names;
         $this->filter         = $filter;
+        $this->meta           = $meta ?: new ValueBag([]);
     }
 
     /**
@@ -138,6 +148,16 @@ class NoteListStorage
     public function getStorageKey()
     {
         return $this->storageKey;
+    }
+
+    /**
+     * Obtain the meta data value bag.
+     *
+     * @return ValueBag
+     */
+    public function getMeta()
+    {
+        return $this->meta;
     }
 
     /**

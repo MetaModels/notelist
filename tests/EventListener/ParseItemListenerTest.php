@@ -30,8 +30,10 @@ use MetaModels\ItemList;
 use MetaModels\NoteList\Event\ParseNoteListFormEvent;
 use MetaModels\NoteList\Event\ProcessActionEvent;
 use MetaModels\NoteList\EventListener\ParseItemListener;
+use MetaModels\NoteList\Form\FormBuilder;
 use MetaModels\NoteList\NoteListFactory;
 use MetaModels\NoteList\Storage\NoteListStorage;
+use MetaModels\NoteList\Storage\ValueBag;
 use MetaModels\NoteList\Test\TestCase;
 use MetaModels\Render\Setting\ICollection;
 use MetaModels\Render\Template;
@@ -78,6 +80,19 @@ class ParseItemListenerTest extends TestCase
             ->method('getView')
             ->willReturn($renderSetting);
 
+        $noteList = $this
+            ->getMockBuilder(NoteListStorage::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getMeta'])
+            ->getMock();
+        $noteList->expects($this->once())->method('getMeta')->willReturn(new ValueBag([]));
+
+        $factory
+            ->expects($this->exactly(2))
+            ->method('getList')
+            ->withConsecutive([$metaModel, '23'], [$metaModel, '42'])
+            ->willReturnOnConsecutiveCalls($noteList, null);
+
         $template = new Template();
         $caller   = $this
             ->getMockBuilder(HybridList::class)
@@ -97,15 +112,17 @@ class ParseItemListenerTest extends TestCase
                 serialize(['23', '42'])
             );
 
+        $formBuilder = $this->getMockBuilder(FormBuilder::class)->disableOriginalConstructor()->getMock();
+
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $listener   = $this
             ->getMockBuilder(ParseItemListener::class)
-            ->setConstructorArgs([$factory, $dispatcher])
+            ->setConstructorArgs([$factory, $dispatcher, $formBuilder])
             ->setMethods(['getCurrentUrl'])
             ->getMock();
 
         $listener
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getCurrentUrl')
             ->willReturn(new UrlBuilder('http://example.com/'));
 
@@ -219,9 +236,11 @@ class ParseItemListenerTest extends TestCase
                 })
             );
 
+        $formBuilder = $this->getMockBuilder(FormBuilder::class)->disableOriginalConstructor()->getMock();
+
         $listener = $this
             ->getMockBuilder(ParseItemListener::class)
-            ->setConstructorArgs([$factory, $dispatcher])
+            ->setConstructorArgs([$factory, $dispatcher, $formBuilder])
             ->setMethods(['getCurrentUrl'])
             ->getMock();
 
@@ -266,10 +285,12 @@ class ParseItemListenerTest extends TestCase
             ->method('set')
             ->with(ParseItemListener::NOTELIST_LIST, ['23']);
 
+        $formBuilder = $this->getMockBuilder(FormBuilder::class)->disableOriginalConstructor()->getMock();
+
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $listener   = $this
             ->getMockBuilder(ParseItemListener::class)
-            ->setConstructorArgs([$factory, $dispatcher])
+            ->setConstructorArgs([$factory, $dispatcher, $formBuilder])
             ->setMethods(['getCurrentUrl'])
             ->getMock();
 

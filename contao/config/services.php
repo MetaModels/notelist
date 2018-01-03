@@ -23,12 +23,14 @@ use MetaModels\NoteList\EventListener\DcGeneral\BreadCrumbNoteList;
 use MetaModels\NoteList\EventListener\DcGeneral\BuildNoteListNameWidgetListener;
 use MetaModels\NoteList\EventListener\DcGeneral\FilterSettingsListListener;
 use MetaModels\NoteList\EventListener\DcGeneral\FilterSettingTypeRenderer;
+use MetaModels\NoteList\EventListener\DcGeneral\FormListListener;
 use MetaModels\NoteList\EventListener\DcGeneral\NoteListListListener;
 use MetaModels\NoteList\EventListener\DcGeneral\RenderNoteListNameAsReadablePropertyValueListener;
 use MetaModels\NoteList\EventListener\ProcessActionListener;
 use MetaModels\NoteList\Filter\NoteListFilterSettingTypeFactory;
 use MetaModels\NoteList\EventListener\DcGeneral\AdapterListListener;
 use MetaModels\NoteList\EventListener\ParseItemListener;
+use MetaModels\NoteList\Form\FormBuilder;
 use MetaModels\NoteList\InsertTags;
 use MetaModels\NoteList\NoteListFactory;
 use MetaModels\NoteList\Storage\StorageAdapterFactory;
@@ -51,6 +53,11 @@ $container['metamodels-notelist.factory'] = $container->share(
         );
     }
 );
+$container['metamodels-notelist.form-builder'] = $container->share(
+    function ($container) {
+        return new FormBuilder($container['database.connection']);
+    }
+);
 
 $container['metamodels-notelist.filter-setting-factory'] = $container->share(
     function ($container) {
@@ -60,7 +67,11 @@ $container['metamodels-notelist.filter-setting-factory'] = $container->share(
 
 $container['metamodels-notelist.parse-item-listener'] = $container->share(
     function ($container) {
-        return new ParseItemListener($container['metamodels-notelist.factory'], $container['event-dispatcher']);
+        return new ParseItemListener(
+            $container['metamodels-notelist.factory'],
+            $container['event-dispatcher'],
+            $container['metamodels-notelist.form-builder']
+        );
     }
 );
 
@@ -96,6 +107,12 @@ $container['metamodels-notelist.backend.notelist-list-option-listener'] = $conta
             $container['metamodels-notelist.factory'],
             $container['database.connection']
         );
+    }
+);
+
+$container['metamodels-notelist.backend.notelist-form-option-listener'] = $container->share(
+    function ($container) {
+        return new FormListListener($container['database.connection']);
     }
 );
 
