@@ -22,12 +22,13 @@ declare(strict_types = 1);
 
 namespace MetaModels\NoteList\Storage;
 
+use Contao\Session;
+
 /**
  * This class is the implementation of the Contao session storage.
  */
 class ContaoSessionAdapter implements AdapterInterface
 {
-
     /**
      * The contao session.
      *
@@ -36,11 +37,11 @@ class ContaoSessionAdapter implements AdapterInterface
     private $session;
 
     /**
-    * Initialize the object
-    */
+     * Initialize the object.
+     */
     public function __construct()
     {
-        $this->session = \Session::getInstance();
+        $this->session = Session::getInstance();
     }
 
     /**
