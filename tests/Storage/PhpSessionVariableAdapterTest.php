@@ -55,7 +55,24 @@ class PhpSessionVariableAdapterTest extends TestCase
 
         $adapter = new PhpSessionVariableAdapter();
 
-        $this->assertEquals($adapter->getKey('foo'), ['bar']);
+        $this->assertEquals(['bar'], $adapter->getKey('foo'));
+    }
+
+    /**
+     * Test that getting unknown keys returns an empty array.
+     *
+     * @return void
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+     */
+    public function testGetterReturnsEmptyForUnknown()
+    {
+        $_SESSION = [];
+
+        $adapter = new PhpSessionVariableAdapter();
+
+        $this->assertEquals([], $adapter->getKey('unknown'));
     }
 
     /**
@@ -74,6 +91,6 @@ class PhpSessionVariableAdapterTest extends TestCase
 
         $adapter->setKey('foo', ['bar']);
 
-        $this->assertEquals($_SESSION['metamodel_notelists']['metamodel_notelist_foo'], ['bar']);
+        $this->assertEquals(['bar'], $_SESSION['metamodel_notelists']['metamodel_notelist_foo']);
     }
 }
