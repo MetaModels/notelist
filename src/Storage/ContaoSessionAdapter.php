@@ -38,10 +38,12 @@ class ContaoSessionAdapter implements AdapterInterface
 
     /**
      * Initialize the object.
+     *
+     * @param Session $session The session to work on.
      */
-    public function __construct()
+    public function __construct(Session $session)
     {
-        $this->session = Session::getInstance();
+        $this->session = $session;
     }
 
     /**
@@ -49,9 +51,9 @@ class ContaoSessionAdapter implements AdapterInterface
      */
     public function getKey(string $key): array
     {
-        if (null !== $this->session->get('metamodel_notelists')
-            && array_key_exists('metamodel_notelist_' . $key, $this->session->get('metamodel_notelists')) ) {
-            return (array) $this->session->get('metamodel_notelists')['metamodel_notelist_' . $key];
+        if (null !== ($value = $this->session->get('metamodel_notelists'))
+            && array_key_exists('metamodel_notelist_' . $key, $value)) {
+            return (array) $value['metamodel_notelist_' . $key];
         }
 
         return [];

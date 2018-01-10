@@ -22,6 +22,7 @@ declare(strict_types = 1);
 
 namespace MetaModels\NoteList\Storage;
 
+use Contao\Session;
 use MetaModels\NoteList\Storage\Exception\AdapterNotFoundException;
 
 /**
@@ -55,7 +56,7 @@ class StorageAdapterFactory
             case 'php-session':
                 return $this->instances[$identifier] = new PhpSessionVariableAdapter();
             case 'contao-session':
-                return $this->instances[$identifier] = new ContaoSessionAdapter();
+                return $this->instances[$identifier] = new ContaoSessionAdapter(Session::getInstance());
             default:
         }
         throw new AdapterNotFoundException();
