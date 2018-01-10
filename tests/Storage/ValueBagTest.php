@@ -184,6 +184,4 @@ class ValueBagTest extends TestCase
 
         $this->assertSame(2, $bag->count());
     }
-
-    
 }
