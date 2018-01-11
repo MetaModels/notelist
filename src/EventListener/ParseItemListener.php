@@ -50,6 +50,11 @@ class ParseItemListener
     const NOTELIST_LIST = '$note-lists';
 
     /**
+     * Key to use for flag in the render setting for disabling form rendering.
+     */
+    const NOTELIST_LIST_DISABLE_FORM = '$note-lists-no-form';
+
+    /**
      * The note list factory.
      *
      * @var NoteListFactory
@@ -130,6 +135,7 @@ class ParseItemListener
 
         if (!$this->processActions($event->getMetaModel(), $lists)) {
             $renderSetting->set(self::NOTELIST_LIST, $lists);
+            $renderSetting->set(self::NOTELIST_LIST_DISABLE_FORM, true);
         }
     }
 
@@ -156,9 +162,13 @@ class ParseItemListener
             if (!$storage->accepts($item)) {
                 continue;
             }
+
+            $parsed['notelists']['notelist_' . $list] = $storage->getMetaDataFor($item);
             if ($formId = $storage->getMeta()->get('form')) {
-                // Need to render the form here.
-                $parsed['actions']['notelist_' . $list] = $this->generateForm($item, $storage, intval($formId));
+                if (!$settings->get(self::NOTELIST_LIST_DISABLE_FORM)) {
+                    // Need to render the form here.
+                    $parsed['actions']['notelist_' . $list] = $this->generateForm($item, $storage, intval($formId));
+                }
                 continue;
             }
             $parsed['actions']['notelist_' . $list] = $this->generateButton($item, $storage);
