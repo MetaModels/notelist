@@ -19,9 +19,12 @@
 
 use MetaModels\NoteList\Bridge\FormFieldBridge;
 use MetaModels\NoteList\Bridge\InsertTagBridge;
+use MetaModels\NoteList\Bridge\ProcessFormDataBridge;
 
 $GLOBALS['BE_MOD']['metamodels']['metamodels']['tables'][] = 'tl_metamodel_notelist';
 
 $GLOBALS['TL_FFL']['metamodel_notelist'] = FormFieldBridge::class;
 
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array(InsertTagBridge::class, 'replaceInsertTags');
+
+$GLOBALS['TL_HOOKS']['processFormData'][] = array(ProcessFormDataBridge::class, 'clearNotelistFormData');

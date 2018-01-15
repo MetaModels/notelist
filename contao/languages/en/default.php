@@ -22,5 +22,6 @@ declare(strict_types = 1);
 $GLOBALS['TL_LANG']['BRD']['metamodel_notelist']        = 'Note lists for %s';
 $GLOBALS['TL_LANG']['MSC']['metamodel_notelist_add']    = 'Add to %s';
 $GLOBALS['TL_LANG']['MSC']['metamodel_notelist_remove'] = 'Remove from %s';
+$GLOBALS['TL_LANG']['MSC']['metamodel_notelist_edit']   = 'Edit by %s';
 
 $GLOBALS['TL_LANG']['MSC']['metamodel_notelist_display_backend'] = 'MetaModels note list for MetaModel: %1$s';

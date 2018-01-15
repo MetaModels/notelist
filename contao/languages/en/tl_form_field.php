@@ -28,12 +28,18 @@ $GLOBALS['TL_LANG']['tl_form_field']['metamodel'][1]          = 'Select the Meta
 $GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist'][0] = 'Note lists';
 $GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist'][1] = 'Select all note lists that shall get added.';
 
-$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_notelist'][0]               = 'Notelist';
-$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_notelist'][1]               = 'Select the note list for the different outputs.';
-$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_frontend'][0] = 'Frontend';
-$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_frontend'][1] = 'Select the rendersetting for the frontend output.';
-$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_email'][0]    = 'Email';
-$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_email'][1]    = 'Select the rendersetting for the email output.';
+$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_notelist'][0]                = 'Notelist';
+$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_notelist'][1]                =
+    'Select the note list for the different outputs.';
+$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_frontend'][0]  = 'Frontend';
+$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_frontend'][1]  =
+    'Select the rendersetting for the frontend output.';
+$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_email'][0]     = 'Email';
+$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_email'][1]     =
+    'Select the rendersetting for the email output.';
+$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_clearlist'][0] = 'Clear list';
+$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_clearlist'][1] =
+    'Clear notelist after form submit.';
 
 $GLOBALS['TL_LANG']['tl_form_field']['metamodel_customTplEmail'][0] = 'Custom email template';
 $GLOBALS['TL_LANG']['tl_form_field']['metamodel_customTplEmail'][1] = 
