@@ -130,7 +130,7 @@ class FormFieldBridge extends Widget
     {
         return $this->abstractParse(
             $this->renderSettings,
-            'text',
+            $this->strFormat,
             $this->customTpl ?: $this->strTemplate
         );
     }
