@@ -22,6 +22,7 @@ declare(strict_types = 1);
 namespace MetaModels\NoteList\Form;
 
 use Contao\FormHidden;
+use Contao\FormSubmit;
 use Contao\Input;
 use Contao\Widget;
 use MetaModels\IItem;
@@ -138,13 +139,24 @@ class Form
         $itemId = new $GLOBALS['TL_FFL']['hidden'](['name' => 'NOTELIST_ITEM', 'value' => $item->get('id')]);
         $fields = $itemId->parse();
 
-        $data = ($this->noteList->has($item)) ? $this->noteList->getMetaDataFor($item) : [];
+        $idCount = 1;
+        $data    = ($this->noteList->has($item)) ? $this->noteList->getMetaDataFor($item) : [];
         foreach ($this->widgets as $widget) {
             if (array_key_exists($widget->name, $data)) {
                 $widget->value = $data[$widget->name];
+                $widget->id    = $item->get('id') . '_' . $idCount;
+                $idCount++;
             }
             $fields .= $widget->parse();
         }
+
+        $action      = !$this->noteList->getMetaDataFor($item) ? 'add' : 'edit';
+        $submitLabel = sprintf($GLOBALS['TL_LANG']['MSC']['metamodel_notelist_' . $action], $this->noteList->getName());
+
+        /** @var FormSubmit $submit */
+        $submit = new $GLOBALS['TL_FFL']['submit'](['label' => $submitLabel, 'tableless'  => true, 'id' => $item->get('id') . '_' . $idCount]);
+        $fields .= $submit->parse();
+
         $template = new Template('form');
         $template->setData([
             'hidden'     => '',
