@@ -1,7 +1,7 @@
 {
   "name": "metamodels/notelist",
   "description": "Notelist management for MetaModels",
-  "license": "LGPL-3.0",
+  "license": "LGPL-3.0-or-later",
   "keywords":["contao", "metamodels", "notelist"],
   "type":"contao-module",
   "homepage":"http://now.metamodel.me/",
