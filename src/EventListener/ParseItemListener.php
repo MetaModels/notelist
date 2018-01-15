@@ -167,11 +167,14 @@ class ParseItemListener
             if ($formId = $storage->getMeta()->get('form')) {
                 if (!$settings->get(self::NOTELIST_LIST_DISABLE_FORM)) {
                     // Need to render the form here.
-                    $parsed['actions']['notelist_' . $list] = $this->generateForm($item, $storage, intval($formId));
+                    $parsed['actions']['notelist_' . $list . '_form'] =
+                        $this->generateForm($item, $storage, intval($formId));
                 }
-                continue;
+                if (!$storage->has($item)) {
+                    continue;
+                }
             }
-            $parsed['actions']['notelist_' . $list] = $this->generateButton($item, $storage);
+            $parsed['actions']['notelist_' . $list . '_button'] = $this->generateButton($item, $storage);
         }
 
         $event->setResult($parsed);
