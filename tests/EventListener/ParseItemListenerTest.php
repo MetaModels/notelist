@@ -281,9 +281,12 @@ class ParseItemListenerTest extends TestCase
         $renderSetting = $this->getMockForAbstractClass(ICollection::class);
 
         $renderSetting
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('set')
-            ->with(ParseItemListener::NOTELIST_LIST, ['23']);
+            ->withConsecutive(
+                [ParseItemListener::NOTELIST_LIST, ['23']],
+                [ParseItemListener::NOTELIST_LIST_DISABLE_FORM, true]
+            );
 
         $formBuilder = $this->getMockBuilder(FormBuilder::class)->disableOriginalConstructor()->getMock();
 
