@@ -167,7 +167,8 @@ class Form
             'method'     => 'post',
             'fields'     => $fields,
             'action'     => $this->action,
-            'enctype'    => 'multipart/form-data'
+            'enctype'    => 'multipart/form-data',
+            'class'      => $action
         ]);
 
         return $template->parse('html5');
