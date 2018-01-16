@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017 - 2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017 The MetaModels team.
+ * @copyright  2017 - 2018 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -140,7 +140,7 @@ class ParseItemListener
     }
 
     /**
-     * Add the notelist action buttons.
+     * Add the notelist action buttons .
      *
      * @param ParseItemEvent $event Parse the passed item.
      *
@@ -163,13 +163,16 @@ class ParseItemListener
                 continue;
             }
 
-            $parsed['notelists']['notelist_' . $list] = $storage->getMetaDataFor($item);
+            $parsed['notelists_payload_values']['notelist_' . $list] = $storage->getMetaDataFor($item);
             if ($formId = $storage->getMeta()->get('form')) {
                 if (!$settings->get(self::NOTELIST_LIST_DISABLE_FORM)) {
                     // Need to render the form here.
                     $parsed['actions']['notelist_' . $list . '_form'] =
                         $this->generateForm($item, $storage, intval($formId));
                 }
+
+                $parsed['notelists_payload_labels']['notelist_' . $list] = $this->getFormFieldLabels(intval($formId));
+
                 if (!$storage->has($item)) {
                     continue;
                 }
@@ -220,6 +223,7 @@ class ParseItemListener
     private function buildActionEvent(IMetaModel $metaModel, string $list)
     {
         $url = $this->getCurrentUrl();
+
         if ($url->hasQueryParameter('notelist_' . $list . '_action')) {
             return new ProcessActionEvent(
                 $url->getQueryParameter('notelist_' . $list . '_action'),
@@ -289,6 +293,27 @@ class ParseItemListener
         $form = $this->formBuilder->getForm($formId, $storage, $this->getCurrentUrl()->getUrl());
 
         return ['html' => $form->render($item)];
+    }
+
+    /**
+     * Retrieve the labels of payload form.
+     *
+     * @param int $formId The form id.
+     *
+     * @return array
+     */
+    private function getFormFieldLabels(int $formId) {
+        $formLabels = [];
+
+        if($formId) {
+            $objFields = \FormFieldModel::findPublishedByPid($formId);
+
+            foreach ($objFields as $objField) {
+                $formLabels[$objField->name] = \Controller::replaceInsertTags($objField->label, false);
+            }
+        }
+
+        return $formLabels;
     }
 
     /**
