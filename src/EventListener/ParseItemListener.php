@@ -163,17 +163,28 @@ class ParseItemListener
                 continue;
             }
 
-            $parsed['notelists_payload_values']['notelist_' . $list] = $storage->getMetaDataFor($item);
+            // Add notelist name.
+            $parsed['notelists_names']['notelist_' . $list] = $storage->getName();
+
+            if ($formId = $storage->getMeta()->get('form')) {
+                // Add payload values.
+                if (count($storage->getMetaDataFor($item))) {
+                    $parsed['notelists_payload_values']['notelist_' . $list] = $storage->getMetaDataFor($item);
+                }
+
+                // Add payload labels.
+                $parsed['notelists_payload_labels']['notelist_' . $list] = $this->getFormFieldLabels(intval($formId));
+            }
+
+            // Hide all other actions input if form disabled.
             if ($settings->get(self::NOTELIST_LIST_DISABLE_FORM)) {
                 continue;
             }
+
             if ($formId = $storage->getMeta()->get('form')) {
                 // Need to render the form here.
                 $parsed['actions']['notelist_' . $list . '_form'] =
                     $this->generateForm($item, $storage, intval($formId));
-
-                $parsed['notelists_payload_labels']['notelist_' . $list] = $this->getFormFieldLabels(intval($formId));
-
                 if (!$storage->has($item)) {
                     continue;
                 }
