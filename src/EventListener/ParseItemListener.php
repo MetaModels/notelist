@@ -164,12 +164,13 @@ class ParseItemListener
             }
 
             $parsed['notelists_payload_values']['notelist_' . $list] = $storage->getMetaDataFor($item);
+            if ($settings->get(self::NOTELIST_LIST_DISABLE_FORM)) {
+                continue;
+            }
             if ($formId = $storage->getMeta()->get('form')) {
-                if (!$settings->get(self::NOTELIST_LIST_DISABLE_FORM)) {
-                    // Need to render the form here.
-                    $parsed['actions']['notelist_' . $list . '_form'] =
-                        $this->generateForm($item, $storage, intval($formId));
-                }
+                // Need to render the form here.
+                $parsed['actions']['notelist_' . $list . '_form'] =
+                    $this->generateForm($item, $storage, intval($formId));
 
                 $parsed['notelists_payload_labels']['notelist_' . $list] = $this->getFormFieldLabels(intval($formId));
 

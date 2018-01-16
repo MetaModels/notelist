@@ -164,10 +164,11 @@ class FormFieldBridge extends Widget
      */
     private function abstractParse($renderSetting, $format, $template, $attributes = null)
     {
-        $keepTemplate    = $this->customTpl;
-        $keepFormat      = $this->strFormat;
-        $this->customTpl = $template;
-        $this->strFormat = $format;
+        $keepTemplate      = $this->customTpl;
+        $keepFormat        = $this->strFormat;
+        $this->customTpl   = $template;
+        $this->strFormat   = $format;
+        $this->strTemplate = $template;
 
         /** @var IFactory $factory */
         $factory     = $GLOBALS['container']['metamodels-factory.factory'];
@@ -201,11 +202,11 @@ class FormFieldBridge extends Widget
             $parsed[$listId] = $renderer->render($listId, $renderSetting[$listId], $format);
         }
 
-        $this->parsed    = $parsed;
-        $result          = parent::parse($attributes);
-        $this->customTpl = $keepTemplate;
-        $this->strFormat = $keepFormat;
-
+        $this->parsed      = $parsed;
+        $result            = parent::parse($attributes);
+        $this->customTpl   = $keepTemplate;
+        $this->strFormat   = $keepFormat;
+        $this->strTemplate = 'form_metamodels_notelist';
         return $result;
     }
 }
