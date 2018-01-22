@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017 - 2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +12,8 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017 - 2018 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -64,8 +65,11 @@ class FormListListener
             return;
         }
 
+        // All forms without widget 'metamodel_notelist'.
         $settings = $this->database
-            ->prepare('SELECT id,title FROM tl_form')
+            ->prepare(
+                'SELECT id,title FROM tl_form WHERE id NOT IN (SELECT pid FROM tl_form_field WHERE type = \'metamodel_notelist\' GROUP BY pid)'
+            )
             ->execute();
 
         $adapters = $settings->fetchAllAssoc();
