@@ -20,6 +20,6 @@
 $GLOBALS['TL_DCA']['tl_metamodel']['list']['operations']['notelist'] = [
     'label'   => &$GLOBALS['TL_LANG']['tl_metamodel']['notelist'],
     'href'    => 'table=tl_metamodel_notelist',
-    'icon'    => 'system/modules/metamodels_notelist/public/images/icons/notelist.png',
+    'icon'    => 'bundles/metamodelsnotelist/public/images/icons/notelist.png',
     'idparam' => 'pid'
 ];
