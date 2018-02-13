@@ -52,6 +52,7 @@
     }
   },
   "extra":{
+    "contao-manager-plugin": "MetaModels\\NoteListBundle\\ContaoManager\\Plugin",
     "contao": {
       "transifex": {
         "project": "metamodels",
