@@ -99,8 +99,8 @@ services:
         private: true
         tags:
             - name: kernel.event_listener
-              event:
-              method:
+              event: dc-general.view.contao2backend.render-readable-property-value
+              method: render
 
     MetaModels\NoteListBundle\EventListener\DcGeneral\FilterSettingTypeRenderer:
         arguments:
