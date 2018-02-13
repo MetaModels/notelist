@@ -11,7 +11,7 @@ services:
             - '@event_dispatcher'
             - '@database_connection'
             - '@MetaModels\NoteListBundle\Storage\StorageAdapterFactory'
-            - '@MetaModels\NoteListBundle\Filter\NoteListFilterSettingTypeFactory'
+            - '@metamodels.filter_setting_factory'
         private: true
     metamodels-notelist.factory:
         alias: MetaModels\NoteListBundle\NoteListFactory
