@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Event;
+namespace MetaModels\NoteListBundle\Event;
 
 /**
  * This class holds the constant names of all note list events.

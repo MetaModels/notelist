@@ -19,14 +19,14 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList;
+namespace MetaModels\NoteListBundle;
 
 use Contao\Database;
 use MetaModels\Filter\Setting\FilterSettingFactory;
 use MetaModels\IMetaModel;
-use MetaModels\NoteList\Storage\NoteListStorage;
-use MetaModels\NoteList\Storage\StorageAdapterFactory;
-use MetaModels\NoteList\Storage\ValueBag;
+use MetaModels\NoteListBundle\Storage\NoteListStorage;
+use MetaModels\NoteListBundle\Storage\StorageAdapterFactory;
+use MetaModels\NoteListBundle\Storage\ValueBag;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**

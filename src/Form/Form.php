@@ -20,14 +20,14 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Form;
+namespace MetaModels\NoteListBundle\Form;
 
 use Contao\FormHidden;
 use Contao\FormSubmit;
 use Contao\Input;
 use Contao\Widget;
 use MetaModels\IItem;
-use MetaModels\NoteList\Storage\NoteListStorage;
+use MetaModels\NoteListBundle\Storage\NoteListStorage;
 use MetaModels\Render\Template;
 
 /**
@@ -155,7 +155,9 @@ class Form
         $submitLabel = sprintf($GLOBALS['TL_LANG']['MSC']['metamodel_notelist_' . $action], $this->noteList->getName());
 
         /** @var FormSubmit $submit */
-        $submit = new $GLOBALS['TL_FFL']['submit'](['label' => $submitLabel, 'tableless'  => true, 'id' => $item->get('id') . '_' . $idCount]);
+        $submit  = new $GLOBALS['TL_FFL']['submit'](
+            ['label' => $submitLabel, 'tableless'  => true, 'id' => $item->get('id') . '_' . $idCount]
+        );
         $fields .= $submit->parse();
 
         $template = new Template('form');

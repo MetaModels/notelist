@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListener;
+namespace MetaModels\NoteListBundle\EventListener;
 
 use MetaModels\IItem;
 use MetaModels\NoteList\Event\ProcessActionEvent;

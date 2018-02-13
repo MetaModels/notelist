@@ -19,17 +19,17 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListener\DcGeneral;
+namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
-use Contao\Database;
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Backend\AddToUrlEvent;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Image\GenerateHtmlEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\ModelToLabelEvent;
 use ContaoCommunityAlliance\DcGeneral\Data\ModelInterface;
 use ContaoCommunityAlliance\Translator\TranslatorInterface;
+use Doctrine\DBAL\Connection;
 use MetaModels\IFactory;
-use MetaModels\NoteList\NoteListFactory;
+use MetaModels\NoteListBundle\NoteListFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -70,9 +70,9 @@ class FilterSettingTypeRenderer
     /**
      * The database connection.
      *
-     * @var Database
+     * @var Connection
      */
-    private $database;
+    private $connection;
 
     /**
      * Create a new instance.
@@ -81,20 +81,20 @@ class FilterSettingTypeRenderer
      * @param EventDispatcherInterface $dispatcher      The dispatcher.
      * @param NoteListFactory          $noteListFactory The note list factory.
      * @param IFactory                 $factory         The MetaModels factory.
-     * @param Database                 $database        The database connection.
+     * @param Connection               $connection      The database connection.
      */
     public function __construct(
         TranslatorInterface $translator,
         EventDispatcherInterface $dispatcher,
         NoteListFactory $noteListFactory,
         IFactory $factory,
-        Database $database
+        Connection $connection
     ) {
         $this->translator      = $translator;
         $this->dispatcher      = $dispatcher;
         $this->noteListFactory = $noteListFactory;
         $this->factory         = $factory;
-        $this->database        = $database;
+        $this->connection      = $connection;
     }
 
     /**
@@ -131,7 +131,7 @@ class FilterSettingTypeRenderer
         $metaModel = $this->getMetaModel(
             $model->getProperty('fid'),
             $this->factory,
-            $this->database
+            $this->connection
         );
         if (null === $metaModel) {
             return [];

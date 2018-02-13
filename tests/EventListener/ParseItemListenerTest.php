@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Test\EventListener;
+namespace MetaModels\NoteListBundle\Test\EventListener;
 
 use ContaoCommunityAlliance\Contao\Bindings\Events\Controller\RedirectEvent;
 use ContaoCommunityAlliance\UrlBuilder\UrlBuilder;
@@ -27,14 +27,14 @@ use MetaModels\Events\RenderItemListEvent;
 use MetaModels\FrontendIntegration\HybridList;
 use MetaModels\IMetaModel;
 use MetaModels\ItemList;
-use MetaModels\NoteList\Event\ParseNoteListFormEvent;
-use MetaModels\NoteList\Event\ProcessActionEvent;
-use MetaModels\NoteList\EventListener\ParseItemListener;
-use MetaModels\NoteList\Form\FormBuilder;
-use MetaModels\NoteList\NoteListFactory;
-use MetaModels\NoteList\Storage\NoteListStorage;
-use MetaModels\NoteList\Storage\ValueBag;
-use MetaModels\NoteList\Test\TestCase;
+use MetaModels\NoteListBundle\Event\ParseNoteListFormEvent;
+use MetaModels\NoteListBundle\Event\ProcessActionEvent;
+use MetaModels\NoteListBundle\EventListener\ParseItemListener;
+use MetaModels\NoteListBundle\Form\FormBuilder;
+use MetaModels\NoteListBundle\NoteListFactory;
+use MetaModels\NoteListBundle\Storage\NoteListStorage;
+use MetaModels\NoteListBundle\Storage\ValueBag;
+use MetaModels\NoteListBundle\Test\TestCase;
 use MetaModels\Render\Setting\ICollection;
 use MetaModels\Render\Template;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

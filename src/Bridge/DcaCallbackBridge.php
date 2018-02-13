@@ -19,13 +19,13 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Bridge;
+namespace MetaModels\NoteListBundle\Bridge;
 
 use Contao\DataContainer;
 use MetaModels\BackendIntegration\TemplateList;
 use MetaModels\IFactory;
 use MetaModels\MetaModelsServiceContainer;
-use MetaModels\NoteList\NoteListFactory;
+use MetaModels\NoteListBundle\NoteListFactory;
 use MultiColumnWizard;
 use Pimple;
 

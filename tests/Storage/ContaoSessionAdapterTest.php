@@ -19,10 +19,10 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Test\Storage;
+namespace MetaModels\NoteListBundle\Test\Storage;
 
 use Contao\Session;
-use MetaModels\NoteList\Storage\ContaoSessionAdapter;
+use MetaModels\NoteListBundle\Storage\ContaoSessionAdapter;
 use PHPUnit\Framework\TestCase;
 
 /**

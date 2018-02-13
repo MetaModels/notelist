@@ -12,6 +12,7 @@
  *
  * @package    MetaModels
  * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @copyright  2017 - 2018 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
@@ -19,12 +20,12 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Bridge;
+namespace MetaModels\NoteListBundle\Bridge;
 
 use MetaModels\IFactory;
 use MetaModels\MetaModelsServiceContainer;
-use MetaModels\NoteList\Event\ProcessActionEvent;
-use MetaModels\NoteList\NoteListFactory;
+use MetaModels\NoteListBundle\Event\ProcessActionEvent;
+use MetaModels\NoteListBundle\NoteListFactory;
 use Pimple;
 
 /**

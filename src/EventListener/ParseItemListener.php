@@ -20,7 +20,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListener;
+namespace MetaModels\NoteListBundle\EventListener;
 
 use Contao\Environment;
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
@@ -31,12 +31,12 @@ use MetaModels\Events\RenderItemListEvent;
 use MetaModels\FrontendIntegration\HybridList;
 use MetaModels\IItem;
 use MetaModels\IMetaModel;
-use MetaModels\NoteList\Event\NoteListEvents;
-use MetaModels\NoteList\Event\ParseNoteListFormEvent;
-use MetaModels\NoteList\Event\ProcessActionEvent;
-use MetaModels\NoteList\Form\FormBuilder;
-use MetaModels\NoteList\NoteListFactory;
-use MetaModels\NoteList\Storage\NoteListStorage;
+use MetaModels\NoteListBundle\Event\NoteListEvents;
+use MetaModels\NoteListBundle\Event\ParseNoteListFormEvent;
+use MetaModels\NoteListBundle\Event\ProcessActionEvent;
+use MetaModels\NoteListBundle\Form\FormBuilder;
+use MetaModels\NoteListBundle\NoteListFactory;
+use MetaModels\NoteListBundle\Storage\NoteListStorage;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -314,10 +314,11 @@ class ParseItemListener
      *
      * @return array
      */
-    private function getFormFieldLabels(int $formId) {
+    private function getFormFieldLabels(int $formId)
+    {
         $formLabels = [];
 
-        if($formId) {
+        if ($formId) {
             $objFields = \FormFieldModel::findPublishedByPid($formId);
 
             foreach ($objFields as $objField) {

@@ -20,10 +20,10 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListener\DcGeneral;
+namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
-use Contao\Database;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
+use Doctrine\DBAL\Connection;
 
 /**
  * This class provides the list of forms for the backend.
@@ -33,18 +33,18 @@ class FormListListener
     /**
      * The database.
      *
-     * @var Database
+     * @var Connection
      */
-    private $database;
+    private $connection;
 
     /**
      * Create a new instance.
      *
-     * @param Database $database The database connection.
+     * @param Connection $connection The database connection.
      */
-    public function __construct(Database $database)
+    public function __construct(Connection $connection)
     {
-        $this->database = $database;
+        $this->connection = $connection;
     }
 
     /**
@@ -66,14 +66,15 @@ class FormListListener
         }
 
         // All forms without widget 'metamodel_notelist'.
-        $settings = $this->database
-            ->prepare(
-                'SELECT id,title FROM tl_form WHERE id NOT IN (SELECT pid FROM tl_form_field WHERE type = \'metamodel_notelist\' GROUP BY pid)'
-            )
-            ->execute();
+        $adapters = $this->connection
+            ->createQueryBuilder()
+            ->select('id', 'title')
+            ->from('tl_form')
+            ->where('id NOT IN (SELECT pid FROM tl_form_field WHERE type = \'metamodel_notelist\' GROUP BY pid)')
+            ->execute()
+            ->fetchAll(\PDO::FETCH_ASSOC);
 
-        $adapters = $settings->fetchAllAssoc();
-        $result   = [];
+        $result = [];
         foreach ($adapters as $adapter) {
             $result[$adapter['id']] = $adapter['title'];
         }

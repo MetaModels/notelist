@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Storage;
+namespace MetaModels\NoteListBundle\Storage;
 
 /**
  * This interface describes an storage adapter for note lists.

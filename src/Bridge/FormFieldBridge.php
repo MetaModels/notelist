@@ -20,11 +20,11 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Bridge;
+namespace MetaModels\NoteListBundle\Bridge;
 
 use Contao\Widget;
 use MetaModels\IFactory;
-use MetaModels\NoteList\Form\FormRenderer;
+use MetaModels\NoteListBundle\Form\FormRenderer;
 
 /**
  * This renders a form field listing all the items in the note list.

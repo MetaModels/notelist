@@ -19,13 +19,13 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Form;
+namespace MetaModels\NoteListBundle\Form;
 
 use Contao\Controller;
 use Contao\Database;
 use Contao\FormFieldModel;
 use Contao\Widget;
-use MetaModels\NoteList\Storage\NoteListStorage;
+use MetaModels\NoteListBundle\Storage\NoteListStorage;
 
 /**
  * This class takes care of building Contao Forms, rendering them and retrieving the payload.

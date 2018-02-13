@@ -19,12 +19,12 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListener\DcGeneral;
+namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
-use Contao\Database;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
+use Doctrine\DBAL\Connection;
 use MetaModels\IFactory;
-use MetaModels\NoteList\NoteListFactory;
+use MetaModels\NoteListBundle\NoteListFactory;
 
 /**
  * This class provides the list of registered note lists for the backend.
@@ -50,7 +50,7 @@ class NoteListListListener
     /**
      * The database.
      *
-     * @var Database
+     * @var Connection
      */
     private $database;
 
@@ -59,9 +59,9 @@ class NoteListListListener
      *
      * @param IFactory        $factory         The MetaModels factory.
      * @param NoteListFactory $noteListFactory The note list factory.
-     * @param Database        $database        The database connection.
+     * @param Connection      $database        The database connection.
      */
-    public function __construct(IFactory $factory, NoteListFactory $noteListFactory, Database $database)
+    public function __construct(IFactory $factory, NoteListFactory $noteListFactory, Connection $database)
     {
         $this->listFactory = $noteListFactory;
         $this->factory     = $factory;

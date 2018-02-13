@@ -19,10 +19,10 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Filter;
+namespace MetaModels\NoteListBundle\Filter;
 
 use MetaModels\Filter\Setting\IFilterSettingTypeFactory;
-use MetaModels\NoteList\NoteListFactory;
+use MetaModels\NoteListBundle\NoteListFactory;
 
 /**
  * Attribute type factory for note list filter settings.

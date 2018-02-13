@@ -1,0 +1,118 @@
+services:
+    MetaModels\NoteListBundle\EventListener\ParseItemListener:
+        arguments:
+            - '@MetaModels\NoteListBundle\NoteListFactory'
+            - '@event_dispatcher'
+            - '@MetaModels\NoteListBundle\Form\FormBuilder'
+        private: true
+        tags:
+            - name: kernel.event_listener
+              event: metamodels.parse-item
+              method: addNoteListActions
+            - name: kernel.event_listener
+              event: metamodels.render-item-list
+              method: handleListRendering
+            - name: kernel.event_listener
+              event: metamodels.note-list.parse-note-list-form
+              method: handleFormRendering
+
+    MetaModels\NoteListBundle\EventListener\ProcessActionListener:
+        private: true
+        tags:
+            - name: kernel.event_listener
+              event: metamodels.note-list.process-action
+              method: handleEvent
+
+    MetaModels\NoteListBundle\EventListener\DcGeneral\AdapterListListener:
+        arguments:
+            - '@MetaModels\NoteListBundle\Storage\StorageAdapterFactory'
+            - '@cca.translator.contao_translator'
+        private: true
+        tags:
+            - name: kernel.event_listener
+              event: dc-general.view.contao2backend.get-property-options
+              method: getAdapterListOptions
+
+    MetaModels\NoteListBundle\EventListener\DcGeneral\NoteListListListener:
+        arguments:
+            - '@metamodels.factory'
+            - '@MetaModels\NoteListBundle\NoteListFactory'
+            - '@database_connection'
+        private: true
+        tags:
+            - name: kernel.event_listener
+              event: dc-general.view.contao2backend.get-property-options
+              method: getOptions
+
+    MetaModels\NoteListBundle\EventListener\DcGeneral\FormListListener:
+        arguments:
+            - '@database_connection'
+        private: true
+        tags:
+            - name: kernel.event_listener
+              event: dc-general.view.contao2backend.get-property-options
+              method: getOptions
+
+    MetaModels\NoteListBundle\EventListener\DcGeneral\FilterSettingsListListener:
+        arguments:
+            - '@database_connection'
+        private: true
+        tags:
+            - name: kernel.event_listener
+              event: dc-general.view.contao2backend.get-property-options
+              method: getOptions
+
+    MetaModels\NoteListBundle\EventListener\DcGeneral\BreadCrumbNoteList:
+        arguments:
+            - '@metamodels.listener.breadcrumb.store_factory'
+            - '@metamodels.listener.breadcrumb.tl_metamodel'
+        calls:
+            - { method: 'setMetaModelFactory', arguments: ['@metamodels.factory'] }
+        tags:
+            - name: kernel.event_listener
+              event: dc-general.view.contao2backend.get-breadcrumb
+              method: getBreadcrumb
+        private: true
+
+    MetaModels\NoteListBundle\EventListener\DcGeneral\BuildNoteListNameWidgetListener:
+        arguments:
+            - '@metamodels.factory'
+            - '@cca.translator.contao_translator'
+        private: true
+        tags:
+            - name: kernel.event_listener
+              event: dc-general.view.contao2backend.build-widget
+              method: buildWidget
+              # Priority must be higher than dc-general to be able to manipulate the container property.
+              priority: 200
+            - name: kernel.event_listener
+              event: dc-general.view.contao2backend.decode-property-value-for-widget
+              method: decodeNameValue
+            - name: kernel.event_listener
+              event: dc-general.view.contao2backend.encode-property-value-from-widget
+              method: encodeNameValue
+            - name: kernel.event_listener
+              event: dc-general.view.contao2backend.render-readable-property-value
+              method: render
+
+    MetaModels\NoteListBundle\EventListener\DcGeneral\RenderNoteListNameAsReadablePropertyValueListener:
+        private: true
+        tags:
+            - name: kernel.event_listener
+              event:
+              method:
+
+    MetaModels\NoteListBundle\EventListener\DcGeneral\FilterSettingTypeRenderer:
+        arguments:
+            - '@cca.translator.contao_translator'
+            - '@event_dispatcher'
+            - '@MetaModels\NoteListBundle\NoteListFactory'
+            - '@metamodels.factory'
+            - '@database_connection'
+        private: true
+        tags:
+            - name: kernel.event_listener
+              event: dc-general.view.contao2backend.model-to-label
+              method: modelToLabel
+              # Priority must be lower than the renderer by MetaModels core as that one always overrides unknown values.
+              priority: -1

@@ -18,14 +18,16 @@
  * @filesource
  */
 
-use MetaModels\NoteList\Bridge\FormFieldBridge;
-use MetaModels\NoteList\Bridge\InsertTagBridge;
-use MetaModels\NoteList\Bridge\ProcessFormDataBridge;
+declare(strict_types = 1);
 
-$GLOBALS['BE_MOD']['metamodels']['metamodels']['tables'][] = 'tl_metamodel_notelist';
+namespace MetaModels\NoteListBundle;
 
-$GLOBALS['TL_FFL']['metamodel_notelist'] = FormFieldBridge::class;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-$GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array(InsertTagBridge::class, 'replaceInsertTags');
+/**
+ * The Bundle class.
+ */
+class MetaModelsNoteListBundle extends Bundle
+{
 
-$GLOBALS['TL_HOOKS']['processFormData'][] = array(ProcessFormDataBridge::class, 'clearNotelistFormData');
+}

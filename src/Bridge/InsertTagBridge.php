@@ -19,9 +19,9 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Bridge;
+namespace MetaModels\NoteListBundle\Bridge;
 
-use MetaModels\NoteList\InsertTags;
+use MetaModels\NoteListBundle\InsertTags;
 
 /**
  * This class handles insert tag relaying.

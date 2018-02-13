@@ -19,14 +19,14 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Filter;
+namespace MetaModels\NoteListBundle\Filter;
 
 use MetaModels\Filter\IFilter;
 use MetaModels\Filter\Setting\ISimple;
 use MetaModels\FrontendIntegration\FrontendFilterOptions;
 use MetaModels\IItem;
 use MetaModels\IMetaModel;
-use MetaModels\NoteList\NoteListFactory;
+use MetaModels\NoteListBundle\NoteListFactory;
 use MetaModels\Render\Setting\ICollection as IRenderSettings;
 
 /**

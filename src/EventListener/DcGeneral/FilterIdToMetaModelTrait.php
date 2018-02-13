@@ -19,9 +19,9 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListener\DcGeneral;
+namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
-use Contao\Database;
+use Doctrine\DBAL\Connection;
 use MetaModels\IFactory;
 
 /**
@@ -34,23 +34,28 @@ trait FilterIdToMetaModelTrait
     /**
      * Retrieve the MetaModel from the passed filter id.
      *
-     * @param string   $fid      The filter id (tl_metamodel_filtersetting.fid).
-     * @param IFactory $factory  The MetaModels factory.
-     * @param Database $database The database connection.
+     * @param string     $fid        The filter id (tl_metamodel_filtersetting.fid).
+     * @param IFactory   $factory    The MetaModels factory.
+     * @param Connection $connection The database connection.
      *
      * @return \MetaModels\IMetaModel|null
      */
-    private function getMetaModel($fid, IFactory $factory, Database $database)
+    private function getMetaModel($fid, IFactory $factory, Connection $connection)
     {
         // This is pretty lame and hardcoded - we need to adjust this when we have non DB based definitions.
-        $filter = $database
-            ->prepare('SELECT * FROM tl_metamodel_filter WHERE id=?')
-            ->execute($fid);
-        if (0 === $filter->numRows) {
+        $filter = $connection
+            ->createQueryBuilder()
+            ->select('*')
+            ->from('tl_metamodel_filter')
+            ->where('id=:id')
+            ->setParameter('id', $fid)
+            ->execute()
+            ->fetch(\PDO::FETCH_ASSOC);
+        if (false === $filter) {
             return null;
         }
 
-        if (null === ($metaModelName = $factory->translateIdToMetaModelName($filter->pid))) {
+        if (null === ($metaModelName = $factory->translateIdToMetaModelName($filter['pid']))) {
             return null;
         }
         if (null === ($metaModel = $factory->getMetaModel($metaModelName))) {

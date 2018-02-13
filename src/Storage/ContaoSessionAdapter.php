@@ -20,7 +20,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Storage;
+namespace MetaModels\NoteListBundle\Storage;
 
 use Contao\Session;
 

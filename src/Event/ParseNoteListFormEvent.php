@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Event;
+namespace MetaModels\NoteListBundle\Event;
 
 use MetaModels\IMetaModel;
 use MetaModels\Render\Setting\ICollection;

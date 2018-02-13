@@ -19,14 +19,14 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Test\EventListener;
+namespace MetaModels\NoteListBundle\Test\EventListener;
 
 use MetaModels\IItem;
 use MetaModels\IMetaModel;
-use MetaModels\NoteList\Event\ProcessActionEvent;
-use MetaModels\NoteList\EventListener\ProcessActionListener;
-use MetaModels\NoteList\Storage\NoteListStorage;
-use MetaModels\NoteList\Test\TestCase;
+use MetaModels\NoteListBundle\Event\ProcessActionEvent;
+use MetaModels\NoteListBundle\EventListener\ProcessActionListener;
+use MetaModels\NoteListBundle\Storage\NoteListStorage;
+use MetaModels\NoteListBundle\Test\TestCase;
 
 /**
  * This tests the ProcessActionListener class.
