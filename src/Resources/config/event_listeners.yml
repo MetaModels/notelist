@@ -92,8 +92,8 @@ services:
               event: dc-general.view.contao2backend.encode-property-value-from-widget
               method: encodeNameValue
             - name: kernel.event_listener
-              event: dc-general.view.contao2backend.render-readable-property-value
-              method: render
+              event: dc-general.view.contao2backend.build-widget
+              method: buildWidget
 
     MetaModels\NoteListBundle\EventListener\DcGeneral\RenderNoteListNameAsReadablePropertyValueListener:
         private: true
