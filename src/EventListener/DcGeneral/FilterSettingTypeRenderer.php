@@ -156,8 +156,8 @@ class FilterSettingTypeRenderer
     private function getLabelImage(ModelInterface $model)
     {
         $image = !$model->getProperty('enabled')
-            ? 'system/modules/metamodels_notelist/public/images/icons/notelist_1.png'
-            : 'system/modules/metamodels_notelist/public/images/icons/notelist.png';
+            ? 'bundles/metamodelsnotelist/images/icons/notelist_1.png'
+            : 'bundles/metamodelsnotelist/images/icons/notelist.png';
 
         /** @var AddToUrlEvent $urlEvent */
         $urlEvent = $this->dispatcher->dispatch(
