@@ -101,8 +101,8 @@ class MetaModelsNoteListExtensionTest extends TestCase
         $this->assertTrue($container->hasAlias($alias), 'Alias not defined: ' . $alias);
         $serviceDef = $container->getDefinition($service);
         $aliasDef   = $container->getAlias($alias);
-        $this->assertTrue($serviceDef->isPrivate(), 'Service is not private: ' . $service);
-        $this->assertFalse($aliasDef->isPrivate(), 'Alias is private: ' . $alias);
+        $this->assertFalse($serviceDef->isPublic(), 'Service is not private: ' . $service);
+        $this->assertTrue($aliasDef->isPublic(), 'Alias is private: ' . $alias);
         $this->assertSame($service, (string) $aliasDef, 'Alias ' . $alias . ' does not map to ' . $service);
     }
 }
