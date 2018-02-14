@@ -19,8 +19,6 @@ services:
         deprecated: The "%service_id%" service alias is deprecated since 1.1 and will be removed in 2.0.
 
     MetaModels\NoteListBundle\Form\FormBuilder:
-        arguments:
-            - '@database_connection'
         private: true
     metamodels-notelist.form-builder:
         alias: MetaModels\NoteListBundle\Form\FormBuilder
