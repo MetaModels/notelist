@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,8 +13,8 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017 The MetaModels team.
- * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
+ * @copyright  2017-2018 The MetaModels team.
+ * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
@@ -64,6 +64,12 @@ class ContaoSessionAdapter implements AdapterInterface
      */
     public function setKey(string $key, array $value)
     {
-        $this->session->set('metamodel_notelists', ['metamodel_notelist_' . $key => $value]);
+        $this->session->set(
+            'metamodel_notelists',
+            array_merge(
+                $this->session->get('metamodel_notelists'),
+                ['metamodel_notelist_' . $key => $value]
+            )
+        );
     }
 }
