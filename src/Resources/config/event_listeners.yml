@@ -4,7 +4,7 @@ services:
             - '@MetaModels\NoteListBundle\NoteListFactory'
             - '@event_dispatcher'
             - '@MetaModels\NoteListBundle\Form\FormBuilder'
-        private: true
+        public: false
         tags:
             - name: kernel.event_listener
               event: metamodels.parse-item
@@ -17,7 +17,7 @@ services:
               method: handleFormRendering
 
     MetaModels\NoteListBundle\EventListener\ProcessActionListener:
-        private: true
+        public: false
         tags:
             - name: kernel.event_listener
               event: metamodels.note-list.process-action
@@ -27,7 +27,7 @@ services:
         arguments:
             - '@MetaModels\NoteListBundle\Storage\StorageAdapterFactory'
             - '@cca.translator.contao_translator'
-        private: true
+        public: false
         tags:
             - name: kernel.event_listener
               event: dc-general.view.contao2backend.get-property-options
@@ -38,7 +38,7 @@ services:
             - '@metamodels.factory'
             - '@MetaModels\NoteListBundle\NoteListFactory'
             - '@database_connection'
-        private: true
+        public: false
         tags:
             - name: kernel.event_listener
               event: dc-general.view.contao2backend.get-property-options
@@ -47,7 +47,7 @@ services:
     MetaModels\NoteListBundle\EventListener\DcGeneral\FormListListener:
         arguments:
             - '@database_connection'
-        private: true
+        public: false
         tags:
             - name: kernel.event_listener
               event: dc-general.view.contao2backend.get-property-options
@@ -56,7 +56,7 @@ services:
     MetaModels\NoteListBundle\EventListener\DcGeneral\FilterSettingsListListener:
         arguments:
             - '@database_connection'
-        private: true
+        public: false
         tags:
             - name: kernel.event_listener
               event: dc-general.view.contao2backend.get-property-options
@@ -68,17 +68,17 @@ services:
             - '@metamodels.listener.breadcrumb.tl_metamodel'
         calls:
             - { method: 'setMetaModelFactory', arguments: ['@metamodels.factory'] }
+        public: false
         tags:
             - name: kernel.event_listener
               event: dc-general.view.contao2backend.get-breadcrumb
               method: getBreadcrumb
-        private: true
 
     MetaModels\NoteListBundle\EventListener\DcGeneral\BuildNoteListNameWidgetListener:
         arguments:
             - '@metamodels.factory'
             - '@cca.translator.contao_translator'
-        private: true
+        public: false
         tags:
             - name: kernel.event_listener
               event: dc-general.view.contao2backend.build-widget
@@ -96,7 +96,7 @@ services:
               method: buildWidget
 
     MetaModels\NoteListBundle\EventListener\DcGeneral\RenderNoteListNameAsReadablePropertyValueListener:
-        private: true
+        public: false
         tags:
             - name: kernel.event_listener
               event: dc-general.view.contao2backend.render-readable-property-value
@@ -109,7 +109,7 @@ services:
             - '@MetaModels\NoteListBundle\NoteListFactory'
             - '@metamodels.factory'
             - '@database_connection'
-        private: true
+        public: false
         tags:
             - name: kernel.event_listener
               event: dc-general.view.contao2backend.model-to-label

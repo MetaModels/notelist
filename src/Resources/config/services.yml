@@ -1,10 +1,10 @@
 services:
     MetaModels\NoteListBundle\Storage\StorageAdapterFactory:
-        private: true
+        public: false
+    # deprecated since 1.1 and to be removed in 2.0.
     metamodels-notelist.storage-factory:
         alias: MetaModels\NoteListBundle\Storage\StorageAdapterFactory
         public: true
-        deprecated: The "%service_id%" service alias is deprecated since 1.1 and will be removed in 2.0.
 
     MetaModels\NoteListBundle\NoteListFactory:
         arguments:
@@ -12,36 +12,36 @@ services:
             - '@database_connection'
             - '@MetaModels\NoteListBundle\Storage\StorageAdapterFactory'
             - '@metamodels.filter_setting_factory'
-        private: true
+        public: false
+    # deprecated since 1.1 and to be removed in 2.0.
     metamodels-notelist.factory:
         alias: MetaModels\NoteListBundle\NoteListFactory
         public: true
-        deprecated: The "%service_id%" service alias is deprecated since 1.1 and will be removed in 2.0.
 
     MetaModels\NoteListBundle\Form\FormBuilder:
-        private: true
+        public: false
+    # deprecated since 1.1 and to be removed in 2.0.
     metamodels-notelist.form-builder:
         alias: MetaModels\NoteListBundle\Form\FormBuilder
         public: true
-        deprecated: The "%service_id%" service alias is deprecated since 1.1 and will be removed in 2.0.
 
     MetaModels\NoteListBundle\Filter\NoteListFilterSettingTypeFactory:
         arguments:
             - '@MetaModels\NoteListBundle\NoteListFactory'
-        private: true
+        public: false
         tags:
           - { name: metamodels.filter_factory }
+    # deprecated since 1.1 and to be removed in 2.0.
     metamodels-notelist.filter-setting-factory:
         alias: MetaModels\NoteListBundle\Filter\NoteListFilterSettingTypeFactory
         public: true
-        deprecated: The "%service_id%" service alias is deprecated since 1.1 and will be removed in 2.0.
 
     MetaModels\NoteListBundle\InsertTags:
         arguments:
             - '@MetaModels\NoteListBundle\NoteListFactory'
             - '@metamodels.factory'
-        private: true
+        public: false
+    # deprecated since 1.1 and to be removed in 2.0.
     metamodels-notelist.insert-tags:
         alias: MetaModels\NoteListBundle\InsertTags
         public: true
-        deprecated: The "%service_id%" service alias is deprecated since 1.1 and will be removed in 2.0.
