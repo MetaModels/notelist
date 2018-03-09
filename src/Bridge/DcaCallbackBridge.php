@@ -22,12 +22,9 @@ declare(strict_types = 1);
 namespace MetaModels\NoteListBundle\Bridge;
 
 use Contao\DataContainer;
-use MetaModels\BackendIntegration\TemplateList;
-use MetaModels\IFactory;
-use MetaModels\MetaModelsServiceContainer;
+use Doctrine\DBAL\Connection;
 use MetaModels\NoteListBundle\NoteListFactory;
 use MultiColumnWizard;
-use Pimple;
 
 /**
  * This class bridges Contao callbacks to proper listeners.
@@ -40,9 +37,6 @@ class DcaCallbackBridge
      * @param DataContainer $dataContainer The current data container.
      *
      * @return array
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public static function getNoteListOptions(DataContainer $dataContainer)
     {
@@ -62,16 +56,11 @@ class DcaCallbackBridge
      * Retrieve the options
      *
      * @return array
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public static function getMetaModelOptions()
     {
-        /** @var Pimple $container */
-        $container = $GLOBALS['container'];
-        /** @var IFactory $factory */
-        $factory = $container['metamodels-factory.factory'];
+        $container = \Contao\System::getContainer();
+        $factory   = $container->get('metamodels.factory');
 
         $metaModels = $factory->collectNames();
 
@@ -91,20 +80,12 @@ class DcaCallbackBridge
      * @param MultiColumnWizard $wizard The wizard.
      *
      * @return string[]
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public static function getNoteListOptionsMcw(MultiColumnWizard $wizard)
     {
-        /** @var Pimple $container */
-        $container = $GLOBALS['container'];
-        /** @var MetaModelsServiceContainer $metaModelContainer */
-        $metaModelContainer = $container['metamodels-service-container'];
-        /** @var IFactory $factory */
-        $factory = $metaModelContainer->getFactory();
-        /** @var NoteListFactory $noteListFactory */
-        $noteListFactory = $container['metamodels-notelist.factory'];
+        $container       = \Contao\System::getContainer();
+        $factory         = $container->get('metamodels.factory');
+        $noteListFactory = $container->get(NoteListFactory::class);
 
         $metaModelId = $wizard->activeRecord->metamodel;
         $metaModel   = $factory->getMetaModel($factory->translateIdToMetaModelName($metaModelId));
@@ -120,22 +101,25 @@ class DcaCallbackBridge
      * @param MultiColumnWizard $wizard The wizard.
      *
      * @return string[] array of all attributes as id => human name
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public function getRenderSettingsMcw(MultiColumnWizard $wizard)
     {
-        /** @var Pimple $container */
-        $container = $GLOBALS['container'];
+        $container = \Contao\System::getContainer();
+        $database  = $container->get('database_connection');
+        /** @var Connection $database */
 
-        $renderSettings = $container['database.connection']
-            ->prepare('SELECT * FROM tl_metamodel_rendersettings WHERE pid=?')
-            ->execute($wizard->activeRecord->metamodel);
+        $renderSettings = $database
+            ->createQueryBuilder()
+            ->select('*')
+            ->from('tl_metamodel_rendersettings')
+            ->where('pid=:pid')
+            ->setParameter('pid', $wizard->activeRecord->metamodel)
+            ->execute()
+            ->fetchAll(\PDO::FETCH_ASSOC);
 
         $result = array();
-        while ($renderSettings->next()) {
-            $result[$renderSettings->id] = $renderSettings->name;
+        foreach ($renderSettings as $renderSetting) {
+            $result[$renderSetting['id']] = $renderSetting['name'];
         }
 
         // Sort the render settings.
@@ -147,9 +131,6 @@ class DcaCallbackBridge
      * Fetch the template group for the form field.
      *
      * @return array
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public function getEmailTemplates()
     {

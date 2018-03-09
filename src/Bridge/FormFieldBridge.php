@@ -25,6 +25,7 @@ namespace MetaModels\NoteListBundle\Bridge;
 use Contao\Widget;
 use MetaModels\IFactory;
 use MetaModels\NoteListBundle\Form\FormRenderer;
+use MetaModels\NoteListBundle\NoteListFactory;
 
 /**
  * This renders a form field listing all the items in the note list.
@@ -158,9 +159,6 @@ class FormFieldBridge extends Widget
      * @param null     $attributes    The attributes to use.
      *
      * @return string
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     private function abstractParse($renderSetting, $format, $template, $attributes = null)
     {
@@ -171,7 +169,8 @@ class FormFieldBridge extends Widget
         $this->strTemplate = $template;
 
         /** @var IFactory $factory */
-        $factory     = $GLOBALS['container']['metamodels-factory.factory'];
+        $container       = \Contao\System::getContainer();
+        $factory         = $container->get('metamodels.factory');
         $metaModelId = $this->arrConfiguration['metamodel'];
         $metaModel   = $factory->getMetaModel($factory->translateIdToMetaModelName($metaModelId));
 
@@ -192,9 +191,9 @@ class FormFieldBridge extends Widget
 
         $renderer = new FormRenderer(
             $metaModel,
-            $GLOBALS['container']['metamodels-render-setting-factory.factory'],
-            $GLOBALS['container']['metamodels-notelist.factory'],
-            $GLOBALS['container']['event-dispatcher']
+            $container->get('metamodels.render_setting_factory'),
+            $container->get(NoteListFactory::class),
+            $container->get('event_dispatcher')
         );
 
         $parsed = [];

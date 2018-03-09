@@ -36,9 +36,6 @@ class InsertTagBridge
      * @param string $tagName The insert tag name.
      *
      * @return bool|string
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public function replaceInsertTags($tagName)
     {
@@ -51,7 +48,7 @@ class InsertTagBridge
         array_shift($arguments);
 
         /** @var InsertTags $processor */
-        $processor = $GLOBALS['container']['metamodels-notelist.insert-tags'];
+        $processor = \Contao\System::getContainer()->get('metamodels-notelist.insert-tags');
         // Process the tag.
         switch (array_shift($arguments)) {
             case 'sum':

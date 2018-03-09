@@ -12,7 +12,8 @@ services:
             - '@database_connection'
             - '@MetaModels\NoteListBundle\Storage\StorageAdapterFactory'
             - '@metamodels.filter_setting_factory'
-        public: false
+        # FIXME: make private again when bridges have been rewritten.
+        public: true
     # deprecated since 1.1 and to be removed in 2.0.
     metamodels-notelist.factory:
         alias: MetaModels\NoteListBundle\NoteListFactory
