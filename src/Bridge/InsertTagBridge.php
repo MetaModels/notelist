@@ -48,7 +48,7 @@ class InsertTagBridge
         array_shift($arguments);
 
         /** @var InsertTags $processor */
-        $processor = \Contao\System::getContainer()->get('metamodels-notelist.insert-tags');
+        $processor = \Contao\System::getContainer()->get('metamodels-notelist.bridge-locator')->get(InsertTags::class);
         // Process the tag.
         switch (array_shift($arguments)) {
             case 'sum':

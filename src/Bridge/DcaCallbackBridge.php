@@ -23,6 +23,8 @@ namespace MetaModels\NoteListBundle\Bridge;
 
 use Contao\DataContainer;
 use Doctrine\DBAL\Connection;
+use MetaModels\BackendIntegration\TemplateList;
+use MetaModels\IFactory;
 use MetaModels\NoteListBundle\NoteListFactory;
 use MultiColumnWizard;
 
@@ -40,8 +42,8 @@ class DcaCallbackBridge
      */
     public static function getNoteListOptions(DataContainer $dataContainer)
     {
-        $container       = \Contao\System::getContainer();
-        $factory         = $container->get('metamodels.factory');
+        $container       = self::getLocator();
+        $factory         = $container->get(IFactory::class);
         $noteListFactory = $container->get(NoteListFactory::class);
 
         $metaModelId = $dataContainer->activeRecord->metamodel;
@@ -59,8 +61,8 @@ class DcaCallbackBridge
      */
     public static function getMetaModelOptions()
     {
-        $container = \Contao\System::getContainer();
-        $factory   = $container->get('metamodels.factory');
+        $container = self::getLocator();
+        $factory   = $container->get(IFactory::class);
 
         $metaModels = $factory->collectNames();
 
@@ -83,8 +85,8 @@ class DcaCallbackBridge
      */
     public static function getNoteListOptionsMcw(MultiColumnWizard $wizard)
     {
-        $container       = \Contao\System::getContainer();
-        $factory         = $container->get('metamodels.factory');
+        $container       = self::getLocator();
+        $factory         = $container->get(IFactory::class);
         $noteListFactory = $container->get(NoteListFactory::class);
 
         $metaModelId = $wizard->activeRecord->metamodel;
@@ -104,9 +106,8 @@ class DcaCallbackBridge
      */
     public function getRenderSettingsMcw(MultiColumnWizard $wizard)
     {
-        $container = \Contao\System::getContainer();
-        $database  = $container->get('database_connection');
         /** @var Connection $database */
+        $database = $this->getLocator()->get(Connection::class);
 
         $renderSettings = $database
             ->createQueryBuilder()
@@ -134,8 +135,18 @@ class DcaCallbackBridge
      */
     public function getEmailTemplates()
     {
-        $list = \Contao\System::getContainer()->get('metamodels.template_list');
+        $list = $this->getLocator()->get(TemplateList::class);
 
         return $list->getTemplatesForBase('email_metamodels_notelist');
+    }
+
+    /**
+     * Obtain the service locator.
+     *
+     * @return \Symfony\Component\DependencyInjection\ServiceLocator
+     */
+    private static function getLocator()
+    {
+        return \Contao\System::getContainer()->get('metamodels-notelist.bridge-locator');
     }
 }

@@ -12,8 +12,7 @@ services:
             - '@database_connection'
             - '@MetaModels\NoteListBundle\Storage\StorageAdapterFactory'
             - '@metamodels.filter_setting_factory'
-        # FIXME: make private again when bridges have been rewritten.
-        public: true
+        public: false
     # deprecated since 1.1 and to be removed in 2.0.
     metamodels-notelist.factory:
         alias: MetaModels\NoteListBundle\NoteListFactory
@@ -46,3 +45,18 @@ services:
     metamodels-notelist.insert-tags:
         alias: MetaModels\NoteListBundle\InsertTags
         public: true
+
+    metamodels-notelist.bridge-locator:
+        class: Symfony\Component\DependencyInjection\ServiceLocator
+        tags: ['container.service_locator']
+        public: true
+        arguments:
+            -
+                MetaModels\NoteListBundle\InsertTags: '@MetaModels\NoteListBundle\InsertTags'
+                MetaModels\BackendIntegration\TemplateList: '@metamodels.template_list'
+                Doctrine\DBAL\Connection: '@database_connection'
+                MetaModels\IFactory: '@metamodels.factory'
+                MetaModels\Render\Setting\IRenderSettingFactory: '@metamodels.render_setting_factory'
+                MetaModels\NoteListBundle\NoteListFactory: '@MetaModels\NoteListBundle\NoteListFactory'
+                Symfony\Component\EventDispatcher\EventDispatcherInterface: '@event_dispatcher'
+
