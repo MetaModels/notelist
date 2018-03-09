@@ -23,7 +23,7 @@ declare(strict_types = 1);
 namespace MetaModels\NoteListBundle\EventListener;
 
 use MetaModels\IItem;
-use MetaModels\NoteList\NoteListBundle\ProcessActionEvent;
+use MetaModels\NoteListBundle\Event\ProcessActionEvent;
 
 /**
  * This handles the normal events like add, remove and clear.
