@@ -40,7 +40,7 @@ class ContaoSessionAdapterTest extends TestCase
         $session = $this
             ->getMockBuilder(Session::class)
             ->disableOriginalConstructor()
-            ->setMethods(['__destruct'])
+            ->setMethods(['get'])
             ->getMock();
 
         $adapter = new ContaoSessionAdapter($session);
@@ -58,7 +58,7 @@ class ContaoSessionAdapterTest extends TestCase
         $session = $this
             ->getMockBuilder(Session::class)
             ->disableOriginalConstructor()
-            ->setMethods(['__destruct', 'get'])
+            ->setMethods(['get'])
             ->getMock();
 
         $session
@@ -82,7 +82,7 @@ class ContaoSessionAdapterTest extends TestCase
         $session = $this
             ->getMockBuilder(Session::class)
             ->disableOriginalConstructor()
-            ->setMethods(['__destruct', 'get'])
+            ->setMethods(['get'])
             ->getMock();
 
         $session
@@ -106,7 +106,7 @@ class ContaoSessionAdapterTest extends TestCase
         $session = $this
             ->getMockBuilder(Session::class)
             ->disableOriginalConstructor()
-            ->setMethods(['__destruct', 'set'])
+            ->setMethods(['set', 'get'])
             ->getMock();
 
         $session
@@ -114,6 +114,11 @@ class ContaoSessionAdapterTest extends TestCase
             ->method('set')
             ->with('metamodel_notelists')
             ->willReturn(['metamodel_notelist_foo' => ['bar']]);
+        $session
+            ->expects($this->once())
+            ->method('get')
+            ->with('metamodel_notelists')
+            ->willReturn([]);
 
         $adapter = new ContaoSessionAdapter($session);
 
