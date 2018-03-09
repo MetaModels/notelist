@@ -46,14 +46,9 @@ class DcaCallbackBridge
      */
     public static function getNoteListOptions(DataContainer $dataContainer)
     {
-        /** @var Pimple $container */
-        $container = $GLOBALS['container'];
-        /** @var MetaModelsServiceContainer $metaModelContainer */
-        $metaModelContainer = $container['metamodels-service-container'];
-        /** @var IFactory $factory */
-        $factory = $metaModelContainer->getFactory();
-        /** @var NoteListFactory $noteListFactory */
-        $noteListFactory = $container['metamodels-notelist.factory'];
+        $container       = \Contao\System::getContainer();
+        $factory         = $container->get('metamodels.factory');
+        $noteListFactory = $container->get(NoteListFactory::class);
 
         $metaModelId = $dataContainer->activeRecord->metamodel;
         $metaModel   = $factory->getMetaModel($factory->translateIdToMetaModelName($metaModelId));
@@ -158,8 +153,7 @@ class DcaCallbackBridge
      */
     public function getEmailTemplates()
     {
-        $list = new TemplateList();
-        $list->setServiceContainer($GLOBALS['container']['metamodels-service-container']);
+        $list = \Contao\System::getContainer()->get('metamodels.template_list');
 
         return $list->getTemplatesForBase('email_metamodels_notelist');
     }
