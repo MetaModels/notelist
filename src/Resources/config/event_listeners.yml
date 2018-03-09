@@ -4,6 +4,8 @@ services:
             - '@MetaModels\NoteListBundle\NoteListFactory'
             - '@event_dispatcher'
             - '@MetaModels\NoteListBundle\Form\FormBuilder'
+            - '@metamodels-notelist.url-builder-factory'
+            - '@request_stack'
         public: false
         tags:
             - name: kernel.event_listener
@@ -15,6 +17,9 @@ services:
             - name: kernel.event_listener
               event: metamodels.note-list.parse-note-list-form
               method: handleFormRendering
+    metamodels-notelist.url-builder-factory:
+        class: ContaoCommunityAlliance\UrlBuilder\UrlBuilderFactory
+        public: false
 
     MetaModels\NoteListBundle\EventListener\ProcessActionListener:
         public: false

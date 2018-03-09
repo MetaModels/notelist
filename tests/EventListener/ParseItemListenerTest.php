@@ -21,8 +21,10 @@ declare(strict_types = 1);
 
 namespace MetaModels\NoteListBundle\Test\EventListener;
 
+use Contao\CoreBundle\Exception\RedirectResponseException;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Controller\RedirectEvent;
 use ContaoCommunityAlliance\UrlBuilder\UrlBuilder;
+use ContaoCommunityAlliance\UrlBuilder\UrlBuilderFactoryInterface;
 use MetaModels\Events\RenderItemListEvent;
 use MetaModels\FrontendIntegration\HybridList;
 use MetaModels\IMetaModel;
@@ -38,6 +40,8 @@ use MetaModels\NoteListBundle\Test\TestCase;
 use MetaModels\Render\Setting\ICollection;
 use MetaModels\Render\Template;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * This tests the ParseItemListener class.
@@ -115,9 +119,16 @@ class ParseItemListenerTest extends TestCase
         $formBuilder = $this->getMockBuilder(FormBuilder::class)->disableOriginalConstructor()->getMock();
 
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
+
+        $urlBuilderFactory = $this->getMockForAbstractClass(UrlBuilderFactoryInterface::class);
+        $requestStack      = $this
+            ->getMockBuilder(RequestStack::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $listener   = $this
             ->getMockBuilder(ParseItemListener::class)
-            ->setConstructorArgs([$factory, $dispatcher, $formBuilder])
+            ->setConstructorArgs([$factory, $dispatcher, $formBuilder, $urlBuilderFactory, $requestStack])
             ->setMethods(['getCurrentUrl'])
             ->getMock();
 
@@ -221,26 +232,27 @@ class ParseItemListenerTest extends TestCase
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
 
         $dispatcher
-            ->expects($this->exactly(2))->method('dispatch')
-            ->willReturnOnConsecutiveCalls(
-                $this->returnCallback(function ($name, $event) {
+            ->expects($this->once())->method('dispatch')
+            ->willReturnCallback(
+                function ($name, $event) {
                     $this->assertInstanceOf(ProcessActionEvent::class, $event);
                     /** @var ProcessActionEvent $event */
                     $this->assertSame('action-name', $event->getAction());
                     $event->setSuccess();
-                }),
-                $this->returnCallback(function ($name, $event) {
-                    $this->assertInstanceOf(RedirectEvent::class, $event);
-                    /** @var RedirectEvent $event */
-                    $this->assertSame('http://example.com/', $event->getNewLocation());
-                })
+                }
             );
 
         $formBuilder = $this->getMockBuilder(FormBuilder::class)->disableOriginalConstructor()->getMock();
 
-        $listener = $this
+        $urlBuilderFactory = $this->getMockForAbstractClass(UrlBuilderFactoryInterface::class);
+        $requestStack      = $this
+            ->getMockBuilder(RequestStack::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $listener   = $this
             ->getMockBuilder(ParseItemListener::class)
-            ->setConstructorArgs([$factory, $dispatcher, $formBuilder])
+            ->setConstructorArgs([$factory, $dispatcher, $formBuilder, $urlBuilderFactory, $requestStack])
             ->setMethods(['getCurrentUrl'])
             ->getMock();
 
@@ -258,8 +270,15 @@ class ParseItemListenerTest extends TestCase
             ->method('getCurrentUrl')
             ->willReturn(new UrlBuilder('http://example.com/?notelist_23_action=action-name&notelist_23_item=15'));
 
-        /** @var ParseItemListener $listener */
-        $listener->handleListRendering(new RenderItemListEvent($itemList, $template, $caller));
+        try {
+            /** @var ParseItemListener $listener */
+            $listener->handleListRendering(new RenderItemListEvent($itemList, $template, $caller));
+        } catch (RedirectResponseException $exception) {
+            $this->assertInstanceOf(RedirectResponse::class, $exception->getResponse());
+            $this->assertSame('http://example.com/', $exception->getResponse()->getTargetUrl());
+            return;
+        }
+        $this->fail('Exception not thrown.');
     }
 
     /**
@@ -291,9 +310,16 @@ class ParseItemListenerTest extends TestCase
         $formBuilder = $this->getMockBuilder(FormBuilder::class)->disableOriginalConstructor()->getMock();
 
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
+
+        $urlBuilderFactory = $this->getMockForAbstractClass(UrlBuilderFactoryInterface::class);
+        $requestStack      = $this
+            ->getMockBuilder(RequestStack::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $listener   = $this
             ->getMockBuilder(ParseItemListener::class)
-            ->setConstructorArgs([$factory, $dispatcher, $formBuilder])
+            ->setConstructorArgs([$factory, $dispatcher, $formBuilder, $urlBuilderFactory, $requestStack])
             ->setMethods(['getCurrentUrl'])
             ->getMock();
 
