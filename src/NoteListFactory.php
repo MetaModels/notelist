@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace MetaModels\NoteListBundle;
 
+use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use MetaModels\Filter\Setting\FilterSettingFactory;
 use MetaModels\IMetaModel;
@@ -164,7 +165,7 @@ class NoteListFactory
             $metaModel,
             $adapter,
             $identifier,
-            deserialize($noteList['name'], true),
+            StringUtil::deserialize($noteList['name'], true),
             !empty($noteList['filter']) ? $this->filterFactory->createCollection($noteList['filter']) : null,
             new ValueBag($noteList)
         );
