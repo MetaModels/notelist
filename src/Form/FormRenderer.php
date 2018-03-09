@@ -104,8 +104,12 @@ class FormRenderer
         $event = new ParseNoteListFormEvent($this->metaModel, $renderSetting, $noteListId);
         $this->dispatcher->dispatch(NoteListEvents::PARSE_NOTE_LIST_FORM, $event);
 
-        $template->view  = $renderSetting;
-        $template->items = $items;
+        $template->view       = $renderSetting;
+        $template->items      = $items;
+        $template->noItemsMsg = \Contao\System::getContainer()
+            ->get('translator')
+            ->trans('MSC.' . $this->metaModel->getTableName() . '.noItemsMsg', [], 'contao_default');
+
         if ($items->getCount()) {
             $template->data = $items->parseAll($format, $renderSetting);
         } else {
