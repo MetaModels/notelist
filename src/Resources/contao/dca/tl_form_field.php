@@ -68,7 +68,10 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
                 'label'     => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_frontend'],
                 'exclude'   => true,
                 'inputType' => 'select',
-                'options_callback' => [MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class, 'getRenderSettingsMcw'],
+                'options_callback' => [
+                    MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class,
+                    'getRenderSettingsMcw'
+                ],
                 'eval'      => [
                     'includeBlankOption' => true,
                     'style'              => 'width:200px',
@@ -79,7 +82,10 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
                 'label'     => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_email'],
                 'exclude'   => true,
                 'inputType' => 'select',
-                'options_callback' => [MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class, 'getRenderSettingsMcw'],
+                'options_callback' => [
+                    MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class,
+                    'getRenderSettingsMcw'
+                ],
                 'eval'      => [
                     'includeBlankOption' => true,
                     'style'  => 'width:200px',
