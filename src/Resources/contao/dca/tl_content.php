@@ -40,7 +40,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['metamodel_add_notelist'] = [
 $GLOBALS['TL_DCA']['tl_content']['fields']['metamodel_notelist'] = [
     'label'            => &$GLOBALS['TL_LANG']['tl_content']['fields']['metamodel_notelist'],
     'inputType'        => 'checkboxWizard',
-    'options_callback' => [MetaModels\NoteList\Bridge\DcaCallbackBridge::class, 'getNoteListOptions'],
+    'options_callback' => [MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class, 'getNoteListOptions'],
     'eval' => [
         'multiple' => true
     ],
