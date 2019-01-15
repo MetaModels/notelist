@@ -26,7 +26,7 @@ use Doctrine\DBAL\Connection;
 use MetaModels\BackendIntegration\TemplateList;
 use MetaModels\IFactory;
 use MetaModels\NoteListBundle\NoteListFactory;
-use MultiColumnWizard;
+use MenAtWork\MultiColumnWizardBundle\Contao\Widgets\MultiColumnWizard;
 
 /**
  * This class bridges Contao callbacks to proper listeners.
