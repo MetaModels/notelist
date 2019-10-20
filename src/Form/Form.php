@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 - 2018 The MetaModels team.
+ * (c) 2017-2019 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,8 +13,8 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017 - 2018 The MetaModels team.
- * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
+ * @copyright  2017-2019 The MetaModels team.
+ * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
@@ -23,6 +23,7 @@ declare(strict_types = 1);
 namespace MetaModels\NoteListBundle\Form;
 
 use Contao\FormHidden;
+use Contao\FormModel;
 use Contao\FormSubmit;
 use Contao\Input;
 use Contao\Widget;
@@ -66,12 +67,14 @@ class Form
     /**
      * Create a new instance.
      *
+     * @param Form[]          $form     The sub form.
      * @param Widget[]        $widgets  The widgets.
      * @param string          $action   The POST action.
      * @param NoteListStorage $noteList The note list.
      */
-    public function __construct(array $widgets, string $action, NoteListStorage $noteList)
+    public function __construct (FormModel $form, array $widgets, string $action, NoteListStorage $noteList)
     {
+        $this->form     = $form;
         $this->widgets  = $widgets;
         $this->formId   = 'mm_note_list_' . $noteList->getStorageKey();
         $this->action   = $action;
@@ -155,23 +158,32 @@ class Form
         $submitLabel = sprintf($GLOBALS['TL_LANG']['MSC']['metamodel_notelist_' . $action], $this->noteList->getName());
 
         /** @var FormSubmit $submit */
-        $submit  = new $GLOBALS['TL_FFL']['submit'](
-            ['label' => $submitLabel, 'tableless'  => true, 'id' => $item->get('id') . '_' . $idCount]
+        $submit = new $GLOBALS['TL_FFL']['submit'](
+            ['label' => $submitLabel, 'id' => $item->get('id') . '_' . $idCount]
         );
         $fields .= $submit->parse();
 
-        $template = new Template('form');
-        $template->setData([
-            'formId'     => 'nl_' . $this->noteList->getStorageKey() . '_f' . $item->get('id'),
-            'hidden'     => '',
-            'formSubmit' => $this->formId,
-            'tableless'  => true,
-            'method'     => 'post',
-            'fields'     => $fields,
-            'action'     => $this->action,
-            'enctype'    => 'multipart/form-data',
-            'class'      => $action
-        ]);
+        $cssClass = trim(unserialize($this->form->attributes)[1]);
+
+        $template = new Template('form_wrapper');
+        $template->setData(
+            [
+                'formId'      => 'nl_' . $this->noteList->getStorageKey() . '_f' . $item->get('id'),
+                'hidden'      => '',
+                'formSubmit'  => $this->formId,
+                'cssID'       => '',
+                'style'       => '',
+                'headline'    => '',
+                'attributes'  => '',
+                'novalidate'  => $this->form->novalidate,
+                'maxFileSize' => '',
+                'method'      => 'post',
+                'fields'      => $fields,
+                'action'      => $this->action,
+                'enctype'     => 'multipart/form-data',
+                'class'       => $action . (!empty($cssClass) ? ' ' . $cssClass : '')
+            ]
+        );
 
         return $template->parse('html5');
     }
