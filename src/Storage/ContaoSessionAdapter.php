@@ -67,7 +67,7 @@ class ContaoSessionAdapter implements AdapterInterface
         $this->session->set(
             'metamodel_notelists',
             array_merge(
-                (array) $this->session->get('metamodel_notelists'),
+                $this->session->get('metamodel_notelists'),
                 ['metamodel_notelist_' . $key => $value]
             )
         );
