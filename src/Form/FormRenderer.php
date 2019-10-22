@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2019 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,8 +12,9 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
- * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2019 The MetaModels team.
+ * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
@@ -104,11 +105,19 @@ class FormRenderer
         $event = new ParseNoteListFormEvent($this->metaModel, $renderSetting, $noteListId);
         $this->dispatcher->dispatch(NoteListEvents::PARSE_NOTE_LIST_FORM, $event);
 
-        $template->view       = $renderSetting;
-        $template->items      = $items;
-        $template->noItemsMsg = \Contao\System::getContainer()
-            ->get('translator')
-            ->trans('MSC.' . $this->metaModel->getTableName() . '.noItemsMsg', [], 'contao_default');
+        $template->view  = $renderSetting;
+        $template->items = $items;
+        $translator      = \Contao\System::getContainer()->get('translator');
+        foreach ([
+                     'MSC.' . $this->metaModel->getTableName() . '.' . $renderSettingId . '.noItemsMsg',
+                     'MSC.' . $this->metaModel->getTableName() . '.noItemsMsg',
+                     'MSC.noItemsMsg',
+                 ] as $key) {
+            if ($key !== $translated = $translator->trans($key, [], 'contao_default')) {
+                break;
+            }
+        }
+        $template->noItemsMsg = $translated;
 
         if ($items->getCount()) {
             $template->data = $items->parseAll($format, $renderSetting);
