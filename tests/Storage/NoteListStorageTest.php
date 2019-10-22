@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Test\Storage;
+namespace MetaModels\NoteListBundle\Test\Storage;
 
 use MetaModels\Filter\IFilter;
 use MetaModels\IItem;

@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Test\Storage;
+namespace MetaModels\NoteListBundle\Test\Storage;
 
 use MetaModels\NoteList\Storage\PhpSessionVariableAdapter;
 use PHPUnit\Framework\TestCase;

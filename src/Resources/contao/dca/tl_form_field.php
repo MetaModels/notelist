@@ -33,7 +33,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel'] = [
     'exclude'          => true,
     'inputType'        => 'select',
     'options_callback' => [
-        MetaModels\NoteList\Bridge\DcaCallbackBridge::class,
+        MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class,
         'getMetaModelOptions'
     ],
     'sql'              => "char(1) NOT NULL default ''",
@@ -55,7 +55,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
                 'exclude'   => true,
                 'inputType' => 'select',
                 'options_callback' => [
-                    MetaModels\NoteList\Bridge\DcaCallbackBridge::class,
+                    MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class,
                     'getNoteListOptionsMcw'
                 ],
                 'eval'      => [
@@ -68,7 +68,10 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
                 'label'     => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_frontend'],
                 'exclude'   => true,
                 'inputType' => 'select',
-                'options_callback' => [MetaModels\NoteList\Bridge\DcaCallbackBridge::class, 'getRenderSettingsMcw'],
+                'options_callback' => [
+                    MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class,
+                    'getRenderSettingsMcw'
+                ],
                 'eval'      => [
                     'includeBlankOption' => true,
                     'style'              => 'width:200px',
@@ -79,7 +82,10 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
                 'label'     => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_email'],
                 'exclude'   => true,
                 'inputType' => 'select',
-                'options_callback' => [MetaModels\NoteList\Bridge\DcaCallbackBridge::class, 'getRenderSettingsMcw'],
+                'options_callback' => [
+                    MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class,
+                    'getRenderSettingsMcw'
+                ],
                 'eval'      => [
                     'includeBlankOption' => true,
                     'style'  => 'width:200px',
@@ -98,7 +104,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
         ],
     ],
     'options_callback' => [
-        MetaModels\NoteList\Bridge\DcaCallbackBridge::class,
+        MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class,
         'getNoteListOptions'
     ],
     'sql'              => 'text NULL',
@@ -109,7 +115,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_customTplEmail'] = [
     'exclude'          => true,
     'inputType'        => 'select',
     'options_callback' => [
-        MetaModels\NoteList\Bridge\DcaCallbackBridge::class,
+        MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class,
         'getEmailTemplates'
     ],
     'sql'              => 'varchar(255) NULL',

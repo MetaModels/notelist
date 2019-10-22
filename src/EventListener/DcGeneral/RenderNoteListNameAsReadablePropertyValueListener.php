@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListener\DcGeneral;
+namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
 use ContaoCommunityAlliance\DcGeneral\View\Event\RenderReadablePropertyValueEvent;
 

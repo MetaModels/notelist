@@ -19,15 +19,14 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Bridge;
+namespace MetaModels\NoteListBundle\Bridge;
 
 use Contao\DataContainer;
+use Doctrine\DBAL\Connection;
 use MetaModels\BackendIntegration\TemplateList;
 use MetaModels\IFactory;
-use MetaModels\MetaModelsServiceContainer;
-use MetaModels\NoteList\NoteListFactory;
+use MetaModels\NoteListBundle\NoteListFactory;
 use MultiColumnWizard;
-use Pimple;
 
 /**
  * This class bridges Contao callbacks to proper listeners.
@@ -40,20 +39,12 @@ class DcaCallbackBridge
      * @param DataContainer $dataContainer The current data container.
      *
      * @return array
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public static function getNoteListOptions(DataContainer $dataContainer)
     {
-        /** @var Pimple $container */
-        $container = $GLOBALS['container'];
-        /** @var MetaModelsServiceContainer $metaModelContainer */
-        $metaModelContainer = $container['metamodels-service-container'];
-        /** @var IFactory $factory */
-        $factory = $metaModelContainer->getFactory();
-        /** @var NoteListFactory $noteListFactory */
-        $noteListFactory = $container['metamodels-notelist.factory'];
+        $container       = self::getLocator();
+        $factory         = $container->get(IFactory::class);
+        $noteListFactory = $container->get(NoteListFactory::class);
 
         $metaModelId = $dataContainer->activeRecord->metamodel;
         $metaModel   = $factory->getMetaModel($factory->translateIdToMetaModelName($metaModelId));
@@ -67,16 +58,11 @@ class DcaCallbackBridge
      * Retrieve the options
      *
      * @return array
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public static function getMetaModelOptions()
     {
-        /** @var Pimple $container */
-        $container = $GLOBALS['container'];
-        /** @var IFactory $factory */
-        $factory = $container['metamodels-factory.factory'];
+        $container = self::getLocator();
+        $factory   = $container->get(IFactory::class);
 
         $metaModels = $factory->collectNames();
 
@@ -96,20 +82,12 @@ class DcaCallbackBridge
      * @param MultiColumnWizard $wizard The wizard.
      *
      * @return string[]
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public static function getNoteListOptionsMcw(MultiColumnWizard $wizard)
     {
-        /** @var Pimple $container */
-        $container = $GLOBALS['container'];
-        /** @var MetaModelsServiceContainer $metaModelContainer */
-        $metaModelContainer = $container['metamodels-service-container'];
-        /** @var IFactory $factory */
-        $factory = $metaModelContainer->getFactory();
-        /** @var NoteListFactory $noteListFactory */
-        $noteListFactory = $container['metamodels-notelist.factory'];
+        $container       = self::getLocator();
+        $factory         = $container->get(IFactory::class);
+        $noteListFactory = $container->get(NoteListFactory::class);
 
         $metaModelId = $wizard->activeRecord->metamodel;
         $metaModel   = $factory->getMetaModel($factory->translateIdToMetaModelName($metaModelId));
@@ -125,22 +103,24 @@ class DcaCallbackBridge
      * @param MultiColumnWizard $wizard The wizard.
      *
      * @return string[] array of all attributes as id => human name
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public function getRenderSettingsMcw(MultiColumnWizard $wizard)
     {
-        /** @var Pimple $container */
-        $container = $GLOBALS['container'];
+        /** @var Connection $database */
+        $database = $this->getLocator()->get(Connection::class);
 
-        $renderSettings = $container['database.connection']
-            ->prepare('SELECT * FROM tl_metamodel_rendersettings WHERE pid=?')
-            ->execute($wizard->activeRecord->metamodel);
+        $renderSettings = $database
+            ->createQueryBuilder()
+            ->select('*')
+            ->from('tl_metamodel_rendersettings')
+            ->where('pid=:pid')
+            ->setParameter('pid', $wizard->activeRecord->metamodel)
+            ->execute()
+            ->fetchAll(\PDO::FETCH_ASSOC);
 
         $result = array();
-        while ($renderSettings->next()) {
-            $result[$renderSettings->id] = $renderSettings->name;
+        foreach ($renderSettings as $renderSetting) {
+            $result[$renderSetting['id']] = $renderSetting['name'];
         }
 
         // Sort the render settings.
@@ -152,15 +132,21 @@ class DcaCallbackBridge
      * Fetch the template group for the form field.
      *
      * @return array
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public function getEmailTemplates()
     {
-        $list = new TemplateList();
-        $list->setServiceContainer($GLOBALS['container']['metamodels-service-container']);
+        $list = $this->getLocator()->get(TemplateList::class);
 
         return $list->getTemplatesForBase('email_metamodels_notelist');
+    }
+
+    /**
+     * Obtain the service locator.
+     *
+     * @return \Symfony\Component\DependencyInjection\ServiceLocator
+     */
+    private static function getLocator()
+    {
+        return \Contao\System::getContainer()->get('metamodels-notelist.bridge-locator');
     }
 }

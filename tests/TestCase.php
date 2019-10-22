@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Test;
+namespace MetaModels\NoteListBundle\Test;
 
 use PHPUnit\Framework\TestCase as BaseTestCase;
 

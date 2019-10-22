@@ -12,6 +12,7 @@
  *
  * @package    MetaModels
  * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @copyright  2017 - 2018 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
@@ -19,13 +20,13 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Bridge;
+namespace MetaModels\NoteListBundle\Bridge;
 
+use Doctrine\DBAL\Connection;
 use MetaModels\IFactory;
 use MetaModels\MetaModelsServiceContainer;
-use MetaModels\NoteList\Event\ProcessActionEvent;
-use MetaModels\NoteList\NoteListFactory;
-use Pimple;
+use MetaModels\NoteListBundle\Event\ProcessActionEvent;
+use MetaModels\NoteListBundle\NoteListFactory;
 
 /**
  * This class handles data after send form.
@@ -43,22 +44,25 @@ class ProcessFormDataBridge
      *
      * @return void
      *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function clearNotelistFormData($submitted, $data, $files, $labels, $formData)
     {
-        /** @var Pimple $container */
-        $container = $GLOBALS['container'];
+        $container  = \Contao\System::getContainer()->get('metamodels-notelist.bridge-locator');
+        $connection = $container->get(Connection::class);
+        /** @var Connection $connection */
+        $notelistFormWidgets = $connection
+            ->createQueryBuilder()
+            ->select('*')
+            ->from('tl_form_field')
+            ->where('pid=:pid')->setParameter('pid', $formData->id)
+            ->andWhere('type=:type')->setParameter('type', 'metamodel_notelist')
+            ->execute()
+            ->fetchAll(\PDO::FETCH_ASSOC);
 
-        $notelistFormWidgets = $container['database.connection']
-            ->prepare('SELECT * FROM tl_form_field WHERE pid=? AND type = \'metamodel_notelist\'')
-            ->execute($formData->id);
-
-        while ($notelistFormWidgets->next()) {
-            $metaModelId        = $notelistFormWidgets->metamodel;
-            $metaModelNotelists = deserialize($notelistFormWidgets->metamodel_notelist, true);
+        foreach ($notelistFormWidgets as $notelistFormWidget) {
+            $metaModelId        = $notelistFormWidget['metamodel'];
+            $metaModelNotelists = deserialize($notelistFormWidget['metamodel_notelist'], true);
 
             /** @var MetaModelsServiceContainer $metaModelContainer */
             $metaModelContainer = $container['metamodels-service-container'];

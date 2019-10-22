@@ -12,15 +12,22 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @copyright  2017 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-use Contao\TemplateLoader;
+declare(strict_types = 1);
 
-// Register the templates
-TemplateLoader::addFiles([
-    'email_metamodels_notelist' => 'system/modules/metamodels_notelist/templates',
-    'form_metamodels_notelist'  => 'system/modules/metamodels_notelist/templates',
-]);
+namespace MetaModels\NoteListBundle;
+
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+/**
+ * The Bundle class.
+ */
+class MetaModelsNoteListBundle extends Bundle
+{
+
+}

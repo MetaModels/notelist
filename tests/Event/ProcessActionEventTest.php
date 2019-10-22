@@ -19,12 +19,12 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Test\Event;
+namespace MetaModels\NoteListBundle\Test\Event;
 
 use MetaModels\IMetaModel;
-use MetaModels\NoteList\Event\ProcessActionEvent;
-use MetaModels\NoteList\Storage\NoteListStorage;
-use MetaModels\NoteList\Test\TestCase;
+use MetaModels\NoteListBundle\Event\ProcessActionEvent;
+use MetaModels\NoteListBundle\Storage\NoteListStorage;
+use MetaModels\NoteListBundle\Test\TestCase;
 
 /**
  * This tests the process action event.

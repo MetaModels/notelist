@@ -19,38 +19,62 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListener\DcGeneral;
+namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
+use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetBreadcrumbEvent;
+use ContaoCommunityAlliance\DcGeneral\Data\ModelId;
 use ContaoCommunityAlliance\DcGeneral\EnvironmentInterface;
-use MetaModels\DcGeneral\Events\BreadCrumb\BreadCrumbMetaModels;
+use ContaoCommunityAlliance\UrlBuilder\UrlBuilder;
+use MetaModels\CoreBundle\EventListener\DcGeneral\Breadcrumb\AbstractBreadcrumbListener;
+use MetaModels\CoreBundle\EventListener\DcGeneral\Breadcrumb\BreadcrumbStore;
+use MetaModels\CoreBundle\EventListener\DcGeneral\Breadcrumb\GetMetaModelTrait;
 
 /**
  * Generate a breadcrumb for table tl_metamodel_notelist.
  */
-class BreadCrumbNoteList extends BreadCrumbMetaModels
+class BreadCrumbNoteList extends AbstractBreadcrumbListener
 {
+    use GetMetaModelTrait;
+
     /**
      * {@inheritDoc}
      */
-    public function getBreadcrumbElements(EnvironmentInterface $environment, $elements)
+    protected function wantToHandle(GetBreadcrumbEvent $event)
     {
-        if (!isset($this->metamodelId)) {
-            $this->metamodelId = $this->extractIdFrom($environment, 'pid');
+        return 'tl_metamodel_notelist' === $event->getEnvironment()->getDataDefinition()->getName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getBreadcrumbElements(EnvironmentInterface $environment, BreadcrumbStore $elements)
+    {
+        if (!$elements->hasId('tl_metamodel')) {
+            $elements->setId(
+                'tl_metamodel',
+                $this->extractIdFrom($environment, 'pid')
+            );
         }
 
-        $elements   = parent::getBreadcrumbElements($environment, $elements);
-        $elements[] = array(
-            'url' => $this->generateUrl(
-                'tl_metamodel_notelist',
-                $this->seralizeId('tl_metamodel', $this->metamodelId)
-            ),
-            'text' => sprintf(
-                $this->getBreadcrumbLabel($environment, 'tl_metamodel_notelist'),
-                $this->getMetaModel()->getName()
-            ),
-            'icon' => $this->getBaseUrl() . '/system/modules/metamodels_notelist/public/images/icons/notelist.png'
-        );
+        parent::getBreadcrumbElements($environment, $elements);
 
-        return $elements;
+        $builder = UrlBuilder::fromUrl($elements->getUri())
+            ->setQueryParameter('do', 'metamodels')
+            ->setQueryParameter('table', 'tl_metamodel_notelist')
+            ->setQueryParameter(
+                'pid',
+                ModelId::fromValues('tl_metamodel', $elements->getId('tl_metamodel'))->getSerialized()
+            )
+            ->unsetQueryParameter('act')
+            ->unsetQueryParameter('id');
+
+        $elements->push(
+            ampersand($builder->getUrl()),
+            sprintf(
+                $elements->getLabel('tl_metamodel_notelist'),
+                $this->getMetaModel($elements->getId('tl_metamodel'))->getName()
+            ),
+            'bundles/metamodelsnotelist/images/icons/notelist.png'
+        );
     }
 }

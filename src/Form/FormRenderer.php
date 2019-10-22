@@ -19,14 +19,14 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Form;
+namespace MetaModels\NoteListBundle\Form;
 
 use MetaModels\IItems;
 use MetaModels\IMetaModel;
-use MetaModels\NoteList\Event\NoteListEvents;
-use MetaModels\NoteList\Event\ParseNoteListFormEvent;
-use MetaModels\NoteList\Filter\NoteListFilterRule;
-use MetaModels\NoteList\NoteListFactory;
+use MetaModels\NoteListBundle\Event\NoteListEvents;
+use MetaModels\NoteListBundle\Event\ParseNoteListFormEvent;
+use MetaModels\NoteListBundle\Filter\NoteListFilterRule;
+use MetaModels\NoteListBundle\NoteListFactory;
 use MetaModels\Render\Setting\IRenderSettingFactory;
 use MetaModels\Render\Template;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -104,8 +104,12 @@ class FormRenderer
         $event = new ParseNoteListFormEvent($this->metaModel, $renderSetting, $noteListId);
         $this->dispatcher->dispatch(NoteListEvents::PARSE_NOTE_LIST_FORM, $event);
 
-        $template->view  = $renderSetting;
-        $template->items = $items;
+        $template->view       = $renderSetting;
+        $template->items      = $items;
+        $template->noItemsMsg = \Contao\System::getContainer()
+            ->get('translator')
+            ->trans('MSC.' . $this->metaModel->getTableName() . '.noItemsMsg', [], 'contao_default');
+
         if ($items->getCount()) {
             $template->data = $items->parseAll($format, $renderSetting);
         } else {

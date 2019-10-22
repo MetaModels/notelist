@@ -19,10 +19,10 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListener\DcGeneral;
+namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
-use Contao\Database;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
+use Doctrine\DBAL\Connection;
 
 /**
  * This class provides the list of filter settings for the backend.
@@ -32,18 +32,18 @@ class FilterSettingsListListener
     /**
      * The database.
      *
-     * @var Database
+     * @var Connection
      */
-    private $database;
+    private $connection;
 
     /**
      * Create a new instance.
      *
-     * @param Database $database The database connection.
+     * @param Connection $connection The database connection.
      */
-    public function __construct(Database $database)
+    public function __construct(Connection $connection)
     {
-        $this->database = $database;
+        $this->connection = $connection;
     }
 
     /**
@@ -64,11 +64,14 @@ class FilterSettingsListListener
             return;
         }
 
-        $settings = $this->database
-            ->prepare('SELECT id,name FROM tl_metamodel_filter WHERE pid=?')
-            ->execute($event->getModel()->getProperty('pid'));
-
-        $adapters = $settings->fetchAllAssoc();
+        $adapters = $this->connection
+            ->createQueryBuilder()
+            ->select('id', 'name')
+            ->from('tl_metamodel_filter')
+            ->where('pid=:pid')
+            ->setParameter('pid', $event->getModel()->getProperty('pid'))
+            ->execute()
+            ->fetchAll(\PDO::FETCH_ASSOC);
         $result   = [];
         foreach ($adapters as $adapter) {
             $result[$adapter['id']] = $adapter['name'];

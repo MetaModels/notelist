@@ -20,24 +20,24 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListener;
+namespace MetaModels\NoteListBundle\EventListener;
 
-use Contao\Environment;
-use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
-use ContaoCommunityAlliance\Contao\Bindings\Events\Controller\RedirectEvent;
+use Contao\CoreBundle\Exception\RedirectResponseException;
 use ContaoCommunityAlliance\UrlBuilder\UrlBuilder;
+use ContaoCommunityAlliance\UrlBuilder\UrlBuilderFactoryInterface;
 use MetaModels\Events\ParseItemEvent;
 use MetaModels\Events\RenderItemListEvent;
 use MetaModels\FrontendIntegration\HybridList;
 use MetaModels\IItem;
 use MetaModels\IMetaModel;
-use MetaModels\NoteList\Event\NoteListEvents;
-use MetaModels\NoteList\Event\ParseNoteListFormEvent;
-use MetaModels\NoteList\Event\ProcessActionEvent;
-use MetaModels\NoteList\Form\FormBuilder;
-use MetaModels\NoteList\NoteListFactory;
-use MetaModels\NoteList\Storage\NoteListStorage;
+use MetaModels\NoteListBundle\Event\NoteListEvents;
+use MetaModels\NoteListBundle\Event\ParseNoteListFormEvent;
+use MetaModels\NoteListBundle\Event\ProcessActionEvent;
+use MetaModels\NoteListBundle\Form\FormBuilder;
+use MetaModels\NoteListBundle\NoteListFactory;
+use MetaModels\NoteListBundle\Storage\NoteListStorage;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * This class adds notelist actions in MetaModel frontend lists.
@@ -76,20 +76,40 @@ class ParseItemListener
     private $formBuilder;
 
     /**
+     * The url builder factory.
+     *
+     * @var UrlBuilderFactoryInterface
+     */
+    private $urlBuilderFactory;
+
+    /**
+     * The request stack.
+     *
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    /**
      * Create a new instance.
      *
-     * @param NoteListFactory          $factory     The factory.
-     * @param EventDispatcherInterface $dispatcher  The event dispatcher.
-     * @param FormBuilder              $formBuilder The form builder.
+     * @param NoteListFactory            $factory           The factory.
+     * @param EventDispatcherInterface   $dispatcher        The event dispatcher.
+     * @param FormBuilder                $formBuilder       The form builder.
+     * @param UrlBuilderFactoryInterface $urlBuilderFactory The url builder factory.
+     * @param RequestStack               $requestStack      The request stack.
      */
     public function __construct(
         NoteListFactory $factory,
         EventDispatcherInterface $dispatcher,
-        FormBuilder $formBuilder
+        FormBuilder $formBuilder,
+        UrlBuilderFactoryInterface $urlBuilderFactory,
+        RequestStack $requestStack
     ) {
-        $this->factory     = $factory;
-        $this->dispatcher  = $dispatcher;
-        $this->formBuilder = $formBuilder;
+        $this->factory           = $factory;
+        $this->dispatcher        = $dispatcher;
+        $this->formBuilder       = $formBuilder;
+        $this->urlBuilderFactory = $urlBuilderFactory;
+        $this->requestStack      = $requestStack;
     }
 
     /**
@@ -314,10 +334,11 @@ class ParseItemListener
      *
      * @return array
      */
-    private function getFormFieldLabels(int $formId) {
+    private function getFormFieldLabels(int $formId)
+    {
         $formLabels = [];
 
-        if($formId) {
+        if ($formId) {
             $objFields = \FormFieldModel::findPublishedByPid($formId);
 
             foreach ($objFields as $objField) {
@@ -334,6 +355,8 @@ class ParseItemListener
      * @param string $identifier The identifier in the parameters.
      *
      * @return void
+     *
+     * @throws RedirectResponseException In order to redirect.
      */
     private function redirect(string $identifier)
     {
@@ -343,7 +366,7 @@ class ParseItemListener
             ->unsetQueryParameter('notelist_' . $identifier . '_item')
             ->getUrl();
 
-        $this->dispatcher->dispatch(ContaoEvents::CONTROLLER_REDIRECT, new RedirectEvent($url));
+        throw new RedirectResponseException($url, 303);
     }
 
     /**
@@ -355,6 +378,8 @@ class ParseItemListener
      */
     protected function getCurrentUrl()
     {
-        return new UrlBuilder(Environment::getInstance()->get('requestUri'));
+        $request = $this->requestStack->getCurrentRequest();
+
+        return $this->urlBuilderFactory->create($request->getRequestUri());
     }
 }

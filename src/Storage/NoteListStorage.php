@@ -19,15 +19,15 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Storage;
+namespace MetaModels\NoteListBundle\Storage;
 
 use MetaModels\Filter\Rules\StaticIdList;
 use MetaModels\Filter\Setting\ICollection;
 use MetaModels\IItem;
 use MetaModels\IItems;
 use MetaModels\IMetaModel;
-use MetaModels\NoteList\Event\ManipulateNoteListEvent;
-use MetaModels\NoteList\Event\NoteListEvents;
+use MetaModels\NoteListBundle\Event\ManipulateNoteListEvent;
+use MetaModels\NoteListBundle\Event\NoteListEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**

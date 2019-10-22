@@ -20,11 +20,14 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Bridge;
+namespace MetaModels\NoteListBundle\Bridge;
 
 use Contao\Widget;
 use MetaModels\IFactory;
-use MetaModels\NoteList\Form\FormRenderer;
+use MetaModels\NoteListBundle\Form\FormRenderer;
+use MetaModels\NoteListBundle\NoteListFactory;
+use MetaModels\Render\Setting\IRenderSettingFactory;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This renders a form field listing all the items in the note list.
@@ -171,7 +174,8 @@ class FormFieldBridge extends Widget
         $this->strTemplate = $template;
 
         /** @var IFactory $factory */
-        $factory     = $GLOBALS['container']['metamodels-factory.factory'];
+        $container   = \Contao\System::getContainer()->get('metamodels-notelist.bridge-locator');
+        $factory     = $container->get(IFactory::class);
         $metaModelId = $this->arrConfiguration['metamodel'];
         $metaModel   = $factory->getMetaModel($factory->translateIdToMetaModelName($metaModelId));
 
@@ -192,9 +196,9 @@ class FormFieldBridge extends Widget
 
         $renderer = new FormRenderer(
             $metaModel,
-            $GLOBALS['container']['metamodels-render-setting-factory.factory'],
-            $GLOBALS['container']['metamodels-notelist.factory'],
-            $GLOBALS['container']['event-dispatcher']
+            $container->get(IRenderSettingFactory::class),
+            $container->get(NoteListFactory::class),
+            $container->get(EventDispatcherInterface::class)
         );
 
         $parsed = [];

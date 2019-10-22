@@ -19,14 +19,15 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList;
+namespace MetaModels\NoteListBundle;
 
-use Contao\Database;
+use Contao\StringUtil;
+use Doctrine\DBAL\Connection;
 use MetaModels\Filter\Setting\FilterSettingFactory;
 use MetaModels\IMetaModel;
-use MetaModels\NoteList\Storage\NoteListStorage;
-use MetaModels\NoteList\Storage\StorageAdapterFactory;
-use MetaModels\NoteList\Storage\ValueBag;
+use MetaModels\NoteListBundle\Storage\NoteListStorage;
+use MetaModels\NoteListBundle\Storage\StorageAdapterFactory;
+use MetaModels\NoteListBundle\Storage\ValueBag;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -37,9 +38,9 @@ class NoteListFactory
     /**
      * The database to use.
      *
-     * @var Database
+     * @var Connection
      */
-    private $database;
+    private $connection;
 
     /**
      * The storage factory to use.
@@ -73,18 +74,18 @@ class NoteListFactory
      * Create a new instance.
      *
      * @param EventDispatcherInterface $dispatcher     The event disapatcher.
-     * @param Database                 $database       The database to use.
+     * @param Connection               $connection     The database to use.
      * @param StorageAdapterFactory    $storageFactory The storage factory.
      * @param FilterSettingFactory     $filterFactory  The filter setting factory.
      */
     public function __construct(
         EventDispatcherInterface $dispatcher,
-        Database $database,
+        Connection $connection,
         StorageAdapterFactory $storageFactory,
         FilterSettingFactory $filterFactory
     ) {
         $this->dispatcher     = $dispatcher;
-        $this->database       = $database;
+        $this->connection     = $connection;
         $this->storageFactory = $storageFactory;
         $this->filterFactory  = $filterFactory;
     }
@@ -99,9 +100,14 @@ class NoteListFactory
     public function getConfiguredListsFor(IMetaModel $metaModel)
     {
         $query = $this
-            ->database
-            ->prepare('SELECT * FROM tl_metamodel_notelist WHERE pid=?')
-            ->execute($metaModel->get('id'));
+            ->connection
+            ->createQueryBuilder()
+            ->select('*')
+            ->from('tl_metamodel_notelist')
+            ->where('pid=:pid')
+            ->setParameter('pid', $metaModel->get('id'))
+            ->execute()
+            ->fetchAll(\PDO::FETCH_ASSOC);
 
         $languages = $metaModel->isTranslated()
             ? [
@@ -110,8 +116,8 @@ class NoteListFactory
             ] : [];
 
         $result = [];
-        while ($query->next()) {
-            $result[$query->id] = $this->getName(deserialize($query->name, true), $languages);
+        foreach ($query as $item) {
+            $result[$item['id']] = $this->getName(deserialize($item['name'], true), $languages);
         }
 
         return $result;
@@ -135,28 +141,33 @@ class NoteListFactory
 
         $metaModelId = $metaModel->get('id');
         $noteList    = $this
-            ->database
-            ->prepare('SELECT * FROM tl_metamodel_notelist WHERE id=?')
-            ->execute($identifier);
+            ->connection
+            ->createQueryBuilder()
+            ->select('*')
+            ->from('tl_metamodel_notelist')
+            ->where('id=:id')
+            ->setParameter('id', $identifier)
+            ->execute()
+            ->fetch(\PDO::FETCH_ASSOC);
 
-        if (0 === $noteList->length) {
+        if (false === $noteList) {
             throw new \LogicException('Notelist ' . $identifier . ' could not be found.');
         }
 
-        if ($metaModelId !== $noteList->pid) {
+        if ($metaModelId !== $noteList['pid']) {
             throw new \LogicException('Notelist ' . $identifier . ' does not belong to MetaModel ' . $metaModelId);
         }
 
-        $adapter = $this->storageFactory->getAdapter((string) $noteList->storageAdapter);
+        $adapter = $this->storageFactory->getAdapter((string) $noteList['storageAdapter']);
 
         return $this->instances[$identifier] = new NoteListStorage(
             $this->dispatcher,
             $metaModel,
             $adapter,
             $identifier,
-            deserialize($noteList->name, true),
-            $noteList->filter ? $this->filterFactory->createCollection($noteList->filter) : null,
-            new ValueBag($noteList->row())
+            StringUtil::deserialize($noteList['name'], true),
+            !empty($noteList['filter']) ? $this->filterFactory->createCollection($noteList['filter']) : null,
+            new ValueBag($noteList)
         );
     }
 

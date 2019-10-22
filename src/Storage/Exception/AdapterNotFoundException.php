@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Storage\Exception;
+namespace MetaModels\NoteListBundle\Storage\Exception;
 
 /**
  * This exception is thrown when an adapter could not be found.

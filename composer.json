@@ -27,33 +27,33 @@
   },
   "require":{
     "php": "^7.0",
-    "contao/core": "^3.5.5",
-    "contao-community-alliance/composer-plugin": "^2.4",
-    "contao-community-alliance/dc-general": "^2.0@beta",
-    "contao-community-alliance/url-builder": "^1.2",
-    "metamodels/core":"^2.0@alpha",
-    "symfony/event-dispatcher": "^2.8 | ^3.0"
+    "contao/core-bundle": "^4.4",
+    "contao-community-alliance/dc-general": "^2.1@dev",
+    "contao-community-alliance/url-builder": "^1.3",
+    "metamodels/core":"^2.1@dev",
+    "symfony/event-dispatcher": "^2.8 | ^3.0 | ^4.0"
   },
   "require-dev": {
     "cyberspectrum/contao-toolbox": "^0.7",
-    "phpcq/all-tasks": "dev-release/1.2.0 as 1.2.0",
-    "phpcq/phpcq": "dev-release/1.2.0 as 1.2.0"
+    "phpcq/all-tasks": "^1.2",
+    "contao/manager-plugin": "^2.1"
   },
   "autoload": {
     "psr-4": {
-      "MetaModels\\NoteList\\": "src"
-    }
+      "MetaModels\\NoteListBundle\\": "src"
+    },
+    "files": [
+      "src/deprecated-autoload.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
-      "MetaModels\\NoteList\\Test\\": "tests"
+      "MetaModels\\NoteListBundle\\Test\\": "tests"
     }
   },
   "extra":{
+    "contao-manager-plugin": "MetaModels\\NoteListBundle\\ContaoManager\\Plugin",
     "contao": {
-      "sources":{
-        "contao": "system/modules/metamodels_notelist"
-      },
       "transifex": {
         "project": "metamodels",
         "prefix": "notelist-",

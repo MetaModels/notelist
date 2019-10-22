@@ -19,10 +19,10 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Filter;
+namespace MetaModels\NoteListBundle\Filter;
 
 use MetaModels\Filter\IFilterRule;
-use MetaModels\NoteList\Storage\NoteListStorage;
+use MetaModels\NoteListBundle\Storage\NoteListStorage;
 
 /**
  * This filter rule returns all items currently contained within the note list.

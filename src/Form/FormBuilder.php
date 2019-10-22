@@ -19,36 +19,18 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Form;
+namespace MetaModels\NoteListBundle\Form;
 
 use Contao\Controller;
-use Contao\Database;
 use Contao\FormFieldModel;
 use Contao\Widget;
-use MetaModels\NoteList\Storage\NoteListStorage;
+use MetaModels\NoteListBundle\Storage\NoteListStorage;
 
 /**
  * This class takes care of building Contao Forms, rendering them and retrieving the payload.
  */
 class FormBuilder
 {
-    /**
-     * The database to use.
-     *
-     * @var Database
-     */
-    private $database;
-
-    /**
-     * Create a new instance.
-     *
-     * @param Database $database The database instance.
-     */
-    public function __construct(Database $database)
-    {
-        $this->database = $database;
-    }
-
     /**
      * Build a form.
      *

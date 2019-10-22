@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,14 +12,15 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
- * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2018 The MetaModels team.
+ * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListener\DcGeneral;
+namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\BuildWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
@@ -70,6 +71,11 @@ class BuildNoteListNameWidgetListener
      */
     public function decodeNameValue(DecodePropertyValueForWidgetEvent $event)
     {
+        if (('tl_metamodel_notelist' !== $event->getModel()->getProviderName())
+            || ($event->getProperty() !== 'name')) {
+            return;
+        }
+
         $metaModel = $this->getMetaModelByModelPid($event->getModel());
         $value     = deserialize($event->getValue());
         if (!$metaModel->isTranslated()) {
@@ -107,12 +113,18 @@ class BuildNoteListNameWidgetListener
      */
     public function encodeNameValue(EncodePropertyValueFromWidgetEvent $event)
     {
+        if (('tl_metamodel_notelist' !== $event->getModel()->getProviderName())
+            || ($event->getProperty() !== 'name')) {
+            return;
+        }
+
         $metaModel = $this->getMetaModelByModelPid($event->getModel());
         // Not translated, nothing to do.
         if (!$metaModel->isTranslated()) {
             return;
         }
         $output = [];
+
         foreach (deserialize($event->getValue()) as $subValue) {
             $langcode = $subValue['langcode'];
             unset($subValue['langcode']);
@@ -135,6 +147,11 @@ class BuildNoteListNameWidgetListener
      */
     public function buildWidget(BuildWidgetEvent $event)
     {
+        if (('tl_metamodel_notelist' !== $event->getEnvironment()->getDataDefinition()->getName())
+            || ($event->getProperty()->getName() !== 'name')) {
+            return;
+        }
+
         $metaModel = $this->getMetaModelByModelPid($event->getModel());
         $property  = $event->getProperty();
 

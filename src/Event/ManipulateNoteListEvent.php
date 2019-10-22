@@ -19,11 +19,11 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Event;
+namespace MetaModels\NoteListBundle\Event;
 
 use MetaModels\IItem;
 use MetaModels\IMetaModel;
-use MetaModels\NoteList\Storage\NoteListStorage;
+use MetaModels\NoteListBundle\Storage\NoteListStorage;
 use Symfony\Component\EventDispatcher\Event;
 
 /**

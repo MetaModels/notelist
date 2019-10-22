@@ -19,11 +19,11 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListener\DcGeneral;
+namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
 use ContaoCommunityAlliance\Translator\TranslatorInterface;
-use MetaModels\NoteList\Storage\StorageAdapterFactory;
+use MetaModels\NoteListBundle\Storage\StorageAdapterFactory;
 
 /**
  * This class provides the list of registered storage adapters for the backend.

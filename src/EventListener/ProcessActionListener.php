@@ -12,6 +12,7 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @copyright  2017 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
@@ -19,10 +20,10 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\EventListener;
+namespace MetaModels\NoteListBundle\EventListener;
 
 use MetaModels\IItem;
-use MetaModels\NoteList\Event\ProcessActionEvent;
+use MetaModels\NoteListBundle\Event\ProcessActionEvent;
 
 /**
  * This handles the normal events like add, remove and clear.

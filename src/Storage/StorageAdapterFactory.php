@@ -20,10 +20,10 @@
 
 declare(strict_types = 1);
 
-namespace MetaModels\NoteList\Storage;
+namespace MetaModels\NoteListBundle\Storage;
 
 use Contao\Session;
-use MetaModels\NoteList\Storage\Exception\AdapterNotFoundException;
+use MetaModels\NoteListBundle\Storage\Exception\AdapterNotFoundException;
 
 /**
  * This class represents the storage adapter factory.

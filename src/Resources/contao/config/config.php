@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,14 +13,14 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017 The MetaModels team.
+ * @copyright  2018 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-use MetaModels\NoteList\Bridge\FormFieldBridge;
-use MetaModels\NoteList\Bridge\InsertTagBridge;
-use MetaModels\NoteList\Bridge\ProcessFormDataBridge;
+use MetaModels\NoteListBundle\Bridge\FormFieldBridge;
+use MetaModels\NoteListBundle\Bridge\InsertTagBridge;
+use MetaModels\NoteListBundle\Bridge\ProcessFormDataBridge;
 
 $GLOBALS['BE_MOD']['metamodels']['metamodels']['tables'][] = 'tl_metamodel_notelist';
 
