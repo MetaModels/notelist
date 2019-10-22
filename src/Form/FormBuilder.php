@@ -23,6 +23,7 @@ namespace MetaModels\NoteListBundle\Form;
 
 use Contao\Controller;
 use Contao\FormFieldModel;
+use Contao\FormModel;
 use Contao\Widget;
 use MetaModels\NoteListBundle\Storage\NoteListStorage;
 
@@ -43,10 +44,23 @@ class FormBuilder
     public function getForm(int $formId, NoteListStorage $noteList, string $action)
     {
         return new Form(
+            $this->getFormConfig($formId),
             $this->getFormWidgets($formId),
             $action,
             $noteList
         );
+    }
+
+    /**
+     * Retrieve the form config of a form.
+     *
+     * @param int $formId The form ID.
+     *
+     * @return Form[]
+     */
+    private function getFormConfig($formId)
+    {
+        return FormModel::findById($formId);
     }
 
     /**
