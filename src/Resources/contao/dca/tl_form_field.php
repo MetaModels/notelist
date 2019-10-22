@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2019 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017 The MetaModels team.
+ * @copyright  2017-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -36,7 +36,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel'] = [
         MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class,
         'getMetaModelOptions'
     ],
-    'sql'              => "char(1) NOT NULL default ''",
+    'sql'              => "int(10) unsigned NOT NULL default '0'",
     'eval'             => [
         'submitOnChange'     => true,
         'includeBlankOption' => true,
@@ -107,7 +107,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
         MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class,
         'getNoteListOptions'
     ],
-    'sql'              => 'text NULL',
+    'sql'              => 'blob NULL',
 ];
 
 $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_customTplEmail'] = [
