@@ -40,7 +40,9 @@ class RenderNoteListNameAsReadablePropertyValueListener
      */
     public function render(RenderReadablePropertyValueEvent $event)
     {
-        if (null !== $event->getRendered()) {
+        if (null !== $event->getRendered()
+            || 'tl_metamodel_notelist' !== $event->getModel()->getProviderName()
+            || $event->getProperty()->getName() !== 'name') {
             return;
         }
 
