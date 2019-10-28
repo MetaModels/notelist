@@ -64,12 +64,10 @@ class ProcessFormDataBridge
             $metaModelId        = $notelistFormWidget['metamodel'];
             $metaModelNotelists = deserialize($notelistFormWidget['metamodel_notelist'], true);
 
-            /** @var MetaModelsServiceContainer $metaModelContainer */
-            $metaModelContainer = $container['metamodels-service-container'];
             /** @var IFactory $factory */
-            $factory = $metaModelContainer->getFactory();
+            $factory = $container->get(IFactory::class);
             /** @var NoteListFactory $noteListFactory */
-            $noteListFactory = $container['metamodels-notelist.factory'];
+            $noteListFactory = $container->get(NoteListFactory::class);
 
             $metaModel = $factory->getMetaModel($factory->translateIdToMetaModelName($metaModelId));
 
