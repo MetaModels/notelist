@@ -22,18 +22,18 @@
   "support":{
     "email":"mail@metamodel.me",
     "issues":"https://github.com/MetaModels/metamodels_notelist",
-    "wiki":"http://de.contaowiki.org/MetaModels",
-    "irc":"irc://irc.freenode.org/contao.mm",
+    "wiki":"https://metamodels.readthedocs.io/de/latest/manual/extended/notelist.html",
     "source":"https://github.com/MetaModels/metamodels_notelist"
   },
   "require":{
-    "php": "^7.0",
+    "php": "^7.2",
     "contao-community-alliance/dc-general": "^2.1",
     "contao-community-alliance/url-builder": "^1.3",
-    "contao/core-bundle": "^4.4",
+    "contao/core-bundle": "^4.9.0, <4.13.0",
     "menatwork/contao-multicolumnwizard-bundle": "^3.4",
     "metamodels/core":"^2.1",
-    "symfony/event-dispatcher": "^2.8 | ^3.0 | ^4.0"
+    "symfony/dependency-injection": "^3.4.26 || ^4.2.7",
+    "symfony/http-kernel": "^3.4.26 || ^4.2.7"
   },
   "require-dev": {
     "cyberspectrum/contao-toolbox": "^0.7",
@@ -64,7 +64,7 @@
       }
     },
     "branch-alias": {
-      "dev-hotfix/2.1.2": "2.1.2-dev"
+      "dev-feature/2.2.0": "2.2.x-dev"
     }
   }
 }
