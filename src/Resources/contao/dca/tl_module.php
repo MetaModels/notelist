@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017-2018 The MetaModels team.
+ * (c) 2017-2020 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017-2018 The MetaModels team.
+ * @copyright  2017-2020 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -23,8 +23,8 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'metamodel_add_n
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['metamodel_list'] =
     str_replace(
-        ';{template_legend:hide}',
-        ';{metamodel_notelist_legend:hide},metamodel_add_notelist;{template_legend:hide}',
+        ';{mm_filter_legend}',
+        ';{metamodel_notelist_legend:hide},metamodel_add_notelist;{mm_filter_legend}',
         $GLOBALS['TL_DCA']['tl_module']['palettes']['metamodel_list']
     );
 
@@ -43,7 +43,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['metamodel_notelist'] = [
     'label'            => &$GLOBALS['TL_LANG']['tl_module']['fields']['metamodel_notelist'],
     'inputType'        => 'checkboxWizard',
     'options_callback' => [MetaModels\NoteList\Bridge\DcaCallbackBridge::class, 'getNoteListOptions'],
-    'eval' => [
+    'eval'             => [
         'multiple' => true
     ],
     'sql'              => 'blob NULL'
