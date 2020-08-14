@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017-2018 The MetaModels team.
+ * (c) 2017-2020 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,12 +13,12 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017-2018 The MetaModels team.
+ * @copyright  2017-2020 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
@@ -191,27 +191,27 @@ class BuildNoteListNameWidgetListener
         $extra['minCount']       =
         $extra['maxCount']       = count($languages);
         $extra['disableSorting'] = true;
-        $extra['tl_class']       = 'clr';
+        $extra['hideButtons']    = true;
+        $extra['tl_class']       = 'clr w50';
         $extra['columnFields']   = [
             'langcode' => [
-                'label'                 => $languageLabel,
-                'exclude'               => true,
-                'inputType'             => 'justtextoption',
-                'options'               => $languages,
-                'eval'                  => [
-                    'rowClasses'        => $rowClasses,
-                    'valign'            => 'center',
-                    'style'             => 'min-width:75px;display:block;'
+                'label'     => $languageLabel,
+                'exclude'   => true,
+                'inputType' => 'justtextoption',
+                'options'   => $languages,
+                'eval'      => [
+                    'rowClasses' => $rowClasses,
+                    'valign'     => 'center',
+                    'style'      => 'min-width:85px;display:block;'
                 ]
             ],
-            'value' => [
-                'label'                 => $valueLabel,
-                'exclude'               => true,
-                'inputType'             => 'text',
-                'eval'                  => [
-                    'rowClasses'        => $rowClasses,
-                    'style'             => 'width:400px;',
-                    'rows'              => 3
+            'value'    => [
+                'label'     => $valueLabel,
+                'exclude'   => true,
+                'inputType' => 'text',
+                'eval'      => [
+                    'rowClasses' => $rowClasses,
+                    'style'      => 'width:100%;',
                 ]
             ],
         ];
