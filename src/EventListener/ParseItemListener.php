@@ -22,7 +22,9 @@ declare(strict_types = 1);
 
 namespace MetaModels\NoteListBundle\EventListener;
 
+use Contao\ContentModel;
 use Contao\CoreBundle\Exception\RedirectResponseException;
+use Contao\ModuleModel;
 use ContaoCommunityAlliance\UrlBuilder\UrlBuilder;
 use ContaoCommunityAlliance\UrlBuilder\UrlBuilderFactoryInterface;
 use MetaModels\Events\ParseItemEvent;
@@ -125,7 +127,7 @@ class ParseItemListener
     public function handleListRendering(RenderItemListEvent $event)
     {
         $caller = $event->getCaller();
-        if (!($caller instanceof HybridList)) {
+        if (!($caller instanceof HybridList) && !($caller instanceof ContentModel) && !($caller instanceof ModuleModel)) {
             return;
         }
 
