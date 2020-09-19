@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017-2019 The MetaModels team.
+ * (c) 2017-2020 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017-2019 The MetaModels team.
+ * @copyright  2017-2020 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -40,65 +40,66 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel'] = [
     'eval'             => [
         'submitOnChange'     => true,
         'includeBlankOption' => true,
+        'tl_class'           => 'w50'
     ]
 ];
 
 $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_notelist'] = [
     'label'            => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist'],
     'exclude'          => true,
-    'inputType' => 'multiColumnWizard',
-    'eval'      => [
-        'tl_class'     => 'notelist_combine',
+    'inputType'        => 'multiColumnWizard',
+    'eval'             => [
+        'tl_class'     => 'clr notelist_combine',
         'columnFields' => [
-            'notelist' => [
-                'label'     => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_notelist'],
-                'exclude'   => true,
-                'inputType' => 'select',
+            'notelist'  => [
+                'label'            => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_notelist'],
+                'exclude'          => true,
+                'inputType'        => 'select',
                 'options_callback' => [
                     MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class,
                     'getNoteListOptionsMcw'
                 ],
-                'eval'      => [
+                'eval'             => [
                     'includeBlankOption' => true,
-                    'style'              => 'width:200px',
+                    'style'              => 'width:100%',
                     'chosen'             => 'true'
                 ],
             ],
-            'frontend' => [
-                'label'     => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_frontend'],
-                'exclude'   => true,
-                'inputType' => 'select',
+            'frontend'  => [
+                'label'            => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_frontend'],
+                'exclude'          => true,
+                'inputType'        => 'select',
                 'options_callback' => [
                     MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class,
                     'getRenderSettingsMcw'
                 ],
-                'eval'      => [
+                'eval'             => [
                     'includeBlankOption' => true,
-                    'style'              => 'width:200px',
+                    'style'              => 'width:100%',
                     'chosen'             => 'true'
                 ],
             ],
-            'email'   => [
-                'label'     => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_email'],
-                'exclude'   => true,
-                'inputType' => 'select',
+            'email'     => [
+                'label'            => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_email'],
+                'exclude'          => true,
+                'inputType'        => 'select',
                 'options_callback' => [
                     MetaModels\NoteListBundle\Bridge\DcaCallbackBridge::class,
                     'getRenderSettingsMcw'
                 ],
-                'eval'      => [
+                'eval'             => [
                     'includeBlankOption' => true,
-                    'style'  => 'width:200px',
-                    'chosen' => 'true'
+                    'style'              => 'width:100%',
+                    'chosen'             => 'true'
                 ],
             ],
-            'clearlist'   => [
+            'clearlist' => [
                 'label'     => &$GLOBALS['TL_LANG']['tl_form_field']['metamodel_notelist_rendersetting_clearlist'],
                 'exclude'   => true,
                 'default'   => 'true',
                 'inputType' => 'checkbox',
                 'eval'      => [
-                    'style'  => 'width:50px'
+                    'style' => 'width:100%'
                 ],
             ],
         ],
@@ -120,6 +121,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['metamodel_customTplEmail'] = [
     ],
     'sql'              => 'varchar(255) NULL',
     'eval'             => [
-        'includeBlankOption' => true
+        'includeBlankOption' => true,
+        'tl_class'           => 'w50',
     ]
 ];
