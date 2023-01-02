@@ -1,12 +1,15 @@
-[![Build Status](https://travis-ci.org/MetaModels/notelist.png)](https://travis-ci.org/MetaModels/core)
+[![Build Status](https://github.com/MetaModels/notelist/actions/workflows/diagnostics.yml/badge.svg)](https://github.com/MetaModels/notelist/actions)
 [![Latest Version tagged](http://img.shields.io/github/tag/MetaModels/notelist.svg)](https://github.com/MetaModels/notelist/tags)
 [![Latest Version on Packagist](http://img.shields.io/packagist/v/MetaModels/notelist.svg)](https://packagist.org/packages/MetaModels/notelist)
 [![Installations via composer per month](http://img.shields.io/packagist/dm/MetaModels/notelist.svg)](https://packagist.org/packages/MetaModels/notelist)
-[![Dependency Status](https://www.versioneye.com/php/metamodels:notelist/badge.svg)](https://www.versioneye.com/php/metamodels:notelist)
 
 # MetaModels note list
 
-This is the MetaModels note list implementation.
+This is the MetaModels note list implementation. 
+
+The note list extends MetaModels by the possibility of adding individual data records (items) to a note list
+in the FE output or also to pass them to a form. Possible uses for the note list range from a "normal note list" to
+comparison lists, e.g. of product properties, to shopping basket functions.
 
 # Installation
 
@@ -15,16 +18,5 @@ This is the MetaModels note list implementation.
 Docs:
 -----------
 
-* [The official MetaModel Documentation (en)](http://metamodels.readthedocs.org/en/latest/index.html)
-* [The official MetaModel Documentation (de)](http://metamodels.readthedocs.org/de/latest/index.html)
+[Use the note list (currently only in DE)](https://metamodels.readthedocs.io/de/latest/manual/extended/notelist.html)
 
-Feel free to contribute the MetaModel Documentation in [EN](https://github.com/MetaModels/docs)
-or [DE](https://github.com/MetaModels/docs-de)
-
-Ressources:
------------
-
-* [MetaModels Website](https://now.metamodel.me)
-* [MetaModels Contao Wiki [DE]](http://de.contaowiki.org/MetaModels)
-* [MetaModels Contao Community sub forum [DE]](https://community.contao.org/de/forumdisplay.php?149-MetaModels)
-* [MetaModels IRC Channel on freenode #contao.mm](irc://chat.freenode.net/#contao.mm)
