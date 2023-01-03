@@ -60,7 +60,7 @@ class FormBuilder
      *
      * @return Form[]
      */
-    private function getFormConfig($formId): array
+    private function getFormConfig($formId)
     {
         return FormModel::findById($formId);
     }
@@ -72,7 +72,7 @@ class FormBuilder
      *
      * @return Widget[]
      */
-    private function getFormWidgets($formId): array
+    private function getFormWidgets($formId)
     {
         Controller::loadDataContainer('tl_form_field');
         // Get all form fields
