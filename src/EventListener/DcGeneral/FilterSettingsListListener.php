@@ -72,7 +72,7 @@ class FilterSettingsListListener
             ->where('pid=:pid')
             ->setParameter('pid', $event->getModel()->getProperty('pid'))
             ->executeQuery()
-            ->fetchAssociative();
+            ->fetchAllAssociative();
 
         $result   = [];
         foreach ($adapters as $adapter) {

@@ -81,7 +81,7 @@ class BuildNoteListNameWidgetListener
         $value     = StringUtil::deserialize($event->getValue());
         if (!($metaModel instanceof ITranslatedMetaModel)) {
             // If we have an array, return the first value and exit, if not an array, return the value itself.
-            $event->setValue(\is_array($value) ? $value[key($value)] : $value);
+            $event->setValue(\is_array($value) ? $value[\key($value)] : $value);
 
             return;
         }
@@ -89,7 +89,6 @@ class BuildNoteListNameWidgetListener
         // Sort like in MetaModel definition.
         $output = [];
         foreach ($metaModel->getLanguages() as $langCode) {
-dump($value);
             if (\is_array($value)) {
                 $subValue = $value[$langCode];
             } else {
