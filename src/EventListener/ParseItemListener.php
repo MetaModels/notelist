@@ -25,6 +25,7 @@ namespace MetaModels\NoteListBundle\EventListener;
 use Contao\ContentModel;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\ModuleModel;
+use Contao\System;
 use ContaoCommunityAlliance\UrlBuilder\UrlBuilder;
 use ContaoCommunityAlliance\UrlBuilder\UrlBuilderFactoryInterface;
 use MetaModels\Events\ParseItemEvent;
@@ -61,35 +62,35 @@ class ParseItemListener
      *
      * @var NoteListFactory
      */
-    private $factory;
+    private NoteListFactory $factory;
 
     /**
      * The event dispatcher.
      *
      * @var EventDispatcherInterface
      */
-    private $dispatcher;
+    private EventDispatcherInterface $dispatcher;
 
     /**
      * The form builder.
      *
      * @var FormBuilder
      */
-    private $formBuilder;
+    private FormBuilder $formBuilder;
 
     /**
      * The url builder factory.
      *
      * @var UrlBuilderFactoryInterface
      */
-    private $urlBuilderFactory;
+    private UrlBuilderFactoryInterface $urlBuilderFactory;
 
     /**
      * The request stack.
      *
      * @var RequestStack
      */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     /**
      * Create a new instance.
@@ -124,7 +125,7 @@ class ParseItemListener
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    public function handleListRendering(RenderItemListEvent $event)
+    public function handleListRendering(RenderItemListEvent $event): void
     {
         $caller = $event->getCaller();
         if (!($caller instanceof HybridList) && !($caller instanceof ContentModel) && !($caller instanceof ModuleModel)) {
@@ -149,7 +150,7 @@ class ParseItemListener
      *
      * @return void
      */
-    public function handleFormRendering(ParseNoteListFormEvent $event)
+    public function handleFormRendering(ParseNoteListFormEvent $event): void
     {
         $renderSetting = $event->getRenderSetting();
 
@@ -168,7 +169,7 @@ class ParseItemListener
      *
      * @return void
      */
-    public function addNoteListActions(ParseItemEvent $event)
+    public function addNoteListActions(ParseItemEvent $event): void
     {
         $settings = $event->getRenderSettings();
         if (!($lists = $settings->get(self::NOTELIST_LIST))) {
@@ -190,7 +191,7 @@ class ParseItemListener
 
             if ($formId = $storage->getMeta()->get('form')) {
                 // Add payload values.
-                if (count($storage->getMetaDataFor($item))) {
+                if (\count($storage->getMetaDataFor($item))) {
                     $parsed['notelists_payload_values']['notelist_' . $list] = $storage->getMetaDataFor($item);
                 }
 
@@ -227,7 +228,7 @@ class ParseItemListener
      *
      * @throws \InvalidArgumentException When the item could not be found or the action is unknown.
      */
-    private function processActions(IMetaModel $metaModel, array $lists)
+    private function processActions(IMetaModel $metaModel, array $lists): bool
     {
         foreach ($lists as $list) {
             if ($event = $this->buildActionEvent($metaModel, $list)) {
@@ -254,7 +255,7 @@ class ParseItemListener
      *
      * @return ProcessActionEvent|null
      */
-    private function buildActionEvent(IMetaModel $metaModel, string $list)
+    private function buildActionEvent(IMetaModel $metaModel, string $list): ?ProcessActionEvent
     {
         $url = $this->getCurrentUrl();
 
@@ -266,9 +267,11 @@ class ParseItemListener
                 $metaModel
             );
         }
+
         if (!($noteList = $this->factory->getList($metaModel, $list))) {
             return null;
         }
+
         $valueBag = $noteList->getMeta();
         if ($valueBag->has('form') && ($formId = $valueBag->get('form'))) {
             $form = $this->formBuilder->getForm(intval($formId), $noteList, $this->getCurrentUrl()->getUrl());
@@ -281,6 +284,7 @@ class ParseItemListener
                 );
             }
         }
+
         return null;
     }
 
@@ -295,7 +299,7 @@ class ParseItemListener
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    private function generateButton(IItem $item, NoteListStorage $storage)
+    private function generateButton(IItem $item, NoteListStorage $storage): array
     {
         $action = !$storage->has($item) ? 'add' : 'remove';
         $url    = $this
@@ -322,7 +326,7 @@ class ParseItemListener
      *
      * @return array
      */
-    private function generateForm(IItem $item, NoteListStorage $storage, int $formId)
+    private function generateForm(IItem $item, NoteListStorage $storage, int $formId): array
     {
         $form = $this->formBuilder->getForm($formId, $storage, $this->getCurrentUrl()->getUrl());
 
@@ -336,15 +340,16 @@ class ParseItemListener
      *
      * @return array
      */
-    private function getFormFieldLabels(int $formId)
+    private function getFormFieldLabels(int $formId): array
     {
         $formLabels = [];
 
         if ($formId) {
             $objFields = \FormFieldModel::findPublishedByPid($formId);
+            $parser    = System::getContainer()->get('contao.insert_tag.parser');
 
             foreach ($objFields as $objField) {
-                $formLabels[$objField->name] = \Controller::replaceInsertTags($objField->label, false);
+                $formLabels[$objField->name] = $parser->replace($objField->label);
             }
         }
 
@@ -360,7 +365,7 @@ class ParseItemListener
      *
      * @throws RedirectResponseException In order to redirect.
      */
-    private function redirect(string $identifier)
+    private function redirect(string $identifier): void
     {
         $url = $this
             ->getCurrentUrl()
@@ -372,13 +377,13 @@ class ParseItemListener
     }
 
     /**
-     * Retrieve an URL builder containing the current URL.
+     * Retrieve a URL builder containing the current URL.
      *
      * @return UrlBuilder
      *
      * @internal
      */
-    protected function getCurrentUrl()
+    protected function getCurrentUrl(): UrlBuilder
     {
         $request = $this->requestStack->getCurrentRequest();
 

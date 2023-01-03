@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
+use Contao\StringUtil;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\BuildWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
@@ -29,6 +30,7 @@ use ContaoCommunityAlliance\DcGeneral\Data\ModelInterface;
 use ContaoCommunityAlliance\Translator\TranslatorInterface;
 use MetaModels\IFactory;
 use MetaModels\IMetaModel;
+use MetaModels\ITranslatedMetaModel;
 
 /**
  * This class handles the building of the MCW for note list names.
@@ -40,14 +42,14 @@ class BuildNoteListNameWidgetListener
      *
      * @var IFactory
      */
-    private $factory;
+    private IFactory $factory;
 
     /**
      * The translator.
      *
      * @var TranslatorInterface
      */
-    private $translator;
+    private TranslatorInterface $translator;
 
     /**
      * Create a new instance.
@@ -61,7 +63,6 @@ class BuildNoteListNameWidgetListener
         $this->translator = $translator;
     }
 
-
     /**
      * Decode the given value from a serialized language array into the real language array.
      *
@@ -69,7 +70,7 @@ class BuildNoteListNameWidgetListener
      *
      * @return void
      */
-    public function decodeNameValue(DecodePropertyValueForWidgetEvent $event)
+    public function decodeNameValue(DecodePropertyValueForWidgetEvent $event): void
     {
         if (('tl_metamodel_notelist' !== $event->getModel()->getProviderName())
             || ($event->getProperty() !== 'name')) {
@@ -77,31 +78,32 @@ class BuildNoteListNameWidgetListener
         }
 
         $metaModel = $this->getMetaModelByModelPid($event->getModel());
-        $value     = deserialize($event->getValue());
-        if (!$metaModel->isTranslated()) {
+        $value     = StringUtil::deserialize($event->getValue());
+        if (!($metaModel instanceof ITranslatedMetaModel)) {
             // If we have an array, return the first value and exit, if not an array, return the value itself.
-            $event->setValue(is_array($value) ? $value[key($value)] : $value);
+            $event->setValue(\is_array($value) ? $value[key($value)] : $value);
+
             return;
         }
 
         // Sort like in MetaModel definition.
         $output = [];
-        if (!empty($languages = $metaModel->getAvailableLanguages())) {
-            foreach ($languages as $strLangCode) {
-                if (is_array($value)) {
-                    $subValue = $value[$strLangCode];
-                } else {
-                    $subValue = $value;
-                }
+        foreach ($metaModel->getLanguages() as $langCode) {
+dump($value);
+            if (\is_array($value)) {
+                $subValue = $value[$langCode];
+            } else {
+                $subValue = $value;
+            }
 
-                if (is_array($subValue)) {
-                    $output[] = array_merge($subValue, ['langcode' => $strLangCode]);
-                } else {
-                    $output[] = ['langcode' => $strLangCode, 'value' => $subValue];
-                }
+            if (\is_array($subValue)) {
+                $output[] = \array_merge($subValue, ['langcode' => $langCode]);
+            } else {
+                $output[] = ['langcode' => $langCode, 'value' => $subValue];
             }
         }
-        $event->setValue(serialize($output));
+
+        $event->setValue(\serialize($output));
     }
 
     /**
@@ -111,7 +113,7 @@ class BuildNoteListNameWidgetListener
      *
      * @return void
      */
-    public function encodeNameValue(EncodePropertyValueFromWidgetEvent $event)
+    public function encodeNameValue(EncodePropertyValueFromWidgetEvent $event): void
     {
         if (('tl_metamodel_notelist' !== $event->getModel()->getProviderName())
             || ($event->getProperty() !== 'name')) {
@@ -120,22 +122,23 @@ class BuildNoteListNameWidgetListener
 
         $metaModel = $this->getMetaModelByModelPid($event->getModel());
         // Not translated, nothing to do.
-        if (!$metaModel->isTranslated()) {
+        if (!($metaModel instanceof ITranslatedMetaModel)) {
             return;
         }
-        $output = [];
 
-        foreach (deserialize($event->getValue()) as $subValue) {
+        $output = [];
+        foreach (StringUtil::deserialize($event->getValue()) as $subValue) {
             $langcode = $subValue['langcode'];
             unset($subValue['langcode']);
-            if (count($subValue) > 1) {
+            if (\count($subValue) > 1) {
                 $output[$langcode] = $subValue;
             } else {
-                $keys              = array_keys($subValue);
+                $keys              = \array_keys($subValue);
                 $output[$langcode] = $subValue[$keys[0]];
             }
         }
-        $event->setValue(serialize($output));
+
+        $event->setValue(\serialize($output));
     }
 
     /**
@@ -145,7 +148,7 @@ class BuildNoteListNameWidgetListener
      *
      * @return void
      */
-    public function buildWidget(BuildWidgetEvent $event)
+    public function buildWidget(BuildWidgetEvent $event): void
     {
         if (('tl_metamodel_notelist' !== $event->getEnvironment()->getDataDefinition()->getName())
             || ($event->getProperty()->getName() !== 'name')) {
@@ -155,7 +158,7 @@ class BuildNoteListNameWidgetListener
         $metaModel = $this->getMetaModelByModelPid($event->getModel());
         $property  = $event->getProperty();
 
-        if (!$metaModel->isTranslated()) {
+        if (!($metaModel instanceof ITranslatedMetaModel)) {
             $extra = $property->getExtra();
 
             $extra['tl_class'] = ($extra['tl_class'] ?? '') . 'w50';
@@ -167,20 +170,20 @@ class BuildNoteListNameWidgetListener
             return;
         }
 
-        $values     = deserialize($event->getModel()->getProperty($event->getProperty()->getName()), true);
-        $fallback   = $metaModel->getFallbackLanguage();
+        $values     = StringUtil::deserialize($event->getModel()->getProperty($event->getProperty()->getName()), true);
+        $fallback   = $metaModel->getMainLanguage();
         $languages  = $this->buildLanguageArray($metaModel, $this->translator);
-        $neededKeys = array_keys($languages);
+        $neededKeys = \array_keys($languages);
 
         // Ensure we have values for all languages present.
-        if (array_diff_key(array_keys($values), $neededKeys)) {
+        if (\array_diff_key(\array_keys($values), $neededKeys)) {
             foreach ($neededKeys as $langCode) {
                 $values[$langCode] = '';
             }
         }
 
         $rowClasses = [];
-        foreach (array_keys($values) as $langCode) {
+        foreach (\array_keys($values) as $langCode) {
             $rowClasses[] = ($langCode == $fallback) ? 'fallback_language' : 'normal_language';
         }
 
@@ -189,7 +192,7 @@ class BuildNoteListNameWidgetListener
 
         $extra                   = $property->getExtra();
         $extra['minCount']       =
-        $extra['maxCount']       = count($languages);
+        $extra['maxCount']       = \count($languages);
         $extra['disableSorting'] = true;
         $extra['hideButtons']    = true;
         $extra['tl_class']       = 'clr w50';
@@ -230,7 +233,7 @@ class BuildNoteListNameWidgetListener
      *
      * @throws \InvalidArgumentException When the MetaModel could not be retrieved.
      */
-    private function getMetaModelByModelPid($model)
+    private function getMetaModelByModelPid(ModelInterface $model): IMetaModel
     {
         $metaModel = $this
             ->factory
@@ -247,18 +250,17 @@ class BuildNoteListNameWidgetListener
      * Extract all languages from the MetaModel and return them as array.
      *
      * @param IMetaModel          $metaModel  The MetaModel to extract the languages from.
-     *
      * @param TranslatorInterface $translator The translator to use.
      *
      * @return \string[]
      */
-    private function buildLanguageArray(IMetaModel $metaModel, TranslatorInterface $translator)
+    private function buildLanguageArray(IMetaModel $metaModel, TranslatorInterface $translator): array
     {
-        $languages = array();
-        foreach ((array) $metaModel->getAvailableLanguages() as $langCode) {
+        $languages = [];
+        foreach ($metaModel->getLanguages() as $langCode) {
             $languages[$langCode] = $translator->translate('LNG.' . $langCode, 'languages');
         }
-        asort($languages);
+        \asort($languages);
 
         return $languages;
     }

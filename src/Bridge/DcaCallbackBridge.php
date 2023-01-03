@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +12,8 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -40,7 +41,7 @@ class DcaCallbackBridge
      *
      * @return array
      */
-    public static function getNoteListOptions(DataContainer $dataContainer)
+    public static function getNoteListOptions(DataContainer $dataContainer): array
     {
         $container       = self::getLocator();
         $factory         = $container->get(IFactory::class);
@@ -59,7 +60,7 @@ class DcaCallbackBridge
      *
      * @return array
      */
-    public static function getMetaModelOptions()
+    public static function getMetaModelOptions(): array
     {
         $container = self::getLocator();
         $factory   = $container->get(IFactory::class);
@@ -83,7 +84,7 @@ class DcaCallbackBridge
      *
      * @return string[]
      */
-    public static function getNoteListOptionsMcw(MultiColumnWizard $wizard)
+    public static function getNoteListOptionsMcw(MultiColumnWizard $wizard): array
     {
         $container       = self::getLocator();
         $factory         = $container->get(IFactory::class);
@@ -104,7 +105,7 @@ class DcaCallbackBridge
      *
      * @return string[] array of all attributes as id => human name
      */
-    public function getRenderSettingsMcw(MultiColumnWizard $wizard)
+    public function getRenderSettingsMcw(MultiColumnWizard $wizard): array
     {
         /** @var Connection $database */
         $database = $this->getLocator()->get(Connection::class);
@@ -115,16 +116,17 @@ class DcaCallbackBridge
             ->from('tl_metamodel_rendersettings')
             ->where('pid=:pid')
             ->setParameter('pid', $wizard->activeRecord->metamodel)
-            ->execute()
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAllAssociative();
 
-        $result = array();
+        $result = [];
         foreach ($renderSettings as $renderSetting) {
             $result[$renderSetting['id']] = $renderSetting['name'];
         }
 
         // Sort the render settings.
-        asort($result);
+        \asort($result);
+
         return $result;
     }
 

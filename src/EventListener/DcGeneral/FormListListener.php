@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 - 2018 The MetaModels team.
+ * (c) 2017-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017 - 2018 The MetaModels team.
+ * @copyright  2017-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -35,7 +35,7 @@ class FormListListener
      *
      * @var Connection
      */
-    private $connection;
+    private Connection $connection;
 
     /**
      * Create a new instance.
@@ -54,7 +54,7 @@ class FormListListener
      *
      * @return void
      */
-    public function getOptions(GetPropertyOptionsEvent $event)
+    public function getOptions(GetPropertyOptionsEvent $event): void
     {
         if (null !== $event->getOptions()) {
             return;
@@ -71,8 +71,8 @@ class FormListListener
             ->select('id', 'title')
             ->from('tl_form')
             ->where('id NOT IN (SELECT pid FROM tl_form_field WHERE type = \'metamodel_notelist\' GROUP BY pid)')
-            ->execute()
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         $result = [];
         foreach ($adapters as $adapter) {

@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +12,8 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -34,7 +35,7 @@ class FilterSettingsListListener
      *
      * @var Connection
      */
-    private $connection;
+    private Connection $connection;
 
     /**
      * Create a new instance.
@@ -53,14 +54,14 @@ class FilterSettingsListListener
      *
      * @return void
      */
-    public function getOptions(GetPropertyOptionsEvent $event)
+    public function getOptions(GetPropertyOptionsEvent $event): void
     {
         if (null !== $event->getOptions()) {
             return;
         }
 
         if (('filter' !== $event->getPropertyName())
-        || ('tl_metamodel_notelist' !== $event->getEnvironment()->getDataDefinition()->getName())) {
+            || ('tl_metamodel_notelist' !== $event->getEnvironment()->getDataDefinition()->getName())) {
             return;
         }
 
@@ -70,8 +71,9 @@ class FilterSettingsListListener
             ->from('tl_metamodel_filter')
             ->where('pid=:pid')
             ->setParameter('pid', $event->getModel()->getProperty('pid'))
-            ->execute()
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAssociative();
+
         $result   = [];
         foreach ($adapters as $adapter) {
             $result[$adapter['id']] = $adapter['name'];

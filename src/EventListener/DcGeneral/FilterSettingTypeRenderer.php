@@ -22,6 +22,7 @@ declare(strict_types = 1);
 
 namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
+use Contao\StringUtil;
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Backend\AddToUrlEvent;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Image\GenerateHtmlEvent;
@@ -45,35 +46,35 @@ class FilterSettingTypeRenderer
      *
      * @var TranslatorInterface
      */
-    private $translator;
+    private TranslatorInterface $translator;
 
     /**
      * The event dispatcher.
      *
      * @var EventDispatcherInterface
      */
-    private $dispatcher;
+    private EventDispatcherInterface $dispatcher;
 
     /**
      * The note list factory.
      *
      * @var NoteListFactory
      */
-    private $noteListFactory;
+    private NoteListFactory $noteListFactory;
 
     /**
      * The MetaModels factory.
      *
      * @var IFactory
      */
-    private $factory;
+    private IFactory $factory;
 
     /**
      * The database connection.
      *
      * @var Connection
      */
-    private $connection;
+    private Connection $connection;
 
     /**
      * Create a new instance.
@@ -127,16 +128,18 @@ class FilterSettingTypeRenderer
      *
      * @return array
      */
-    private function getLabelParameters(ModelInterface $model)
+    private function getLabelParameters(ModelInterface $model): array
     {
         $metaModel = $this->getMetaModel(
             $model->getProperty('fid'),
             $this->factory,
             $this->connection
         );
+
         if (null === $metaModel) {
             return [];
         }
+
         $lists = $this->noteListFactory->getConfiguredListsFor($metaModel);
 
         return [
@@ -154,7 +157,7 @@ class FilterSettingTypeRenderer
      *
      * @return string
      */
-    private function getLabelImage(ModelInterface $model)
+    private function getLabelImage(ModelInterface $model): string
     {
         $image = !$model->getProperty('enabled')
             ? 'bundles/metamodelsnotelist/images/icons/notelist_1.png'
@@ -175,7 +178,7 @@ class FilterSettingTypeRenderer
             ContaoEvents::IMAGE_GET_HTML
         );
 
-        return sprintf(
+        return \sprintf(
             '<a href="%s">%s</a>',
             $urlEvent->getUrl(),
             $imageEvent->getHtml()
@@ -187,7 +190,7 @@ class FilterSettingTypeRenderer
      *
      * @return string
      */
-    private function getLabelText()
+    private function getLabelText(): string
     {
         return $this->translate('typenames.notelist', 'note list');
     }
@@ -199,14 +202,15 @@ class FilterSettingTypeRenderer
      *
      * @return string
      */
-    private function getLabelComment(string $comment)
+    private function getLabelComment(string $comment): string
     {
         if (!empty($comment)) {
             return sprintf(
                 $this->translator->translate('typedesc._comment_', 'tl_metamodel_filtersetting'),
-                specialchars($comment)
+                StringUtil::specialchars($comment)
             );
         }
+
         return '';
     }
 
@@ -214,17 +218,17 @@ class FilterSettingTypeRenderer
      * Translate a string and return the default if not translated.
      *
      * @param string $string  The language key to translate.
-     *
      * @param string $default The default text to return.
      *
      * @return string
      */
-    private function translate(string $string, string $default = '')
+    private function translate(string $string, string $default = ''): string
     {
         $label = $this->translator->translate($string, 'tl_metamodel_filtersetting');
         if ($label == 'typenames.notelist') {
             return $default;
         }
+
         return $label;
     }
 }

@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +12,8 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -24,6 +25,7 @@ namespace MetaModels\NoteListBundle\Form;
 use Contao\Controller;
 use Contao\FormFieldModel;
 use Contao\FormModel;
+use Contao\StringUtil;
 use Contao\Widget;
 use MetaModels\NoteListBundle\Storage\NoteListStorage;
 
@@ -41,7 +43,7 @@ class FormBuilder
      *
      * @return Form
      */
-    public function getForm(int $formId, NoteListStorage $noteList, string $action)
+    public function getForm(int $formId, NoteListStorage $noteList, string $action): Form
     {
         return new Form(
             $this->getFormConfig($formId),
@@ -58,7 +60,7 @@ class FormBuilder
      *
      * @return Form[]
      */
-    private function getFormConfig($formId)
+    private function getFormConfig($formId): array
     {
         return FormModel::findById($formId);
     }
@@ -70,7 +72,7 @@ class FormBuilder
      *
      * @return Widget[]
      */
-    private function getFormWidgets($formId)
+    private function getFormWidgets($formId): array
     {
         Controller::loadDataContainer('tl_form_field');
         // Get all form fields
@@ -82,7 +84,7 @@ class FormBuilder
 
         // Process the fields
         $row    = 0;
-        $maxRow = count($fields);
+        $maxRow = \count($fields);
         foreach ($objFields as $objField) {
             $widget = $this->buildWidget($objField, $row, $maxRow);
             if ($widget instanceof \FormHidden) {
@@ -95,7 +97,7 @@ class FormBuilder
             ++$row;
         }
 
-        return array_merge($hidden, $fields);
+        return \array_merge($hidden, $fields);
     }
 
     /**
@@ -110,7 +112,7 @@ class FormBuilder
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    private function buildWidget(FormFieldModel $field, int &$row, int &$maxRow)
+    private function buildWidget(FormFieldModel $field, int &$row, int &$maxRow): Widget|\Widget|null
     {
         // Continue if the class is not defined
         if (!class_exists($strClass = $GLOBALS['TL_FFL'][$field->type])) {
@@ -122,7 +124,8 @@ class FormBuilder
         $arrData['allowHtml']      = true;
         $arrData['rowClass']       = $this->getWidgetClass($row, $maxRow);
         $arrData['tableless']      = true;
-        // Increase the row count if its a password field
+
+        // Increase the row count if it's a password field
         if ($field->type == 'password') {
             ++$row;
             ++$maxRow;
@@ -136,7 +139,10 @@ class FormBuilder
 
         // Unset the default value depending on the field type (see #4722)
         if (!empty($arrData['value'])) {
-            if (!in_array('value', trimsplit('[,;]', $GLOBALS['TL_DCA']['tl_form_field']['palettes'][$field->type]))) {
+            if (!\in_array(
+                'value',
+                StringUtil::trimsplit('[,;]', $GLOBALS['TL_DCA']['tl_form_field']['palettes'][$field->type])
+            )) {
                 $arrData['value'] = '';
             }
         }
@@ -156,7 +162,7 @@ class FormBuilder
      *
      * @return string
      */
-    private function getWidgetClass(int $row, int $last)
+    private function getWidgetClass(int $row, int $last): string
     {
         $class = 'row_'.$row;
         if (0 === $row) {
