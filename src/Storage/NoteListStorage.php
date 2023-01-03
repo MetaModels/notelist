@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +12,8 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -205,13 +206,13 @@ class NoteListStorage
             self::META_KEY  => $data[self::META_KEY]
         ]);
         $this->dispatcher->dispatch(
-            NoteListEvents::MANIPULATE_NOTE_LIST,
             new ManipulateNoteListEvent(
                 $this->metaModel,
                 $this,
                 ManipulateNoteListEvent::OPERATION_ADD,
                 $item
-            )
+            ),
+            NoteListEvents::MANIPULATE_NOTE_LIST
         );
     }
 
@@ -231,13 +232,13 @@ class NoteListStorage
                 unset($data[self::ITEMS_KEY][$key]);
                 unset($data[self::META_KEY][$search]);
                 $this->dispatcher->dispatch(
-                    NoteListEvents::MANIPULATE_NOTE_LIST,
                     new ManipulateNoteListEvent(
                         $this->metaModel,
                         $this,
                         ManipulateNoteListEvent::OPERATION_REMOVE,
                         $item
-                    )
+                    ),
+                    NoteListEvents::MANIPULATE_NOTE_LIST
                 );
                 break;
             }
@@ -305,8 +306,8 @@ class NoteListStorage
     {
         $this->storageAdapter->setKey($this->storageKey, []);
         $this->dispatcher->dispatch(
-            NoteListEvents::MANIPULATE_NOTE_LIST,
-            new ManipulateNoteListEvent($this->metaModel, $this, ManipulateNoteListEvent::OPERATION_CLEAR)
+            new ManipulateNoteListEvent($this->metaModel, $this, ManipulateNoteListEvent::OPERATION_CLEAR),
+            NoteListEvents::MANIPULATE_NOTE_LIST
         );
     }
 

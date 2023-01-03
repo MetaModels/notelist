@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,12 +12,13 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 $GLOBALS['TL_LANG']['tl_metamodel_notelist']['new'][0]            = 'New note list';
 $GLOBALS['TL_LANG']['tl_metamodel_notelist']['new'][1]            = 'Create new note list';
@@ -41,6 +42,8 @@ $GLOBALS['TL_LANG']['tl_metamodel_notelist']['config_legend']     = 'Configurati
 $GLOBALS['TL_LANG']['tl_metamodel_notelist']['storageAdapter'][0] = 'Storage adapter';
 $GLOBALS['TL_LANG']['tl_metamodel_notelist']['storageAdapter'][1] = 'Choose the storage adapter to use.';
 $GLOBALS['TL_LANG']['tl_metamodel_notelist']['filter'][0]         = 'Filter';
-$GLOBALS['TL_LANG']['tl_metamodel_notelist']['filter'][1]         = 'Choose the filter setting to use for item acceptance.';
+$GLOBALS['TL_LANG']['tl_metamodel_notelist']['filter'][1]         =
+    'Choose the filter setting to use for item acceptance.';
 $GLOBALS['TL_LANG']['tl_metamodel_notelist']['form'][0]           = 'Form';
-$GLOBALS['TL_LANG']['tl_metamodel_notelist']['form'][1]           = 'Choose the form to use for meta data handling (if none selected, simple links for add/remove will get used).';
+$GLOBALS['TL_LANG']['tl_metamodel_notelist']['form'][1]           =
+    'Choose the form to use for meta data handling (if none selected, simple links for add/remove will get used).';

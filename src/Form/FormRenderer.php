@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017-2019 The MetaModels team.
+ * (c) 2017-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017-2019 The MetaModels team.
+ * @copyright  2017-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -103,7 +103,7 @@ class FormRenderer
         $template = new Template($renderSetting->get('template'));
 
         $event = new ParseNoteListFormEvent($this->metaModel, $renderSetting, $noteListId);
-        $this->dispatcher->dispatch(NoteListEvents::PARSE_NOTE_LIST_FORM, $event);
+        $this->dispatcher->dispatch($event, NoteListEvents::PARSE_NOTE_LIST_FORM);
 
         $template->view  = $renderSetting;
         $template->items = $items;

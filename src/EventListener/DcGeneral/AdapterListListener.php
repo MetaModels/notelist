@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +12,8 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -71,14 +72,14 @@ class AdapterListListener
         }
 
         if (('storageAdapter' !== $event->getPropertyName())
-        || ('tl_metamodel_notelist' !== $event->getEnvironment()->getDataDefinition()->getName())) {
+            || ('tl_metamodel_notelist' !== $event->getEnvironment()->getDataDefinition()->getName())) {
             return;
         }
 
         $adapters = $this->factory->getIdentifiers();
         $result   = [];
         foreach ($adapters as $adapter) {
-            $result[$adapter] = $this->translator->translate('adapter.' . $adapter, 'metamodels_notelist');
+            $result[$adapter] = $this->translator->translate('metamodels_notelist.adapter.' . $adapter, 'metamodels_notelist');
         }
 
         $event->setOptions($result);

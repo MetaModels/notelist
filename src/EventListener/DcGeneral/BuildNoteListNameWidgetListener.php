@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017-2020 The MetaModels team.
+ * (c) 2017-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017-2020 The MetaModels team.
+ * @copyright  2017-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -158,7 +158,7 @@ class BuildNoteListNameWidgetListener
         if (!$metaModel->isTranslated()) {
             $extra = $property->getExtra();
 
-            $extra['tl_class'] .= 'w50';
+            $extra['tl_class'] = ($extra['tl_class'] ?? '') . 'w50';
 
             $property
                 ->setWidgetType('text')
@@ -184,8 +184,8 @@ class BuildNoteListNameWidgetListener
             $rowClasses[] = ($langCode == $fallback) ? 'fallback_language' : 'normal_language';
         }
 
-        $languageLabel = $this->translator->translate('name_langcode', 'tl_metamodel_notelist');
-        $valueLabel    = $this->translator->translate('name_value', 'tl_metamodel_notelist');
+        $languageLabel = $this->translator->translate('name_langcode.0', 'tl_metamodel_notelist');
+        $valueLabel    = $this->translator->translate('name_value.0', 'tl_metamodel_notelist');
 
         $extra                   = $property->getExtra();
         $extra['minCount']       =
