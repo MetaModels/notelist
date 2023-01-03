@@ -78,27 +78,29 @@ class BuildNoteListNameWidgetListener
         }
 
         $metaModel = $this->getMetaModelByModelPid($event->getModel());
-        $value     = StringUtil::deserialize($event->getValue());
+        $values    = StringUtil::deserialize($event->getValue());
+
+        // Not translated, get string.
         if (!($metaModel instanceof ITranslatedMetaModel)) {
             // If we have an array, return the first value and exit, if not an array, return the value itself.
-            $event->setValue(\is_array($value) ? $value[\key($value)] : $value);
+            $event->setValue(\is_array($values) ? $values[\key($values)] : $values);
 
             return;
         }
 
-        // Sort like in MetaModel definition.
+        // Sort like in MetaModel definition for translated.
         $output = [];
         foreach ($metaModel->getLanguages() as $langCode) {
-            if (\is_array($value)) {
-                $subValue = $value[$langCode];
+            // Check is from database or from widget check.
+            if (isset($values[$langCode])) {
+                $output[] = ['langcode' => $langCode, 'value' => $values[$langCode]];
             } else {
-                $subValue = $value;
-            }
-
-            if (\is_array($subValue)) {
-                $output[] = \array_merge($subValue, ['langcode' => $langCode]);
-            } else {
-                $output[] = ['langcode' => $langCode, 'value' => $subValue];
+                foreach ($values as $value) {
+                    if ($langCode === $value['langcode']) {
+                        $output[] = ['langcode' => $langCode, 'value' => $value['value']];
+                        break;
+                    }
+                }
             }
         }
 
@@ -126,7 +128,7 @@ class BuildNoteListNameWidgetListener
         }
 
         $output = [];
-        foreach (StringUtil::deserialize($event->getValue()) as $subValue) {
+        foreach (StringUtil::deserialize($event->getValue(), true) as $subValue) {
             $langcode = $subValue['langcode'];
             unset($subValue['langcode']);
             if (\count($subValue) > 1) {
