@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +12,8 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -22,6 +23,7 @@ declare(strict_types = 1);
 namespace MetaModels\NoteListBundle\Filter;
 
 use MetaModels\Filter\Setting\IFilterSettingTypeFactory;
+use MetaModels\Filter\Setting\ISimple;
 use MetaModels\NoteListBundle\NoteListFactory;
 
 /**
@@ -34,7 +36,7 @@ class NoteListFilterSettingTypeFactory implements IFilterSettingTypeFactory
      *
      * @var NoteListFactory
      */
-    private $factory;
+    private NoteListFactory $factory;
 
     /**
      * Create a new instance.
@@ -49,7 +51,7 @@ class NoteListFilterSettingTypeFactory implements IFilterSettingTypeFactory
     /**
      * {@inheritDoc}
      */
-    public function getTypeName()
+    public function getTypeName(): string
     {
         return 'notelist';
     }
@@ -57,7 +59,7 @@ class NoteListFilterSettingTypeFactory implements IFilterSettingTypeFactory
     /**
      * {@inheritDoc}
      */
-    public function getTypeIcon()
+    public function getTypeIcon(): string
     {
         return 'system/modules/metamodels_notelist/public/images/icons/notelist.png';
     }
@@ -65,7 +67,7 @@ class NoteListFilterSettingTypeFactory implements IFilterSettingTypeFactory
     /**
      * {@inheritDoc}
      */
-    public function createInstance($information, $filterSettings)
+    public function createInstance($information, $filterSettings): ISimple|NoteListFilterSetting|null
     {
         if (empty($information['notelist'])) {
             return null;
@@ -73,7 +75,7 @@ class NoteListFilterSettingTypeFactory implements IFilterSettingTypeFactory
 
         return new NoteListFilterSetting(
             $this->factory,
-            $information['notelist'],
+            (string) $information['notelist'],
             $filterSettings->getMetaModel()
         );
     }
@@ -81,7 +83,7 @@ class NoteListFilterSettingTypeFactory implements IFilterSettingTypeFactory
     /**
      * {@inheritDoc}
      */
-    public function isNestedType()
+    public function isNestedType(): bool
     {
         return false;
     }
@@ -89,7 +91,7 @@ class NoteListFilterSettingTypeFactory implements IFilterSettingTypeFactory
     /**
      * {@inheritDoc}
      */
-    public function getMaxChildren()
+    public function getMaxChildren(): ?int
     {
         return 0;
     }
@@ -97,7 +99,7 @@ class NoteListFilterSettingTypeFactory implements IFilterSettingTypeFactory
     /**
      * {@inheritDoc}
      */
-    public function getKnownAttributeTypes()
+    public function getKnownAttributeTypes(): ?array
     {
         return null;
     }
@@ -107,7 +109,7 @@ class NoteListFilterSettingTypeFactory implements IFilterSettingTypeFactory
      *
      * @throws \LogicException As this class does not support this method.
      */
-    public function addKnownAttributeType($typeName)
+    public function addKnownAttributeType($typeName): IFilterSettingTypeFactory
     {
         throw new \LogicException('You must not add attribute types to ' . __CLASS__);
     }
