@@ -59,14 +59,6 @@
   },
   "extra": {
     "contao-manager-plugin": "MetaModels\\NoteListBundle\\ContaoManager\\Plugin",
-    "contao": {
-      "transifex": {
-        "project": "metamodels",
-        "prefix": "notelist-",
-        "languages_cto": "contao/languages",
-        "languages_tx": ".tx"
-      }
-    },
     "branch-alias": {
       "dev-feature/2.3.0": "2.3.x-dev"
     }
