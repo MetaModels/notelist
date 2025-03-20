@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,12 +12,13 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Test\Storage;
 
@@ -25,11 +26,11 @@ use MetaModels\Filter\IFilter;
 use MetaModels\IItem;
 use MetaModels\IItems;
 use MetaModels\IMetaModel;
-use MetaModels\NoteList\Event\ManipulateNoteListEvent;
-use MetaModels\NoteList\Event\NoteListEvents;
-use MetaModels\NoteList\Storage\AdapterInterface;
-use MetaModels\NoteList\Storage\NoteListStorage;
-use MetaModels\NoteList\Storage\ValueBag;
+use MetaModels\NoteListBundle\Event\ManipulateNoteListEvent;
+use MetaModels\NoteListBundle\Event\NoteListEvents;
+use MetaModels\NoteListBundle\Storage\AdapterInterface;
+use MetaModels\NoteListBundle\Storage\NoteListStorage;
+use MetaModels\NoteListBundle\Storage\ValueBag;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -42,10 +43,8 @@ class NoteListStorageTest extends TestCase
 {
     /**
      * Test that the class can be instantiated.
-     *
-     * @return void
      */
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
@@ -59,10 +58,8 @@ class NoteListStorageTest extends TestCase
 
     /**
      * Test that adding of items is correctly mapped to the adapter.
-     *
-     * @return void
      */
-    public function testAddingOfItemAdds()
+    public function testAddingOfItemAdds(): void
     {
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
@@ -90,8 +87,8 @@ class NoteListStorageTest extends TestCase
             ->expects($this->once())
             ->method('dispatch')
             ->with(
-                NoteListEvents::MANIPULATE_NOTE_LIST,
-                new ManipulateNoteListEvent($metaModel, $list, ManipulateNoteListEvent::OPERATION_ADD, $item)
+                new ManipulateNoteListEvent($metaModel, $list, ManipulateNoteListEvent::OPERATION_ADD, $item),
+                NoteListEvents::MANIPULATE_NOTE_LIST
             );
 
         $list->add($item);
@@ -99,10 +96,8 @@ class NoteListStorageTest extends TestCase
 
     /**
      * Test that removal of items is correctly mapped to the adapter.
-     *
-     * @return void
      */
-    public function testRemovalOfItemRemoves()
+    public function testRemovalOfItemRemoves(): void
     {
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
@@ -130,8 +125,8 @@ class NoteListStorageTest extends TestCase
             ->expects($this->once())
             ->method('dispatch')
             ->with(
-                NoteListEvents::MANIPULATE_NOTE_LIST,
-                new ManipulateNoteListEvent($metaModel, $list, ManipulateNoteListEvent::OPERATION_REMOVE, $item)
+                new ManipulateNoteListEvent($metaModel, $list, ManipulateNoteListEvent::OPERATION_REMOVE, $item),
+                NoteListEvents::MANIPULATE_NOTE_LIST
             );
 
         $list->remove($item);
@@ -139,10 +134,8 @@ class NoteListStorageTest extends TestCase
 
     /**
      * Test that has() returns true when an item is contained.
-     *
-     * @return void
      */
-    public function testHasReturnsTrueWhenItemIsContained()
+    public function testHasReturnsTrueWhenItemIsContained(): void
     {
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
@@ -161,10 +154,8 @@ class NoteListStorageTest extends TestCase
 
     /**
      * Test that has() returns false when an item is not contained.
-     *
-     * @return void
      */
-    public function testHasReturnsFalseWhenItemIsNotContained()
+    public function testHasReturnsFalseWhenItemIsNotContained(): void
     {
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
@@ -183,10 +174,8 @@ class NoteListStorageTest extends TestCase
 
     /**
      * Test that clearing of the list is correctly mapped to the adapter.
-     *
-     * @return void
      */
-    public function testClearingWorks()
+    public function testClearingWorks(): void
     {
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
@@ -199,18 +188,16 @@ class NoteListStorageTest extends TestCase
             ->expects($this->once())
             ->method('dispatch')
             ->with(
-                NoteListEvents::MANIPULATE_NOTE_LIST,
-                new ManipulateNoteListEvent($metaModel, $list, ManipulateNoteListEvent::OPERATION_CLEAR)
+                new ManipulateNoteListEvent($metaModel, $list, ManipulateNoteListEvent::OPERATION_CLEAR),
+                NoteListEvents::MANIPULATE_NOTE_LIST
             );
         $list->clear();
     }
 
     /**
      * Test that retrieval of count returns the correct amount.
-     *
-     * @return void
      */
-    public function testGetCountReturnsAmountOfStoredIds()
+    public function testGetCountReturnsAmountOfStoredIds(): void
     {
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
@@ -231,10 +218,8 @@ class NoteListStorageTest extends TestCase
 
     /**
      * Test that the correct storage key is returned.
-     *
-     * @return void
      */
-    public function testStorageKeyIsReturned()
+    public function testStorageKeyIsReturned(): void
     {
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
@@ -247,10 +232,8 @@ class NoteListStorageTest extends TestCase
 
     /**
      * Test that the correct value bag is returned.
-     *
-     * @return void
      */
-    public function testValueBagIsReturned()
+    public function testValueBagIsReturned(): void
     {
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
@@ -263,11 +246,9 @@ class NoteListStorageTest extends TestCase
     }
 
     /**
-     * Test that getItems() returns the result from the filter.
-     *
-     * @return void
+     * Test that getItems() returns the result from the filter
      */
-    public function testGetItemsReturnsItemsFromFilter()
+    public function testGetItemsReturnsItemsFromFilter(): void
     {
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
@@ -286,10 +267,8 @@ class NoteListStorageTest extends TestCase
 
     /**
      * Test the meta data handling.
-     *
-     * @return void
      */
-    public function testMetaDataHandling()
+    public function testMetaDataHandling(): void
     {
         $dispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $metaModel  = $this->getMockForAbstractClass(IMetaModel::class);
@@ -315,7 +294,7 @@ class NoteListStorageTest extends TestCase
 
         $this->assertSame(['some-key' => 'some-value'], $list->getMetaDataFor($item));
 
-        $list->updateMetaDataFor($item, ['anoter-key' => 'another-value']);
-        $this->assertSame(['anoter-key' => 'another-value'], $data[NoteListStorage::META_KEY]['42']);
+        $list->updateMetaDataFor($item, ['another-key' => 'another-value']);
+        $this->assertSame(['another-key' => 'another-value'], $data[NoteListStorage::META_KEY]['42']);
     }
 }

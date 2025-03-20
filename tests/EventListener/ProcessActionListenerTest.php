@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,12 +12,13 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Test\EventListener;
 
@@ -31,7 +32,7 @@ use MetaModels\NoteListBundle\Test\TestCase;
 /**
  * This tests the ProcessActionListener class.
  *
- * @covers \MetaModels\NoteList\EventListener\ProcessActionListener
+ * @covers \MetaModels\NoteListBundle\EventListener\ProcessActionListener
  */
 class ProcessActionListenerTest extends TestCase
 {

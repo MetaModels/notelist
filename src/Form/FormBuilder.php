@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017-2023 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,18 +13,20 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017-2023 The MetaModels team.
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Form;
 
 use Contao\Controller;
 use Contao\FormFieldModel;
+use Contao\FormHidden;
 use Contao\FormModel;
+use Contao\Model\Collection;
 use Contao\StringUtil;
 use Contao\Widget;
 use MetaModels\NoteListBundle\Storage\NoteListStorage;
@@ -58,11 +60,14 @@ class FormBuilder
      *
      * @param int $formId The form ID.
      *
-     * @return Form[]
+     * @return FormModel
      */
-    private function getFormConfig($formId)
+    private function getFormConfig(int $formId): FormModel
     {
-        return FormModel::findById($formId);
+        $form = FormModel::findById($formId);
+        assert($form instanceof FormModel);
+
+        return $form;
     }
 
     /**
@@ -72,22 +77,26 @@ class FormBuilder
      *
      * @return Widget[]
      */
-    private function getFormWidgets($formId)
+    private function getFormWidgets(int $formId): array
     {
         Controller::loadDataContainer('tl_form_field');
         // Get all form fields
-        if (null === ($objFields = FormFieldModel::findPublishedByPid($formId)) || 0 === $objFields->count()) {
+        $objFields = FormFieldModel::findPublishedByPid($formId);
+        if (!($objFields instanceof Collection) || 0 === $objFields->count()) {
             return [];
         }
         $fields = [];
         $hidden = [];
 
-        // Process the fields
+        // Process the fields.
         $row    = 0;
         $maxRow = \count($fields);
         foreach ($objFields as $objField) {
             $widget = $this->buildWidget($objField, $row, $maxRow);
-            if ($widget instanceof \FormHidden) {
+            if (null === $widget) {
+                continue;
+            }
+            if ($widget instanceof FormHidden) {
                 $hidden[] = $widget;
                 --$maxRow;
                 continue;
@@ -115,7 +124,7 @@ class FormBuilder
     private function buildWidget(FormFieldModel $field, int &$row, int &$maxRow): Widget|\Widget|null
     {
         // Continue if the class is not defined
-        if (!class_exists($strClass = $GLOBALS['TL_FFL'][$field->type])) {
+        if (!\class_exists($strClass = ($GLOBALS['TL_FFL'][$field->type] ?? ''))) {
             return null;
         }
 
@@ -126,23 +135,25 @@ class FormBuilder
         $arrData['tableless']      = true;
 
         // Increase the row count if it's a password field
-        if ($field->type == 'password') {
+        if ($field->type === 'password') {
             ++$row;
             ++$maxRow;
             $arrData['rowClassConfirm'] = $this->getWidgetClass($row, $maxRow);
         }
 
         // Submit buttons do not use the name attribute
-        if ($field->type == 'submit') {
+        if ($field->type === 'submit') {
             $arrData['name'] = '';
         }
 
         // Unset the default value depending on the field type (see #4722)
         if (!empty($arrData['value'])) {
-            if (!\in_array(
-                'value',
-                StringUtil::trimsplit('[,;]', $GLOBALS['TL_DCA']['tl_form_field']['palettes'][$field->type])
-            )) {
+            if (
+                !\in_array(
+                    'value',
+                    StringUtil::trimsplit('[,;]', $GLOBALS['TL_DCA']['tl_form_field']['palettes'][$field->type])
+                )
+            ) {
                 $arrData['value'] = '';
             }
         }
@@ -164,7 +175,7 @@ class FormBuilder
      */
     private function getWidgetClass(int $row, int $last): string
     {
-        $class = 'row_'.$row;
+        $class = 'row_' . $row;
         if (0 === $row) {
             $class .= ' row_first';
         }

@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 - 2018 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,21 +13,27 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017 - 2018 The MetaModels team.
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Bridge;
 
+use Contao\System;
 use Contao\Widget;
 use MetaModels\IFactory;
 use MetaModels\NoteListBundle\Form\FormRenderer;
 use MetaModels\NoteListBundle\NoteListFactory;
 use MetaModels\Render\Setting\IRenderSettingFactory;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * This renders a form field listing all the items in the note list.
@@ -35,6 +41,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * @property string      metamodel_notelist
  * @property string|null metamodel_customTplEmail
  * @property string[]    parsed
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 class FormFieldBridge extends Widget
 {
@@ -43,21 +51,21 @@ class FormFieldBridge extends Widget
      *
      * @var string[]
      */
-    private $lists;
+    private array $lists;
 
     /**
      * The list of render settings to apply (indexed by list id).
      *
      * @var string[]
      */
-    private $renderSettings;
+    private array $renderSettings;
 
     /**
      * The list of render settings to apply (indexed by list id).
      *
      * @var string[]
      */
-    private $renderSettingsEmail;
+    private array $renderSettingsEmail;
 
     /**
      * {@inheritDoc}
@@ -76,7 +84,7 @@ class FormFieldBridge extends Widget
     {
         switch ($strKey) {
             case 'metamodel_notelist':
-                $data = unserialize($varValue);
+                $data = \unserialize($varValue, ['allowed_classes' => false]);
                 foreach ($data as $entry) {
                     $listId                             = $entry['notelist'];
                     $this->lists[]                      = $listId;
@@ -107,7 +115,7 @@ class FormFieldBridge extends Widget
                         'email'    => $this->renderSettingsEmail[$listId]
                     ];
                 }
-                return serialize($data);
+                return \serialize($data);
             case 'value':
                 return $this->parseValue();
             default:
@@ -145,10 +153,11 @@ class FormFieldBridge extends Widget
      */
     public function parseValue()
     {
+        /** @psalm-suppress UndefinedThisPropertyFetch */
         return $this->abstractParse(
             $this->renderSettingsEmail,
             'text',
-            $this->metamodel_customTplEmail ?: 'email_metamodels_notelist'
+            $this->metamodel_customTplEmail ?: 'email_metamodels_notelist.text'
         );
     }
 
@@ -162,10 +171,12 @@ class FormFieldBridge extends Widget
      *
      * @return string
      *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    private function abstractParse($renderSetting, $format, $template, $attributes = null)
+    private function abstractParse(array $renderSetting, string $format, string $template, $attributes = null): string
     {
         $keepTemplate      = $this->customTpl;
         $keepFormat        = $this->strFormat;
@@ -174,43 +185,59 @@ class FormFieldBridge extends Widget
         $this->strTemplate = $template;
 
         /** @var IFactory $factory */
-        $container   = \Contao\System::getContainer()->get('metamodels-notelist.bridge-locator');
-        $factory     = $container->get(IFactory::class);
+        $container      = System::getContainer();
+        $serviceLocator = $container->get('metamodels-notelist.bridge-locator');
+        assert($serviceLocator instanceof ServiceLocator);
+        $factory     = $serviceLocator->get(IFactory::class);
         $metaModelId = $this->arrConfiguration['metamodel'];
         $metaModel   = $factory->getMetaModel($factory->translateIdToMetaModelName($metaModelId));
 
-        if ('BE' === TL_MODE) {
-            return sprintf(
-                $GLOBALS['TL_LANG']['MSC']['metamodel_notelist_display_backend'],
-                ($metaModel ? $metaModel->getName() : 'unknown MetaModel id ' . $metaModelId)
+        $isBackend = (bool) System::getContainer()
+            ->get('contao.routing.scope_matcher')
+            ?->isBackendRequest(
+                System::getContainer()->get('request_stack')?->getCurrentRequest() ?? Request::create('')
+            );
+
+        if ($isBackend) {
+            $translator = $container->get('translator');
+            assert($translator instanceof TranslatorInterface);
+
+            return $translator->trans(
+                'notelist.display_backend',
+                [
+                    '%id%' => ($metaModel ? $metaModel->getName() : 'Unknown MetaModel id ' . $metaModelId)
+                ],
+                'notelist_default'
             );
         }
 
-        $metaModel = $factory->getMetaModel(
-            $factory->translateIdToMetaModelName($metaModelId)
-        );
-
-        if (!$metaModel) {
+        if (null === $metaModel) {
             return '';
         }
 
         $renderer = new FormRenderer(
             $metaModel,
-            $container->get(IRenderSettingFactory::class),
-            $container->get(NoteListFactory::class),
-            $container->get(EventDispatcherInterface::class)
+            $serviceLocator->get(IRenderSettingFactory::class),
+            $serviceLocator->get(NoteListFactory::class),
+            $serviceLocator->get(EventDispatcherInterface::class)
         );
 
         $parsed = [];
+        $names  = [];
         foreach ($this->lists as $listId) {
+            $names[$listId]  = $serviceLocator->get(NoteListFactory::class)->getList($metaModel, $listId)->getName();
             $parsed[$listId] = $renderer->render($listId, $renderSetting[$listId], $format);
         }
 
+        /** @psalm-suppress UndefinedThisPropertyAssignment */
+        $this->names       = $names;
+        /** @psalm-suppress UndefinedThisPropertyAssignment */
         $this->parsed      = $parsed;
         $result            = parent::parse($attributes);
         $this->customTpl   = $keepTemplate;
         $this->strFormat   = $keepFormat;
         $this->strTemplate = 'form_metamodels_notelist';
+
         return $result;
     }
 }

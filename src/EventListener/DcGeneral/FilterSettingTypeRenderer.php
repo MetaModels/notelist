@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017-2023 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,26 +13,26 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017-2023 The MetaModels team.
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
-use Contao\StringUtil;
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Backend\AddToUrlEvent;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Image\GenerateHtmlEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\ModelToLabelEvent;
 use ContaoCommunityAlliance\DcGeneral\Data\ModelInterface;
-use ContaoCommunityAlliance\Translator\TranslatorInterface;
+use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use MetaModels\IFactory;
 use MetaModels\NoteListBundle\NoteListFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Handles rendering of model from tl_metamodel_filtersetting.
@@ -110,14 +110,15 @@ class FilterSettingTypeRenderer
     {
         $model = $event->getModel();
 
-        if (($model->getProviderName() !== 'tl_metamodel_filtersetting')
+        if (
+            ($model->getProviderName() !== 'tl_metamodel_filtersetting')
             || ('notelist' !== $event->getModel()->getProperty('type'))
         ) {
             return;
         }
 
         $event
-            ->setLabel($this->translator->translate('typedesc.notelist', 'tl_metamodel_filtersetting'))
+            ->setLabel($this->translator->trans('typedesc.notelist', [], 'tl_metamodel_filtersetting'))
             ->setArgs($this->getLabelParameters($model));
     }
 
@@ -131,7 +132,7 @@ class FilterSettingTypeRenderer
     private function getLabelParameters(ModelInterface $model): array
     {
         $metaModel = $this->getMetaModel(
-            $model->getProperty('fid'),
+            (string) $model->getProperty('fid'),
             $this->factory,
             $this->connection
         );
@@ -145,8 +146,8 @@ class FilterSettingTypeRenderer
         return [
             $this->getLabelImage($model),
             $this->getLabelText(),
+            $lists[$model->getProperty('notelist')],
             $this->getLabelComment($model->getProperty('comment')),
-            $lists[$model->getProperty('notelist')]
         ];
     }
 
@@ -165,7 +166,7 @@ class FilterSettingTypeRenderer
 
         /** @var AddToUrlEvent $urlEvent */
         $urlEvent = $this->dispatcher->dispatch(
-            new AddToUrlEvent('act=edit&amp;id='.$model->getId()),
+            new AddToUrlEvent('act=edit&amp;id=' . $model->getId()),
             ContaoEvents::BACKEND_ADD_TO_URL
         );
 
@@ -173,7 +174,7 @@ class FilterSettingTypeRenderer
         $imageEvent = $this->dispatcher->dispatch(
             new GenerateHtmlEvent(
                 $image,
-                $this->translator->translate('typedesc.notelist', 'tl_metamodel_filtersetting')
+                $this->translator->trans('typedesc.notelist', [], 'tl_metamodel_filtersetting')
             ),
             ContaoEvents::IMAGE_GET_HTML
         );
@@ -181,7 +182,7 @@ class FilterSettingTypeRenderer
         return \sprintf(
             '<a href="%s">%s</a>',
             $urlEvent->getUrl(),
-            $imageEvent->getHtml()
+            $imageEvent->getHtml() ?? ''
         );
     }
 
@@ -205,9 +206,10 @@ class FilterSettingTypeRenderer
     private function getLabelComment(string $comment): string
     {
         if (!empty($comment)) {
-            return sprintf(
-                $this->translator->translate('typedesc._comment_', 'tl_metamodel_filtersetting'),
-                StringUtil::specialchars($comment)
+            return $this->translator->trans(
+                'typedesc._comment_',
+                ['%comment%' => StringUtil::specialchars($comment)],
+                'tl_metamodel_filtersetting'
             );
         }
 
@@ -224,8 +226,8 @@ class FilterSettingTypeRenderer
      */
     private function translate(string $string, string $default = ''): string
     {
-        $label = $this->translator->translate($string, 'tl_metamodel_filtersetting');
-        if ($label == 'typenames.notelist') {
+        $label = $this->translator->trans($string, [], 'tl_metamodel_filtersetting');
+        if ($label === 'typenames.notelist') {
             return $default;
         }
 

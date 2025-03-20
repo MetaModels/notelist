@@ -18,7 +18,7 @@
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Event;
 
@@ -35,45 +35,45 @@ class ManipulateNoteListEvent extends Event
     /**
      * An item has been added.
      */
-    const OPERATION_ADD = 'add';
+    public const OPERATION_ADD = 'add';
 
     /**
      * An item has been removed.
      */
-    const OPERATION_REMOVE = 'remove';
+    public const OPERATION_REMOVE = 'remove';
 
     /**
      * The list has been cleared.
      */
-    const OPERATION_CLEAR = 'clear';
+    public const OPERATION_CLEAR = 'clear';
 
     /**
      * The MetaModel.
      *
      * @var IMetaModel
      */
-    private $metaModel;
+    private IMetaModel $metaModel;
 
     /**
      * The note list being manipulated.
      *
      * @var NoteListStorage
      */
-    private $noteList;
+    private NoteListStorage $noteList;
 
     /**
      * The operation.
      *
      * @var string
      */
-    private $operation;
+    private string $operation;
 
     /**
      * The item being added/removed (if any).
      *
      * @var IItem|null
      */
-    private $item;
+    private ?IItem $item;
 
     /**
      * Create a new instance.
@@ -81,7 +81,7 @@ class ManipulateNoteListEvent extends Event
      * @param IMetaModel      $metaModel The MetaModel.
      * @param NoteListStorage $noteList  The note list.
      * @param string          $operation The operation.
-     * @param IItem           $item      The item being added/removed (if any).
+     * @param IItem|null      $item      The item being added/removed (if any).
      */
     public function __construct(IMetaModel $metaModel, NoteListStorage $noteList, string $operation, IItem $item = null)
     {

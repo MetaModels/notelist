@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017-2023 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,21 +13,24 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017-2023 The MetaModels team.
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\EventListener;
 
-use Contao\ContentModel;
-use Contao\CoreBundle\Exception\RedirectResponseException;
-use Contao\ModuleModel;
-use Contao\System;
 use ContaoCommunityAlliance\UrlBuilder\UrlBuilder;
 use ContaoCommunityAlliance\UrlBuilder\UrlBuilderFactoryInterface;
+use Contao\ContentModel;
+use Contao\CoreBundle\Exception\RedirectResponseException;
+use Contao\CoreBundle\InsertTag\InsertTagParser;
+use Contao\FormFieldModel;
+use Contao\Model\Collection;
+use Contao\ModuleModel;
+use Contao\System;
 use MetaModels\Events\ParseItemEvent;
 use MetaModels\Events\RenderItemListEvent;
 use MetaModels\FrontendIntegration\HybridList;
@@ -40,22 +43,26 @@ use MetaModels\NoteListBundle\Form\FormBuilder;
 use MetaModels\NoteListBundle\NoteListFactory;
 use MetaModels\NoteListBundle\Storage\NoteListStorage;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * This class adds notelist actions in MetaModel frontend lists.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ParseItemListener
 {
     /**
      * Key to use in the render setting.
      */
-    const NOTELIST_LIST = '$note-lists';
+    public const NOTELIST_LIST = '$note-lists';
 
     /**
      * Key to use for flag in the render setting for disabling form rendering.
      */
-    const NOTELIST_LIST_DISABLE_FORM = '$note-lists-no-form';
+    public const NOTELIST_LIST_DISABLE_FORM = '$note-lists-no-form';
 
     /**
      * The note list factory.
@@ -124,11 +131,17 @@ class ParseItemListener
      *
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+     *
+     * @psalm-suppress UndefinedMagicPropertyFetch
      */
     public function handleListRendering(RenderItemListEvent $event): void
     {
         $caller = $event->getCaller();
-        if (!($caller instanceof HybridList) && !($caller instanceof ContentModel) && !($caller instanceof ModuleModel)) {
+        if (
+            !($caller instanceof HybridList)
+            && !($caller instanceof ContentModel)
+            && !($caller instanceof ModuleModel)
+        ) {
             return;
         }
 
@@ -136,7 +149,7 @@ class ParseItemListener
             return;
         }
 
-        $lists = !empty($tmp = $caller->metamodel_notelist) ? unserialize($tmp) : [];
+        $lists = null !== ($tmp = $caller->metamodel_notelist) ? \unserialize($tmp, ['allowed_classes' => false]) : [];
 
         if (!$this->processActions($event->getList()->getMetaModel(), $lists)) {
             $event->getList()->getView()->set(self::NOTELIST_LIST, $lists);
@@ -172,7 +185,7 @@ class ParseItemListener
     public function addNoteListActions(ParseItemEvent $event): void
     {
         $settings = $event->getRenderSettings();
-        if (!($lists = $settings->get(self::NOTELIST_LIST))) {
+        if (null === ($lists = $settings->get(self::NOTELIST_LIST))) {
             return;
         }
 
@@ -186,28 +199,28 @@ class ParseItemListener
                 continue;
             }
 
-            // Add notelist name.
+            // Add note list name.
             $parsed['notelists_names']['notelist_' . $list] = $storage->getName();
 
             if ($formId = $storage->getMeta()->get('form')) {
                 // Add payload values.
-                if (\count($storage->getMetaDataFor($item))) {
-                    $parsed['notelists_payload_values']['notelist_' . $list] = $storage->getMetaDataFor($item);
+                if (\count($storageData = $storage->getMetaDataFor($item))) {
+                    $parsed['notelists_payload_values']['notelist_' . $list] = $storageData;
                 }
 
                 // Add payload labels.
-                $parsed['notelists_payload_labels']['notelist_' . $list] = $this->getFormFieldLabels(intval($formId));
+                $parsed['notelists_payload_labels']['notelist_' . $list] = $this->getFormFieldLabels((int) $formId);
             }
 
             // Hide all other actions input if form disabled.
-            if ($settings->get(self::NOTELIST_LIST_DISABLE_FORM)) {
+            if (null !== $settings->get(self::NOTELIST_LIST_DISABLE_FORM)) {
                 continue;
             }
 
             if ($formId = $storage->getMeta()->get('form')) {
                 // Need to render the form here.
                 $parsed['actions']['notelist_' . $list . '_form'] =
-                    $this->generateForm($item, $storage, intval($formId));
+                    $this->generateForm($item, $storage, (int) $formId);
                 if (!$storage->has($item)) {
                     continue;
                 }
@@ -261,21 +274,19 @@ class ParseItemListener
 
         if ($url->hasQueryParameter('notelist_' . $list . '_action')) {
             return new ProcessActionEvent(
-                $url->getQueryParameter('notelist_' . $list . '_action'),
-                ['item' => $url->getQueryParameter('notelist_' . $list . '_item')],
+                $url->getQueryParameter('notelist_' . $list . '_action') ?? '',
+                ['item' => $url->getQueryParameter('notelist_' . $list . '_item') ?? ''],
                 $this->factory->getList($metaModel, $list),
                 $metaModel
             );
         }
 
-        if (!($noteList = $this->factory->getList($metaModel, $list))) {
-            return null;
-        }
+        $noteList = $this->factory->getList($metaModel, $list);
 
         $valueBag = $noteList->getMeta();
         if ($valueBag->has('form') && ($formId = $valueBag->get('form'))) {
-            $form = $this->formBuilder->getForm(intval($formId), $noteList, $this->getCurrentUrl()->getUrl());
-            if ($data = $form->getSubmittedData()) {
+            $form = $this->formBuilder->getForm((int) $formId, $noteList, $this->getCurrentUrl()->getUrl());
+            if (null !== ($data = $form->getSubmittedData())) {
                 return new ProcessActionEvent(
                     'add',
                     $data,
@@ -308,9 +319,16 @@ class ParseItemListener
             ->setQueryParameter('notelist_' . $storage->getStorageKey() . '_item', $item->get('id'));
 
         // Obtain list and generate button for it.
+        $translator = System::getContainer()->get('translator');
+        assert($translator instanceof TranslatorInterface);
+
         return [
             'name'  => $storage->getName(),
-            'label' => sprintf($GLOBALS['TL_LANG']['MSC']['metamodel_notelist_' . $action], $storage->getName()),
+            'label' => $translator->trans(
+                'metamodel_notelist.' . $action,
+                ['%list_name%' => $storage->getName()],
+                'notelist_default'
+            ),
             'href'  => $url->getUrl(),
             'class' => $action,
             'meta'  => $storage->getMetaDataFor($item),
@@ -345,8 +363,10 @@ class ParseItemListener
         $formLabels = [];
 
         if ($formId) {
-            $objFields = \FormFieldModel::findPublishedByPid($formId);
+            $objFields = FormFieldModel::findPublishedByPid($formId);
+            assert($objFields instanceof Collection);
             $parser    = System::getContainer()->get('contao.insert_tag.parser');
+            assert($parser instanceof InsertTagParser);
 
             foreach ($objFields as $objField) {
                 $formLabels[$objField->name] = $parser->replace($objField->label);
@@ -386,6 +406,7 @@ class ParseItemListener
     protected function getCurrentUrl(): UrlBuilder
     {
         $request = $this->requestStack->getCurrentRequest();
+        assert($request instanceof Request);
 
         return $this->urlBuilderFactory->create($request->getRequestUri());
     }

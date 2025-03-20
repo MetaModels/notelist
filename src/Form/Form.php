@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017-2023 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,12 +13,12 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017-2023 The MetaModels team.
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Form;
 
@@ -27,13 +27,14 @@ use Contao\FormModel;
 use Contao\FormSubmit;
 use Contao\Input;
 use Contao\StringUtil;
-use Contao\Widget;
+use Contao\System;
 use MetaModels\IItem;
 use MetaModels\NoteListBundle\Storage\NoteListStorage;
 use MetaModels\Render\Template;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * This represents a form for submitting meta data.
+ * This represents a form for submitting meta-data.
  */
 class Form
 {
@@ -42,14 +43,14 @@ class Form
      *
      * @var FormModel
      */
-    private $form;
+    private FormModel $form;
 
     /**
      * The widgets.
      *
      * @var array
      */
-    private $widgets;
+    private array $widgets;
 
     /**
      * The form id.
@@ -80,7 +81,7 @@ class Form
      * @param string          $action   The POST action.
      * @param NoteListStorage $noteList The note list.
      */
-    public function __construct (FormModel $form, array $widgets, string $action, NoteListStorage $noteList)
+    public function __construct(FormModel $form, array $widgets, string $action, NoteListStorage $noteList)
     {
         $this->form     = $form;
         $this->widgets  = $widgets;
@@ -107,6 +108,10 @@ class Form
         $doNotSubmit = false;
         $submitted   = [];
         foreach ($this->widgets as $widget) {
+            if (null === $widget) {
+                continue;
+            }
+
             $name = $widget->name;
             $widget->validate();
             if ($widget->hasErrors()) {
@@ -155,17 +160,28 @@ class Form
         $idCount = 1;
         $data    = ($this->noteList->has($item)) ? $this->noteList->getMetaDataFor($item) : [];
         foreach ($this->widgets as $widget) {
-            if (array_key_exists($widget->name, $data)) {
+            if (null === $widget) {
+                continue;
+            }
+
+            if (\array_key_exists($widget->name, $data)) {
                 $widget->value = $data[$widget->name];
                 $widget->id    = $item->get('id') . '_' . $idCount;
                 $idCount++;
             }
+
             $fields .= $widget->parse();
         }
 
+        $translator = System::getContainer()->get('translator');
+        assert($translator instanceof TranslatorInterface);
+
         $action      = !$this->noteList->getMetaDataFor($item) ? 'add' : 'edit';
-        $submitLabel =
-            \sprintf($GLOBALS['TL_LANG']['MSC']['metamodel_notelist_' . $action], $this->noteList->getName());
+        $submitLabel = $translator->trans(
+            'metamodel_notelist.' . $action,
+            ['%list_name%' => $this->noteList->getName()],
+            'notelist_default'
+        );
 
         /** @var FormSubmit $submit */
         $submit = new $GLOBALS['TL_FFL']['submit'](
@@ -173,7 +189,7 @@ class Form
         );
         $fields .= $submit->parse();
 
-        $cssClass = trim(StringUtil::deserialize($this->form->attributes, true)[1]);
+        $cssClass = \trim(StringUtil::deserialize($this->form->attributes, true)[1]);
 
         $template = new Template('form_wrapper');
         $template->setData(
@@ -181,7 +197,7 @@ class Form
                 'formId'       => 'nl_' . $this->noteList->getStorageKey() . '_f' . $item->get('id'),
                 'hidden'       => '',
                 'formSubmit'   => $this->formId,
-                'requestToken' => REQUEST_TOKEN,
+                'requestToken' => System::getContainer()->get('contao.csrf.token_manager')?->getDefaultTokenValue(),
                 'cssID'        => '',
                 'style'        => '',
                 'headline'     => '',

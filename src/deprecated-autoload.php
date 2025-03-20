@@ -17,7 +17,7 @@
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use MetaModels\NoteListBundle\Bridge\DcaCallbackBridge;
 use MetaModels\NoteListBundle\Bridge\FormFieldBridge;
@@ -102,11 +102,13 @@ spl_autoload_register(
             @trigger_error('Class "' . $class . '" has been renamed to "' . $classes[$class] . '"', E_USER_DEPRECATED);
             // @codingStandardsIgnoreEnd
 
-            if (!(
+            if (
+                !(
                 class_exists($classes[$class])
                 || interface_exists($classes[$class])
                 || trait_exists($classes[$class])
-            )) {
+                )
+            ) {
                 spl_autoload_call($class);
             }
 

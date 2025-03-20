@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,15 +12,17 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Bridge;
 
+use Contao\System;
 use MetaModels\NoteListBundle\InsertTags;
 
 /**
@@ -28,14 +30,14 @@ use MetaModels\NoteListBundle\InsertTags;
  */
 class InsertTagBridge
 {
-    const TAG_BASE = 'metamodels_notelist';
+    public const TAG_BASE = 'metamodels_notelist';
 
     /**
      * Delegate the insert tag processing.
      *
      * @param string $tagName The insert tag name.
      *
-     * @return bool|string
+     * @return bool|int
      */
     public function replaceInsertTags($tagName)
     {
@@ -45,12 +47,12 @@ class InsertTagBridge
         }
 
         // pop off the base.
-        array_shift($arguments);
+        \array_shift($arguments);
 
         /** @var InsertTags $processor */
-        $processor = \Contao\System::getContainer()->get('metamodels-notelist.bridge-locator')->get(InsertTags::class);
+        $processor = System::getContainer()->get('metamodels-notelist.bridge-locator')?->get(InsertTags::class);
         // Process the tag.
-        switch (array_shift($arguments)) {
+        switch (\array_shift($arguments)) {
             case 'sum':
                 return $processor->processNoteListSum($arguments);
             default:

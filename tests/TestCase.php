@@ -17,7 +17,7 @@
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Test;
 
@@ -25,19 +25,4 @@ use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
-    /**
-     * Preload the passed Contao classes.
-     *
-     * @param array $classes The classes to preload.
-     *
-     * @return void
-     */
-    protected function preloadContaoClasses(array $classes)
-    {
-        foreach ($classes as $class) {
-            if (!class_exists($class)) {
-                class_alias('Contao\\' . $class, $class);
-            }
-        }
-    }
 }

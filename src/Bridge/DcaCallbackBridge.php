@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017-2023 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,21 +13,24 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017-2023 The MetaModels team.
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Bridge;
 
 use Contao\DataContainer;
+use Contao\System;
 use Doctrine\DBAL\Connection;
 use MetaModels\BackendIntegration\TemplateList;
 use MetaModels\IFactory;
+use MetaModels\IMetaModel;
 use MetaModels\NoteListBundle\NoteListFactory;
 use MenAtWork\MultiColumnWizardBundle\Contao\Widgets\MultiColumnWizard;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
  * This class bridges Contao callbacks to proper listeners.
@@ -47,11 +50,20 @@ class DcaCallbackBridge
         $factory         = $container->get(IFactory::class);
         $noteListFactory = $container->get(NoteListFactory::class);
 
-        $metaModelId = $dataContainer->activeRecord->metamodel;
-        $metaModel   = $factory->getMetaModel($factory->translateIdToMetaModelName($metaModelId));
-        if (!$metaModel) {
+        /** @psalm-suppress UndefinedMagicPropertyFetch */
+        if (
+            null === $dataContainer->activeRecord
+            || !(\is_string($metaModelId = $dataContainer->activeRecord->metamodel) || \is_int($metaModelId))
+            || empty($metaModelId)
+        ) {
             return [];
         }
+
+        $metaModel = $factory->getMetaModel($factory->translateIdToMetaModelName((string) $metaModelId));
+        if (null === $metaModel) {
+            return [];
+        }
+
         return $noteListFactory->getConfiguredListsFor($metaModel);
     }
 
@@ -69,7 +81,9 @@ class DcaCallbackBridge
 
         $result = [];
         foreach ($metaModels as $metaModel) {
-            $instance = $factory->getMetaModel($metaModel);
+            if (!(($instance = $factory->getMetaModel($metaModel)) instanceof IMetaModel)) {
+                continue;
+            }
 
             $result[$instance->get('id')] = $instance->getName();
         }
@@ -90,11 +104,23 @@ class DcaCallbackBridge
         $factory         = $container->get(IFactory::class);
         $noteListFactory = $container->get(NoteListFactory::class);
 
-        $metaModelId = $wizard->activeRecord->metamodel;
-        $metaModel   = $factory->getMetaModel($factory->translateIdToMetaModelName($metaModelId));
-        if (!$metaModel) {
+        /**
+         * @psalm-suppress DocblockTypeContradiction
+         * @psalm-suppress UndefinedMagicPropertyFetch
+         */
+        if (
+            null === $wizard->activeRecord
+            || !(\is_string($metaModelId = $wizard->activeRecord->metamodel) || \is_int($metaModelId))
+            || empty($metaModelId)
+        ) {
             return [];
         }
+
+        $metaModel = $factory->getMetaModel($factory->translateIdToMetaModelName((string) $metaModelId));
+        if (null === $metaModel) {
+            return [];
+        }
+
         return $noteListFactory->getConfiguredListsFor($metaModel);
     }
 
@@ -107,6 +133,18 @@ class DcaCallbackBridge
      */
     public function getRenderSettingsMcw(MultiColumnWizard $wizard): array
     {
+        /**
+         * @psalm-suppress DocblockTypeContradiction
+         * @psalm-suppress UndefinedMagicPropertyFetch
+         */
+        if (
+            null === $wizard->activeRecord
+            || !(\is_string($metaModelId = $wizard->activeRecord->metamodel) || \is_int($metaModelId))
+            || empty($metaModelId)
+        ) {
+            return [];
+        }
+
         /** @var Connection $database */
         $database = $this->getLocator()->get(Connection::class);
 
@@ -115,7 +153,7 @@ class DcaCallbackBridge
             ->select('*')
             ->from('tl_metamodel_rendersettings')
             ->where('pid=:pid')
-            ->setParameter('pid', $wizard->activeRecord->metamodel)
+            ->setParameter('pid', (int) $metaModelId)
             ->executeQuery()
             ->fetchAllAssociative();
 
@@ -145,10 +183,13 @@ class DcaCallbackBridge
     /**
      * Obtain the service locator.
      *
-     * @return \Symfony\Component\DependencyInjection\ServiceLocator
+     * @return ServiceLocator
      */
-    private static function getLocator()
+    private static function getLocator(): ServiceLocator
     {
-        return \Contao\System::getContainer()->get('metamodels-notelist.bridge-locator');
+        $serviceLocator = System::getContainer()->get('metamodels-notelist.bridge-locator');
+        assert($serviceLocator instanceof ServiceLocator);
+
+        return $serviceLocator;
     }
 }

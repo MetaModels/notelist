@@ -1,8 +1,25 @@
 <?php $this->extend('form_row'); ?>
 <?php $this->block('field'); ?>
 <fieldset id="ctrl_<?= $this->id ?>" class="metamodels_notelist_container<?php if ($this->class) { echo ' ' . $this->class; } ?>">
-  <?php foreach ($this->parsed as $listName => $listItems): ?>
-    <?= $listItems ?>
+  <?php if ($this->label): ?>
+    <legend>
+      <?php if ($this->mandatory): ?>
+        <span class="invisible"><?= $this->mandatoryField ?> </span><?= $this->label ?><span class="mandatory">*</span>
+      <?php else: ?>
+        <?= $this->label ?>
+      <?php endif; ?>
+    </legend>
+  <?php endif; ?>
+
+  <?php if ($this->hasErrors()): ?>
+    <p class="error"><?= $this->getErrorAsString() ?></p>
+  <?php endif; ?>
+
+  <?php foreach ($this->parsed as $listId => $listItems): ?>
+    <div class="notelist list_<?= $listId ?>">
+      <div class="list_name"><?= $this->names[$listId] ?></div>
+      <?= $listItems ?>
+    </div>
   <?php endforeach; ?>
 </fieldset>
 <?php $this->endblock(); ?>

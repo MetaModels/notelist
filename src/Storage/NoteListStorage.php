@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017-2023 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,12 +13,12 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017-2023 The MetaModels team.
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Storage;
 
@@ -48,14 +48,14 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class NoteListStorage
 {
     /**
-     * The key to use in the storage array for meta data.
+     * The key to use in the storage array for meta-data.
      */
-    const META_KEY = 'meta-data';
+    public const META_KEY = 'meta-data';
 
     /**
      * The key to use in the storage array for item ids.
      */
-    const ITEMS_KEY = 'items';
+    public const ITEMS_KEY = 'items';
 
     /**
      * The event dispatcher.
@@ -102,12 +102,12 @@ class NoteListStorage
     /**
      * The cached item count.
      *
-     * @var bool|string[]|null
+     * @var false|list<string>|null
      */
     private array|bool|null $filterCache = false;
 
     /**
-     * The meta data for the note list.
+     * The meta-data for the note list.
      *
      * @var ValueBag
      */
@@ -122,7 +122,7 @@ class NoteListStorage
      * @param string                   $storageKey     The key to use in the session adapter.
      * @param array                    $names          The human readable names as array locale => value.
      * @param ICollection|null         $filter         The filter setting.
-     * @param ValueBag|null            $meta           The meta data for the note list.
+     * @param ValueBag|null            $meta           The meta-data for the note list.
      */
     public function __construct(
         EventDispatcherInterface $dispatcher,
@@ -153,7 +153,7 @@ class NoteListStorage
     }
 
     /**
-     * Obtain the meta data value bag.
+     * Obtain the meta-data value bag.
      *
      * @return ValueBag
      */
@@ -174,20 +174,22 @@ class NoteListStorage
         if (!$this->filter) {
             return true;
         }
+
         if (false === $this->filterCache) {
             $filter = $this->metaModel->getEmptyFilter();
             // Check if we accept the item.
             $this->filter->addRules($filter, []);
             $this->filterCache = $filter->getMatchingIds();
         }
-        return ($this->filterCache === null) || \in_array($item->get('id'), $this->filterCache);
+
+        return ($this->filterCache === null) || \in_array($item->get('id'), $this->filterCache, true);
     }
 
     /**
      * Add an item.
      *
      * @param IItem $item The item to add.
-     * @param array $meta The meta data to set.
+     * @param array $meta The meta-data to set.
      *
      * @return void
      */
@@ -247,9 +249,9 @@ class NoteListStorage
     }
 
     /**
-     * Retrieve the meta data information for an item.
+     * Retrieve the meta-data information for an item.
      *
-     * @param IItem $item The item to retrieve the meta data for.
+     * @param IItem $item The item to retrieve the meta-data for.
      *
      * @return array
      */
@@ -261,9 +263,9 @@ class NoteListStorage
     }
 
     /**
-     * Update the meta data information for an item.
+     * Update the meta-data information for an item.
      *
-     * @param IItem $item The item to retrieve the meta data for.
+     * @param IItem $item The item to retrieve the meta-data for.
      * @param array $meta The meta information to store.
      *
      * @return void
@@ -313,7 +315,7 @@ class NoteListStorage
     /**
      * Retrieve the list of contained ids.
      *
-     * @return string[]
+     * @return list<string>
      */
     public function getItemIds(): array
     {

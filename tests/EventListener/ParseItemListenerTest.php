@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,20 +12,24 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Test\EventListener;
 
 use Contao\CoreBundle\Exception\RedirectResponseException;
+use Contao\CoreBundle\Framework\Adapter;
+use Contao\TemplateLoader;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Controller\RedirectEvent;
+use ContaoCommunityAlliance\DcGeneral\Contao\RequestScopeDeterminator;
 use ContaoCommunityAlliance\UrlBuilder\UrlBuilder;
 use ContaoCommunityAlliance\UrlBuilder\UrlBuilderFactoryInterface;
 use MetaModels\Events\RenderItemListEvent;
+use MetaModels\Filter\FilterUrlBuilder;
 use MetaModels\FrontendIntegration\HybridList;
 use MetaModels\IMetaModel;
 use MetaModels\ItemList;
@@ -45,6 +49,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * This tests the ParseItemListener class.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ParseItemListenerTest extends TestCase
 {
@@ -52,15 +58,17 @@ class ParseItemListenerTest extends TestCase
      * Test the parsing.
      *
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function testHandlesListRendering()
     {
-        $this->preloadContaoClasses(['System', 'Controller', 'Frontend', ]);
+        $filterUrlBuilder = $this->getMockBuilder(FilterUrlBuilder::class)->disableOriginalConstructor()->getMock();
 
         $factory = $this
             ->getMockBuilder(NoteListFactory::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getConfiguredListsFor', 'getList', 'getName'])
+            ->onlyMethods(['getConfiguredListsFor', 'getList', 'getName'])
             ->getMock();
 
         $metaModel     = $this->getMockForAbstractClass(IMetaModel::class);
@@ -73,7 +81,8 @@ class ParseItemListenerTest extends TestCase
 
         $list = $this
             ->getMockBuilder(ItemList::class)
-            ->setMethods(['getMetaModel', 'getView'])
+            ->onlyMethods(['getMetaModel', 'getView'])
+            ->setConstructorArgs([null, null, null, null, $filterUrlBuilder])
             ->getMock();
         $list
             ->expects($this->once())
@@ -84,24 +93,52 @@ class ParseItemListenerTest extends TestCase
             ->method('getView')
             ->willReturn($renderSetting);
 
-        $noteList = $this
+        $noteList1 = $this
             ->getMockBuilder(NoteListStorage::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getMeta'])
+            ->onlyMethods(['getMeta'])
             ->getMock();
-        $noteList->expects($this->once())->method('getMeta')->willReturn(new ValueBag([]));
+        $noteList1->expects($this->once())->method('getMeta')->willReturn(new ValueBag([]));
+        $noteList2 = $this
+            ->getMockBuilder(NoteListStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getMeta'])
+            ->getMock();
+        $noteList2->expects($this->once())->method('getMeta')->willReturn(new ValueBag([]));
 
         $factory
             ->expects($this->exactly(2))
             ->method('getList')
-            ->withConsecutive([$metaModel, '23'], [$metaModel, '42'])
-            ->willReturnOnConsecutiveCalls($noteList, null);
+            ->willReturnCallback(
+                function (
+                    IMetaModel $aMetaModel,
+                    string $noteListId
+                ) use (
+                    $metaModel,
+                    $noteList1,
+                    $noteList2
+                ): NoteListStorage {
+                    self::assertSame($metaModel, $aMetaModel);
+                    switch ($noteListId) {
+                        case '23':
+                            return $noteList1;
+                        case '42':
+                            return $noteList2;
+                        default:
+                            self::fail('Unknown notelist id ' . $noteListId);
+                    }
+                }
+            );
 
-        $template = new Template();
+        $templateLoader    = $this->getMockBuilder(Adapter::class)->disableOriginalConstructor()->getMock();
+        $scopeDeterminator =
+            $this->getMockBuilder(RequestScopeDeterminator::class)->disableOriginalConstructor()->getMock();
+
+        $template = new Template('', $templateLoader, $scopeDeterminator);
         $caller   = $this
             ->getMockBuilder(HybridList::class)
             ->disableOriginalConstructor()
-            ->setMethods(['__get'])
+            ->onlyMethods(['__get'])
             ->getMock();
 
         $caller
@@ -126,10 +163,10 @@ class ParseItemListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $listener   = $this
+        $listener = $this
             ->getMockBuilder(ParseItemListener::class)
             ->setConstructorArgs([$factory, $dispatcher, $formBuilder, $urlBuilderFactory, $requestStack])
-            ->setMethods(['getCurrentUrl'])
+            ->onlyMethods(['getCurrentUrl'])
             ->getMock();
 
         $listener
@@ -144,40 +181,44 @@ class ParseItemListenerTest extends TestCase
 
     /**
      * Test the parsing.
-     *
-     * @return void
      */
-    public function testSkipsHandlingOfListRenderingForUnknownCaller()
+    public function testSkipsHandlingOfListRenderingForUnknownCaller(): void
     {
         $listener = $this
             ->getMockBuilder(ParseItemListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['processActions'])
+            ->onlyMethods([])
             ->getMock();
-        $listener->expects($this->never())->method('processActions');
 
-        $event = new RenderItemListEvent(new ItemList(), new Template(), null);
+        $event = $this
+            ->getMockBuilder(RenderItemListEvent::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $event->expects(self::once())->method('getCaller')->willReturn(null);
+        $event->expects(self::never())->method('getList');
 
         $listener->handleListRendering($event);
     }
 
     /**
      * Test the parsing.
-     *
-     * @return void
      */
-    public function testSkipsHandlingOfListRenderingForCallerWithoutNoteLists()
+    public function testSkipsHandlingOfListRenderingForCallerWithoutNoteLists(): void
     {
         $listener = $this
             ->getMockBuilder(ParseItemListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['processActions'])
+            ->onlyMethods([])
             ->getMock();
-        $listener->expects($this->never())->method('processActions');
 
         $renderer = $this->getMockBuilder(HybridList::class)->disableOriginalConstructor()->getMock();
 
-        $event = new RenderItemListEvent(new ItemList(), new Template(), $renderer);
+        $event = $this
+            ->getMockBuilder(RenderItemListEvent::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $event->expects(self::once())->method('getCaller')->willReturn($renderer);
+        $event->expects(self::never())->method('getList');
 
         $listener->handleListRendering($event);
     }
@@ -186,13 +227,15 @@ class ParseItemListenerTest extends TestCase
      * Test the parsing.
      *
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function testListRenderingProcessesActions()
     {
         $factory = $this
             ->getMockBuilder(NoteListFactory::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getConfiguredListsFor', 'getList', 'getName'])
+            ->onlyMethods(['getConfiguredListsFor', 'getList', 'getName'])
             ->getMock();
 
         $metaModel = $this->getMockForAbstractClass(IMetaModel::class);
@@ -208,11 +251,15 @@ class ParseItemListenerTest extends TestCase
             ->with($metaModel, '23')
             ->willReturn($list);
 
-        $template = new Template();
+        $templateLoader    = $this->getMockBuilder(Adapter::class)->disableOriginalConstructor()->getMock();
+        $scopeDeterminator =
+            $this->getMockBuilder(RequestScopeDeterminator::class)->disableOriginalConstructor()->getMock();
+
+        $template = new Template('', $templateLoader, $scopeDeterminator);
         $caller   = $this
             ->getMockBuilder(HybridList::class)
             ->disableOriginalConstructor()
-            ->setMethods(['__get'])
+            ->onlyMethods(['__get'])
             ->getMock();
 
         $caller
@@ -234,11 +281,12 @@ class ParseItemListenerTest extends TestCase
         $dispatcher
             ->expects($this->once())->method('dispatch')
             ->willReturnCallback(
-                function ($name, $event) {
+                function ($event) {
                     $this->assertInstanceOf(ProcessActionEvent::class, $event);
                     /** @var ProcessActionEvent $event */
                     $this->assertSame('action-name', $event->getAction());
                     $event->setSuccess();
+                    return $event;
                 }
             );
 
@@ -253,12 +301,15 @@ class ParseItemListenerTest extends TestCase
         $listener   = $this
             ->getMockBuilder(ParseItemListener::class)
             ->setConstructorArgs([$factory, $dispatcher, $formBuilder, $urlBuilderFactory, $requestStack])
-            ->setMethods(['getCurrentUrl'])
+            ->onlyMethods(['getCurrentUrl'])
             ->getMock();
+
+        $filterUrlBuilder = $this->getMockBuilder(FilterUrlBuilder::class)->disableOriginalConstructor()->getMock();
 
         $itemList = $this
             ->getMockBuilder(ItemList::class)
-            ->setMethods(['getMetaModel', 'getView'])
+            ->onlyMethods(['getMetaModel', 'getView'])
+            ->setConstructorArgs([null, null, null, null, $filterUrlBuilder])
             ->getMock();
         $itemList
             ->expects($this->once())
@@ -288,12 +339,10 @@ class ParseItemListenerTest extends TestCase
      */
     public function testHandleFormRendering()
     {
-        $this->preloadContaoClasses(['System', 'Controller', 'Frontend', ]);
-
         $factory = $this
             ->getMockBuilder(NoteListFactory::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getConfiguredListsFor', 'getList', 'getName'])
+            ->onlyMethods(['getConfiguredListsFor', 'getList', 'getName'])
             ->getMock();
 
         $metaModel     = $this->getMockForAbstractClass(IMetaModel::class);
@@ -320,7 +369,7 @@ class ParseItemListenerTest extends TestCase
         $listener   = $this
             ->getMockBuilder(ParseItemListener::class)
             ->setConstructorArgs([$factory, $dispatcher, $formBuilder, $urlBuilderFactory, $requestStack])
-            ->setMethods(['getCurrentUrl'])
+            ->onlyMethods(['getCurrentUrl'])
             ->getMock();
 
         $listener

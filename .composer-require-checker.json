@@ -1,0 +1,26 @@
+{
+  "symbol-whitelist": [
+    "array", "bool", "false", "int", "null", "self", "static", "parent", "string", "true", "void", "mixed",
+    "ContaoCommunityAlliance\\Contao\\Bindings\\ContaoEvents",
+    "ContaoCommunityAlliance\\Contao\\Bindings\\Events\\Backend\\AddToUrlEvent",
+    "ContaoCommunityAlliance\\Contao\\Bindings\\Events\\Image\\GenerateHtmlEvent",
+    "ContaoCommunityAlliance\\Translator\\TranslatorInterface",
+    "Contao\\ManagerBundle\\ContaoManagerBundle",
+    "Contao\\ManagerPlugin\\Bundle\\BundlePluginInterface",
+    "Contao\\ManagerPlugin\\Bundle\\Config\\BundleConfig",
+    "Contao\\ManagerPlugin\\Bundle\\Parser\\ParserInterface",
+    "Contao\\ManagerPlugin\\Routing\\RoutingPluginInterface",
+    "Doctrine\\Bundle\\DoctrineBundle\\DoctrineBundle",
+    "Doctrine\\DBAL\\Connection",
+    "FormFieldModel",
+    "FormHidden",
+    "MetaModels\\NoteListBundle\\Form\\System",
+    "MetaModels\\NoteList\\Bridge\\DcaCallbackBridge",
+    "Symfony\\Component\\Config\\FileLocator",
+    "Symfony\\Component\\EventDispatcher\\EventDispatcherInterface",
+    "Symfony\\Component\\HttpFoundation\\RequestStack",
+    "Symfony\\Component\\Translation\\IdentityTranslator",
+    "Symfony\\Contracts\\EventDispatcher\\Event",
+    "tl_user_group"
+  ]
+}

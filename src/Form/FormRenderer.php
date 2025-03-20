@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017-2023 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,15 +13,16 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017-2023 The MetaModels team.
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Form;
 
+use Contao\System;
 use MetaModels\IItems;
 use MetaModels\IMetaModel;
 use MetaModels\NoteListBundle\Event\NoteListEvents;
@@ -31,6 +32,7 @@ use MetaModels\NoteListBundle\NoteListFactory;
 use MetaModels\Render\Setting\IRenderSettingFactory;
 use MetaModels\Render\Template;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * This class takes care of configuring and obtaining note list instances.
@@ -42,28 +44,28 @@ class FormRenderer
      *
      * @var IMetaModel
      */
-    private $metaModel;
+    private IMetaModel $metaModel;
 
     /**
      * The render setting factory.
      *
      * @var IRenderSettingFactory
      */
-    private $renderSettingFactory;
+    private IRenderSettingFactory $renderSettingFactory;
 
     /**
      * The note list factory.
      *
      * @var NoteListFactory
      */
-    private $noteListFactory;
+    private NoteListFactory $noteListFactory;
 
     /**
      * The event dispatcher.
      *
      * @var EventDispatcherInterface
      */
-    private $dispatcher;
+    private EventDispatcherInterface $dispatcher;
 
     /**
      * Create a new instance.
@@ -100,20 +102,25 @@ class FormRenderer
 
         $items = $this->getItemsForList($noteListId);
 
-        $template = new Template($renderSetting->get('template'));
+        $template = new Template($renderSetting->get('template') ?? '');
 
         $event = new ParseNoteListFormEvent($this->metaModel, $renderSetting, $noteListId);
         $this->dispatcher->dispatch($event, NoteListEvents::PARSE_NOTE_LIST_FORM);
 
         $template->view  = $renderSetting;
         $template->items = $items;
-        $translator      = \Contao\System::getContainer()->get('translator');
-        foreach ([
-                     'MSC.' . $this->metaModel->getTableName() . '.' . $renderSettingId . '.noItemsMsg',
-                     'MSC.' . $this->metaModel->getTableName() . '.noItemsMsg',
-                     'MSC.noItemsMsg',
-                 ] as $key) {
-            if ($key !== $translated = $translator->trans($key, [], 'contao_default')) {
+
+        $translator = System::getContainer()->get('translator');
+        assert($translator instanceof TranslatorInterface);
+
+        foreach (
+            [
+                $this->metaModel->getTableName() . '.' . $renderSettingId . '.noItemsMsg',
+                $this->metaModel->getTableName() . '.noItemsMsg',
+                'noItemsMsg',
+            ] as $key
+        ) {
+            if ($key !== $translated = $translator->trans($key, [], 'notelist_list')) {
                 break;
             }
         }

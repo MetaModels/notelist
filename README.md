@@ -11,12 +11,15 @@ The note list extends MetaModels by the possibility of adding individual data re
 in the FE output or also to pass them to a form. Possible uses for the note list range from a "normal note list" to
 comparison lists, e.g. of product properties, to shopping basket functions.
 
-# Installation
+## Installation
+
+Add with composer
 
 `composer require metamodels/notelist` 
 
-Docs:
------------
+or search `metamodels/notelist` in Contao-Manager to install.
+
+## Docs
 
 [Use the note list (currently only in DE)](https://metamodels.readthedocs.io/de/latest/manual/extended/notelist.html)
 

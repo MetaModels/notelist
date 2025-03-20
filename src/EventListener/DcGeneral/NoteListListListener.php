@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,16 +12,18 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
+use ContaoCommunityAlliance\DcGeneral\DataDefinition\ContainerInterface;
 use Doctrine\DBAL\Connection;
 use MetaModels\IFactory;
 use MetaModels\NoteListBundle\NoteListFactory;
@@ -36,23 +38,23 @@ class NoteListListListener
     /**
      * The MetaModels factory.
      *
-     * @var IFactory|NoteListFactory
+     * @var IFactory
      */
-    private $factory;
+    private IFactory $factory;
 
     /**
      * The note list factory.
      *
      * @var NoteListFactory
      */
-    private $listFactory;
+    private NoteListFactory $listFactory;
 
     /**
      * The database.
      *
      * @var Connection
      */
-    private $database;
+    private Connection $database;
 
     /**
      * Create a new instance.
@@ -81,15 +83,20 @@ class NoteListListListener
             return;
         }
 
-        if (('notelist' !== $event->getPropertyName())
-        || ('tl_metamodel_filtersetting' !== $event->getEnvironment()->getDataDefinition()->getName())) {
+        if (
+            ('notelist' !== $event->getPropertyName())
+            || !(($dataDefinition = $event->getEnvironment()->getDataDefinition()) instanceof ContainerInterface)
+            || ('tl_metamodel_filtersetting' !== $dataDefinition->getName())
+        ) {
             return;
         }
+
         $metaModel = $this->getMetaModel(
-            $event->getModel()->getProperty('fid'),
+            (string) $event->getModel()->getProperty('fid'),
             $this->factory,
             $this->database
         );
+
         if (null === $metaModel) {
             return;
         }

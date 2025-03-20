@@ -18,7 +18,7 @@
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Filter;
 
@@ -122,6 +122,8 @@ class NoteListFilterSetting implements ISimple
 
     /**
      * {@inheritDoc}
+     *
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function getParameterFilterWidgets(
         $arrIds,
