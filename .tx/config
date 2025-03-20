@@ -1,0 +1,56 @@
+[main]
+host = https://app.transifex.com
+
+[o:metamodels:p:notelist:r:metamodels_navigation]
+file_filter            = src/Resources/translations/metamodels_navigation.<lang>.xlf
+source_file            = src/Resources/translations/metamodels_navigation.en.xlf
+type                   = XLIFF
+minimum_perc           = 0
+resource_name          = metamodels_navigation
+replace_edited_strings = false
+keep_translations      = false
+
+[o:metamodels:p:notelist:r:notelist_default]
+file_filter            = src/Resources/translations/notelist_default.<lang>.xlf
+source_file            = src/Resources/translations/notelist_default.en.xlf
+type                   = XLIFF
+minimum_perc           = 0
+resource_name          = notelist_default
+replace_edited_strings = false
+keep_translations      = false
+
+[o:metamodels:p:notelist:r:notelist_list]
+file_filter            = src/Resources/translations/notelist_list.<lang>.xlf
+source_file            = src/Resources/translations/notelist_list.en.xlf
+type                   = XLIFF
+minimum_perc           = 0
+resource_name          = notelist_list
+replace_edited_strings = false
+keep_translations      = false
+
+[o:metamodels:p:notelist:r:tl_metamodel]
+file_filter            = src/Resources/translations/tl_metamodel.<lang>.xlf
+source_file            = src/Resources/translations/tl_metamodel.en.xlf
+type                   = XLIFF
+minimum_perc           = 0
+resource_name          = tl_metamodel
+replace_edited_strings = false
+keep_translations      = false
+
+[o:metamodels:p:notelist:r:tl_metamodel_filtersetting]
+file_filter            = src/Resources/translations/tl_metamodel_filtersetting.<lang>.xlf
+source_file            = src/Resources/translations/tl_metamodel_filtersetting.en.xlf
+type                   = XLIFF
+minimum_perc           = 0
+resource_name          = tl_metamodel_filtersetting
+replace_edited_strings = false
+keep_translations      = false
+
+[o:metamodels:p:notelist:r:tl_metamodel_notelist]
+file_filter            = src/Resources/translations/tl_metamodel_notelist.<lang>.xlf
+source_file            = src/Resources/translations/tl_metamodel_notelist.en.xlf
+type                   = XLIFF
+minimum_perc           = 0
+resource_name          = tl_metamodel_notelist
+replace_edited_strings = false
+keep_translations      = false
