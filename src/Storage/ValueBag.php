@@ -17,7 +17,7 @@
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Storage;
 
@@ -27,6 +27,8 @@ use IteratorAggregate;
 
 /**
  * A generic bag containing values.
+ *
+ * @implements IteratorAggregate<string, mixed>
  */
 final class ValueBag implements IteratorAggregate, Countable
 {
@@ -35,19 +37,17 @@ final class ValueBag implements IteratorAggregate, Countable
      *
      * @var array
      */
-    private $values = [];
+    private array $values = [];
 
     /**
      * Create a new instance of a bag.
      *
-     * @param array|null $values The initial values to use.
+     * @param array $values The initial values to use.
      */
     public function __construct(array $values)
     {
-        if (is_array($values)) {
-            foreach ($values as $key => $value) {
-                $this->set($key, $value);
-            }
+        foreach ($values as $key => $value) {
+            $this->set($key, $value);
         }
     }
 
@@ -60,7 +60,7 @@ final class ValueBag implements IteratorAggregate, Countable
      */
     public function has(string $name)
     {
-        return array_key_exists($name, $this->values);
+        return \array_key_exists($name, $this->values);
     }
 
     /**
@@ -124,7 +124,7 @@ final class ValueBag implements IteratorAggregate, Countable
      */
     public function count(): int
     {
-        return count($this->values);
+        return \count($this->values);
     }
 
     /**

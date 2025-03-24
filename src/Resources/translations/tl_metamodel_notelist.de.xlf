@@ -1,0 +1,146 @@
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="src/Resources/translations/tl_metamodel_notelist.en.xlf" target-language="de">
+    <body>
+      <trans-unit id="backend-module.headline" resname="backend-module.headline">
+        <source>Note list</source>
+        <target>Merkliste</target>
+      </trans-unit>
+      <trans-unit id="notelist.label" resname="notelist.label">
+        <source>Note list</source>
+        <target>Merkliste</target>
+      </trans-unit>
+      <trans-unit id="notelist.description" resname="notelist.description">
+        <source>Please select the note list to filter for.</source>
+        <target>Bitte wählen Sie die Merkliste aus, nach der Sie filtern möchten.</target>
+      </trans-unit>
+      <trans-unit id="editRecord" resname="editRecord">
+        <source>Edit record %id%</source>
+        <target>Datensatz bearbeiten %id%</target>
+      </trans-unit>
+      <trans-unit id="new.label" resname="new.label">
+        <source>New note list</source>
+        <target>Neue Merkliste</target>
+      </trans-unit>
+      <trans-unit id="new.description" resname="new.description">
+        <source>Create new note list.</source>
+        <target>Erstelle eine neue Merkliste.</target>
+      </trans-unit>
+      <trans-unit id="all.label" resname="all.label">
+      <source>Edit multiple</source>
+      <target>Mehrere bearbeiten</target>
+    </trans-unit>
+      <trans-unit id="all.description" resname="all.description">
+        <source>Edit multiple elements at once</source>
+        <target>Mehrere Elemente auf einmal bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="editheader.label" resname="editheader.label">
+        <source>Edit note list</source>
+        <target>Bearbeite Merkliste</target>
+      </trans-unit>
+      <trans-unit id="editheader.description" resname="editheader.description">
+        <source>Edit the note list ID %id%</source>
+        <target>Bearbeite Merkliste ID %id%</target>
+      </trans-unit>
+      <trans-unit id="cut.label" resname="cut.label">
+        <source>Cut note list</source>
+        <target>Merkliste ausschneiden</target>
+      </trans-unit>
+      <trans-unit id="cut.description" resname="cut.description">
+        <source>Cut note list ID %id%.</source>
+        <target>Merkliste ausschneiden ID %id%.</target>
+      </trans-unit>
+      <trans-unit id="copy.label" resname="copy.label">
+        <source>Copy note list</source>
+        <target>Merkliste kopieren</target>
+      </trans-unit>
+      <trans-unit id="copy.description" resname="copy.description">
+        <source>Copy note list ID %id%.</source>
+        <target>Merkliste kopieren ID %id%.</target>
+      </trans-unit>
+      <trans-unit id="delete.label" resname="delete.label">
+        <source>Delete note list</source>
+        <target>Merkliste löschen</target>
+      </trans-unit>
+      <trans-unit id="delete.description" resname="delete.description">
+        <source>Delete note list ID %id%.</source>
+        <target>Merkliste löschen ID %id%.</target>
+      </trans-unit>
+      <trans-unit id="show.label" resname="show.label">
+        <source>Attribute details</source>
+        <target>Attribut-Details</target>
+      </trans-unit>
+      <trans-unit id="show.description" resname="show.description">
+        <source>Show details of note list ID %id%.</source>
+        <target>Die Details des Attributs ID %id% anzeigen.</target>
+      </trans-unit>
+      <trans-unit id="name.label" resname="name.label">
+        <source>Note list name</source>
+        <target>Name der Merkliste</target>
+      </trans-unit>
+      <trans-unit id="name.description" resname="name.description">
+        <source>Enter the name for this note list</source>
+        <target>Bitte den Namen der Merkliste eingeben.</target>
+      </trans-unit>
+      <trans-unit id="name_langcode.label" resname="name_langcode.label">
+        <source>Language</source>
+        <target>Sprache</target>
+      </trans-unit>
+      <trans-unit id="name_value.label" resname="name_value.label">
+        <source>Note list name</source>
+        <target>Name der Merkliste</target>
+      </trans-unit>
+      <trans-unit id="storageAdapter.label" resname="storageAdapter.label">
+        <source>Storage adapter</source>
+        <target>Speicheradapter</target>
+      </trans-unit>
+      <trans-unit id="storageAdapter.description" resname="storageAdapter.description">
+        <source>Choose the storage adapter to use.</source>
+        <target>Bitte einen Adapter zum Speichern der Daten wählen.</target>
+      </trans-unit>
+      <trans-unit id="filter.label" resname="filter.label">
+        <source>Filter</source>
+        <target>Filter</target>
+      </trans-unit>
+      <trans-unit id="filter.description" resname="filter.description">
+        <source>Choose the filter setting to use for item acceptance.</source>
+        <target>Wählen Sie die Filtereinstellung aus, die für die Annahme von Datensätzen verwendet werden soll.</target>
+      </trans-unit>
+      <trans-unit id="form.label" resname="form.label">
+        <source>Form</source>
+        <target>Formular</target>
+      </trans-unit>
+      <trans-unit id="form.description" resname="form.description">
+        <source>Choose the form to use for meta-data handling (if none selected, simple links for add/remove will get used).</source>
+        <target>Wählen Sie das Formular aus, das für die Bearbeitung der zusätzlichen Daten verwendet werden soll (wenn kein Formular ausgewählt ist, werden einfache Links zum Hinzufügen/Entfernen verwendet).</target>
+      </trans-unit>
+      <trans-unit id="config_legend" resname="config_legend">
+        <source>Configuration</source>
+        <target>Konfiguration</target>
+      </trans-unit>
+      <trans-unit id="save" resname="save">
+        <source>Save</source>
+        <target>Speichern</target>
+      </trans-unit>
+      <trans-unit id="saveNclose" resname="saveNclose">
+        <source>Save and close</source>
+        <target>Speichern und schliessen</target>
+      </trans-unit>
+      <trans-unit id="saveNcreate" resname="saveNcreate">
+        <source>Save and new</source>
+        <target>Speichern und neu</target>
+      </trans-unit>
+      <trans-unit id="saveNback" resname="saveNback">
+        <source>Save and go back</source>
+        <target>Speichern und zurück</target>
+      </trans-unit>
+      <trans-unit id="backBT" resname="backBT">
+        <source>Go back</source>
+        <target>Zurück</target>
+      </trans-unit>
+      <trans-unit id="backBTTitle" resname="backBTTitle">
+        <source>Back to the previous page</source>
+        <target>Zurück zur vorherigen Seite navigieren</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

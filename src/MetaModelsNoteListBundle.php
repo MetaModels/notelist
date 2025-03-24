@@ -18,7 +18,7 @@
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle;
 
@@ -29,5 +29,4 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class MetaModelsNoteListBundle extends Bundle
 {
-
 }

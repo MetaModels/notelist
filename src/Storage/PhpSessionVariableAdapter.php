@@ -18,7 +18,7 @@
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Storage;
 
@@ -48,7 +48,7 @@ class PhpSessionVariableAdapter implements AdapterInterface
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    public function setKey(string $key, array $value)
+    public function setKey(string $key, array $value): void
     {
         $_SESSION['metamodel_notelists']['metamodel_notelist_' . $key] = $value;
     }

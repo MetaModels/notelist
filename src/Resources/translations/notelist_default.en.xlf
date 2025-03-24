@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="src/Resources/translations/notelist_default.en.xlf">
+    <body>
+      <trans-unit id="notelist" resname="notelist">
+        <source>Note lists for "%list_name%"</source>
+      </trans-unit>
+      <trans-unit id="metamodel_notelist.add" resname="metamodel_notelist.add">
+        <source>Add to "%list_name%"</source>
+      </trans-unit>
+      <trans-unit id="metamodel_notelist.remove" resname="metamodel_notelist.remove">
+        <source>Remove from "%list_name%"</source>
+      </trans-unit>
+      <trans-unit id="metamodel_notelist.edit" resname="metamodel_notelist.edit">
+        <source>Edit by "%list_name%"</source>
+      </trans-unit>
+      <trans-unit id="notelist.display_backend" resname="notelist.display_backend">
+        <source>MetaModels note list for MetaModel: %id%</source>
+      </trans-unit>
+      <trans-unit id="notelist.adapter.php-session" resname="notelist.adapter.php-session">
+        <source>PHP Session variable</source>
+      </trans-unit>
+      <trans-unit id="notelist.adapter.contao-session" resname="notelist.adapter.contao-session">
+        <source>Contao Session (for logged in members)</source>
+      </trans-unit>
+      <trans-unit id="notelist.payload.headline" resname="notelist.payload.headline">
+        <source>Form data</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

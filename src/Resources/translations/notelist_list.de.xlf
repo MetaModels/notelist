@@ -1,0 +1,10 @@
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="src/Resources/translations/notelist_list.en.xlf" target-language="de">
+    <body>
+      <trans-unit id="noItemsMsg" resname="noItemsMsg">
+        <source>The note list contains no data records.</source>
+        <target>Die Merkliste enthält keine Datensätze.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

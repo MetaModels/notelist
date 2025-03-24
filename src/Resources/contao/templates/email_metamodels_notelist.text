@@ -1,3 +1,0 @@
-<?php foreach ($this->parsed as $listName => $listItems): ?>
-  <?= $listItems ?>
-<?php endforeach; ?>

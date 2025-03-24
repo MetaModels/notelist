@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,12 +12,13 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Storage;
 
@@ -26,6 +27,7 @@ use MetaModels\Filter\Setting\ICollection;
 use MetaModels\IItem;
 use MetaModels\IItems;
 use MetaModels\IMetaModel;
+use MetaModels\ITranslatedMetaModel;
 use MetaModels\NoteListBundle\Event\ManipulateNoteListEvent;
 use MetaModels\NoteListBundle\Event\NoteListEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -46,70 +48,70 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class NoteListStorage
 {
     /**
-     * The key to use in the storage array for meta data.
+     * The key to use in the storage array for meta-data.
      */
-    const META_KEY = 'meta-data';
+    public const META_KEY = 'meta-data';
 
     /**
      * The key to use in the storage array for item ids.
      */
-    const ITEMS_KEY = 'items';
+    public const ITEMS_KEY = 'items';
 
     /**
      * The event dispatcher.
      *
      * @var EventDispatcherInterface
      */
-    private $dispatcher;
+    private EventDispatcherInterface $dispatcher;
 
     /**
      * The MetaModel this storage tracks.
      *
      * @var IMetaModel
      */
-    private $metaModel;
+    private IMetaModel $metaModel;
 
     /**
      * The key to use in the storage adapter.
      *
      * @var string
      */
-    private $storageKey;
+    private string $storageKey;
 
     /**
      * The storage adapter.
      *
      * @var AdapterInterface
      */
-    private $storageAdapter;
+    private AdapterInterface $storageAdapter;
 
     /**
      * The human readable names as array locale => value.
      *
      * @var array
      */
-    private $names;
+    private array $names;
 
     /**
      * The filter setting the items must match agains.
      *
      * @var ICollection|null
      */
-    private $filter;
+    private ?ICollection $filter;
 
     /**
      * The cached item count.
      *
-     * @var bool|string[]|null
+     * @var false|list<string>|null
      */
-    private $filterCache = false;
+    private array|bool|null $filterCache = false;
 
     /**
-     * The meta data for the note list.
+     * The meta-data for the note list.
      *
      * @var ValueBag
      */
-    private $meta;
+    private ValueBag $meta;
 
     /**
      * Create a new instance.
@@ -120,7 +122,7 @@ class NoteListStorage
      * @param string                   $storageKey     The key to use in the session adapter.
      * @param array                    $names          The human readable names as array locale => value.
      * @param ICollection|null         $filter         The filter setting.
-     * @param ValueBag                 $meta           The meta data for the note list.
+     * @param ValueBag|null            $meta           The meta-data for the note list.
      */
     public function __construct(
         EventDispatcherInterface $dispatcher,
@@ -145,17 +147,17 @@ class NoteListStorage
      *
      * @return string
      */
-    public function getStorageKey()
+    public function getStorageKey(): string
     {
         return $this->storageKey;
     }
 
     /**
-     * Obtain the meta data value bag.
+     * Obtain the meta-data value bag.
      *
      * @return ValueBag
      */
-    public function getMeta()
+    public function getMeta(): ValueBag
     {
         return $this->meta;
     }
@@ -167,30 +169,31 @@ class NoteListStorage
      *
      * @return bool
      */
-    public function accepts(IItem $item)
+    public function accepts(IItem $item): bool
     {
         if (!$this->filter) {
             return true;
         }
+
         if (false === $this->filterCache) {
             $filter = $this->metaModel->getEmptyFilter();
             // Check if we accept the item.
             $this->filter->addRules($filter, []);
             $this->filterCache = $filter->getMatchingIds();
         }
-        return ($this->filterCache === null) || in_array($item->get('id'), $this->filterCache);
+
+        return ($this->filterCache === null) || \in_array($item->get('id'), $this->filterCache, true);
     }
 
     /**
      * Add an item.
      *
      * @param IItem $item The item to add.
-     *
-     * @param array $meta The meta data to set.
+     * @param array $meta The meta-data to set.
      *
      * @return void
      */
-    public function add(IItem $item, array $meta = [])
+    public function add(IItem $item, array $meta = []): void
     {
         if (!$this->accepts($item)) {
             return;
@@ -201,17 +204,17 @@ class NoteListStorage
 
         $data[self::META_KEY][$itemId] = $meta;
         $this->setData([
-            self::ITEMS_KEY => array_unique(array_merge($data[self::ITEMS_KEY], [$itemId])),
+            self::ITEMS_KEY => \array_unique(\array_merge($data[self::ITEMS_KEY], [$itemId])),
             self::META_KEY  => $data[self::META_KEY]
         ]);
         $this->dispatcher->dispatch(
-            NoteListEvents::MANIPULATE_NOTE_LIST,
             new ManipulateNoteListEvent(
                 $this->metaModel,
                 $this,
                 ManipulateNoteListEvent::OPERATION_ADD,
                 $item
-            )
+            ),
+            NoteListEvents::MANIPULATE_NOTE_LIST
         );
     }
 
@@ -222,7 +225,7 @@ class NoteListStorage
      *
      * @return void
      */
-    public function remove(IItem $item)
+    public function remove(IItem $item): void
     {
         $search = $item->get('id');
         $data   = $this->getData();
@@ -231,13 +234,13 @@ class NoteListStorage
                 unset($data[self::ITEMS_KEY][$key]);
                 unset($data[self::META_KEY][$search]);
                 $this->dispatcher->dispatch(
-                    NoteListEvents::MANIPULATE_NOTE_LIST,
                     new ManipulateNoteListEvent(
                         $this->metaModel,
                         $this,
                         ManipulateNoteListEvent::OPERATION_REMOVE,
                         $item
-                    )
+                    ),
+                    NoteListEvents::MANIPULATE_NOTE_LIST
                 );
                 break;
             }
@@ -246,13 +249,13 @@ class NoteListStorage
     }
 
     /**
-     * Retrieve the meta data information for an item.
+     * Retrieve the meta-data information for an item.
      *
-     * @param IItem $item The item to retrieve the meta data for.
+     * @param IItem $item The item to retrieve the meta-data for.
      *
      * @return array
      */
-    public function getMetaDataFor(IItem $item)
+    public function getMetaDataFor(IItem $item): array
     {
         $data = $this->getData();
 
@@ -260,15 +263,14 @@ class NoteListStorage
     }
 
     /**
-     * Update the meta data information for an item.
+     * Update the meta-data information for an item.
      *
-     * @param IItem $item The item to retrieve the meta data for.
-     *
+     * @param IItem $item The item to retrieve the meta-data for.
      * @param array $meta The meta information to store.
      *
      * @return void
      */
-    public function updateMetaDataFor(IItem $item, array $meta)
+    public function updateMetaDataFor(IItem $item, array $meta): void
     {
         $data = $this->getData();
 
@@ -284,7 +286,7 @@ class NoteListStorage
      *
      * @return bool
      */
-    public function has(IItem $item)
+    public function has(IItem $item): bool
     {
         $search = $item->get('id');
         $idList = $this->getItemIds();
@@ -301,21 +303,21 @@ class NoteListStorage
      *
      * @return void
      */
-    public function clear()
+    public function clear(): void
     {
         $this->storageAdapter->setKey($this->storageKey, []);
         $this->dispatcher->dispatch(
-            NoteListEvents::MANIPULATE_NOTE_LIST,
-            new ManipulateNoteListEvent($this->metaModel, $this, ManipulateNoteListEvent::OPERATION_CLEAR)
+            new ManipulateNoteListEvent($this->metaModel, $this, ManipulateNoteListEvent::OPERATION_CLEAR),
+            NoteListEvents::MANIPULATE_NOTE_LIST
         );
     }
 
     /**
      * Retrieve the list of contained ids.
      *
-     * @return string[]
+     * @return list<string>
      */
-    public function getItemIds()
+    public function getItemIds(): array
     {
         return $this->getData()[self::ITEMS_KEY];
     }
@@ -325,7 +327,7 @@ class NoteListStorage
      *
      * @return IItems
      */
-    public function getItems()
+    public function getItems(): IItems
     {
         $filter = $this->metaModel->getEmptyFilter();
 
@@ -339,9 +341,9 @@ class NoteListStorage
      *
      * @return int
      */
-    public function getCount()
+    public function getCount(): int
     {
-        return count($this->getItemIds());
+        return \count($this->getItemIds());
     }
 
     /**
@@ -349,18 +351,13 @@ class NoteListStorage
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
-        if ($this->metaModel->isTranslated()) {
-            if (isset($this->names[$this->metaModel->getActiveLanguage()])) {
-                return $this->names[$this->metaModel->getActiveLanguage()];
-            }
-            if (isset($this->names[$this->metaModel->getFallbackLanguage()])) {
-                return $this->names[$this->metaModel->getFallbackLanguage()];
-            }
+        if ($this->metaModel instanceof ITranslatedMetaModel) {
+            return $this->names[$this->metaModel->getMainLanguage()];
         }
 
-        return current($this->names);
+        return \current($this->names);
     }
 
     /**

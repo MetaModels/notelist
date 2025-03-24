@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,12 +12,13 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Filter;
 
@@ -39,21 +40,21 @@ class NoteListFilterSetting implements ISimple
      *
      * @var NoteListFactory
      */
-    private $factory;
+    private NoteListFactory $factory;
 
     /**
      * The note list to show.
      *
      * @var string
      */
-    private $notelistId;
+    private string $notelistId;
 
     /**
      * The MetaModel instance.
      *
      * @var IMetaModel
      */
-    private $metaModel;
+    private IMetaModel $metaModel;
 
     /**
      * Create a new instance.
@@ -72,7 +73,7 @@ class NoteListFilterSetting implements ISimple
     /**
      * {@inheritDoc}
      */
-    public function get($strKey)
+    public function get($strKey): mixed
     {
         return null;
     }
@@ -90,7 +91,7 @@ class NoteListFilterSetting implements ISimple
     /**
      * {@inheritDoc}
      */
-    public function generateFilterUrlFrom(IItem $objItem, IRenderSettings $objRenderSetting)
+    public function generateFilterUrlFrom(IItem $objItem, IRenderSettings $objRenderSetting): array
     {
         return [];
     }
@@ -98,7 +99,7 @@ class NoteListFilterSetting implements ISimple
     /**
      * {@inheritDoc}
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return [];
     }
@@ -106,7 +107,7 @@ class NoteListFilterSetting implements ISimple
     /**
      * {@inheritDoc}
      */
-    public function getParameterDCA()
+    public function getParameterDCA(): array
     {
         return [];
     }
@@ -114,27 +115,29 @@ class NoteListFilterSetting implements ISimple
     /**
      * {@inheritDoc}
      */
-    public function getParameterFilterNames()
+    public function getParameterFilterNames(): array
     {
         return [];
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function getParameterFilterWidgets(
         $arrIds,
         $arrFilterUrl,
         $arrJumpTo,
         FrontendFilterOptions $objFrontendFilterOptions
-    ) {
+    ): array {
         return [];
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getReferencedAttributes()
+    public function getReferencedAttributes(): array
     {
         return [];
     }

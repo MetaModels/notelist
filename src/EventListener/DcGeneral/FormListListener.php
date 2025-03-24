@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 - 2018 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,16 +13,17 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017 - 2018 The MetaModels team.
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
+use ContaoCommunityAlliance\DcGeneral\DataDefinition\ContainerInterface;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -35,7 +36,7 @@ class FormListListener
      *
      * @var Connection
      */
-    private $connection;
+    private Connection $connection;
 
     /**
      * Create a new instance.
@@ -54,14 +55,17 @@ class FormListListener
      *
      * @return void
      */
-    public function getOptions(GetPropertyOptionsEvent $event)
+    public function getOptions(GetPropertyOptionsEvent $event): void
     {
         if (null !== $event->getOptions()) {
             return;
         }
 
-        if (('form' !== $event->getPropertyName())
-        || ('tl_metamodel_notelist' !== $event->getEnvironment()->getDataDefinition()->getName())) {
+        if (
+            ('form' !== $event->getPropertyName())
+            || !(($dataDefinition = $event->getEnvironment()->getDataDefinition()) instanceof ContainerInterface)
+            || ('tl_metamodel_notelist' !== $dataDefinition->getName())
+        ) {
             return;
         }
 
@@ -71,8 +75,8 @@ class FormListListener
             ->select('id', 'title')
             ->from('tl_form')
             ->where('id NOT IN (SELECT pid FROM tl_form_field WHERE type = \'metamodel_notelist\' GROUP BY pid)')
-            ->execute()
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         $result = [];
         foreach ($adapters as $adapter) {

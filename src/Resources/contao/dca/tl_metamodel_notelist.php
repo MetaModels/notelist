@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2017 The MetaModels team.
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -32,10 +32,10 @@ $GLOBALS['TL_DCA']['tl_metamodel_notelist'] = [
     ],
     'dca_config'   => [
         'data_provider'  => [
-            'parent' => [
+            'parent'  => [
                 'source' => 'tl_metamodel'
             ],
-            'default'      => [
+            'default' => [
                 'source' => 'tl_metamodel_notelist'
             ],
         ],
@@ -68,12 +68,12 @@ $GLOBALS['TL_DCA']['tl_metamodel_notelist'] = [
         ],
     ],
     'list'         => [
-        'sorting'         => [
-            'mode'        => 4,
-            'fields'      => [],
-            'flag'        => 1,
-            'panelLayout' => 'sort,limit',
-            'headerFields'    => ['name']
+        'sorting'           => [
+            'mode'         => 4,
+            'fields'       => [],
+            'flag'         => 1,
+            'panelLayout'  => 'sort,limit',
+            'headerFields' => ['name']
         ],
         'label'             => [
             'fields' => ['name'],
@@ -81,36 +81,38 @@ $GLOBALS['TL_DCA']['tl_metamodel_notelist'] = [
         ],
         'global_operations' => [
             'all' => [
-                'label'      => &$GLOBALS['TL_LANG']['MSC']['all'],
-                'href'       => 'act=select',
-                'class'      => 'header_edit_all',
-                'attributes' => 'onclick="Backend.getScrollOffset();"'
+                'label'       => 'all.label',
+                'description' => 'all.description',
+                'href'        => 'act=select',
+                'class'       => 'header_edit_all',
+                'attributes'  => 'onclick="Backend.getScrollOffset();"'
             ],
         ],
         'operations'        => [
             'edit'   => [
-                'label' => &$GLOBALS['TL_LANG']['tl_metamodel_notelist']['editheader'],
-                'href'  => 'act=edit',
-                'icon'  => 'edit.gif',
+                'label'       => 'editheader.label',
+                'description' => 'editheader.description',
+                'href'        => 'act=edit',
+                'icon'        => 'edit.gif',
             ],
             'cut'    => [
-                'label' => &$GLOBALS['TL_LANG']['tl_metamodel_notelist']['cut'],
-                'href'  => 'act=paste&amp;mode=cut',
-                'icon'  => 'cut.gif'
+                'label'       => 'cut.label',
+                'description' => 'cut.description',
+                'href'        => 'act=paste&amp;mode=cut',
+                'icon'        => 'cut.gif'
             ],
             'delete' => [
-                'label'      => &$GLOBALS['TL_LANG']['tl_metamodel_notelist']['delete'],
-                'href'       => 'act=delete',
-                'icon'       => 'delete.gif',
-                'attributes' => sprintf(
-                    'onclick="if (!confirm(\'%s\')) return false; Backend.getScrollOffset();"',
-                    $GLOBALS['TL_LANG']['MSC']['deleteConfirm']
-                )
+                'label'       => 'delete.label',
+                'description' => 'delete.description',
+                'href'        => 'act=delete',
+                'icon'        => 'delete.gif',
+                'attributes'  => 'onclick="if (!confirm(this.dataset.msgConfirm)) return false; Backend.getScrollOffset();"',
             ],
             'show'   => [
-                'label' => &$GLOBALS['TL_LANG']['tl_metamodel_notelist']['show'],
-                'href'  => 'act=show',
-                'icon'  => 'show.gif'
+                'label'       => 'show.label',
+                'description' => 'show.description',
+                'href'        => 'act=show',
+                'icon'        => 'show.gif'
             ],
         ]
     ],
@@ -125,33 +127,35 @@ $GLOBALS['TL_DCA']['tl_metamodel_notelist'] = [
         ]
     ],
     'fields'       => [
-        'id'     => [
+        'id'             => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment'
         ],
-        'pid'         => array
-        (
+        'pid'            => [
             'sql' => "int(10) unsigned NOT NULL default '0'"
-        ),
-        'tstamp' => [
+        ],
+        'tstamp'         => [
             'sql' => "int(10) unsigned NOT NULL default '0'"
         ],
         'name'           => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_notelist']['name'],
-            'sorting'   => true,
-            'flag'      => 3,
-            'length'    => 1,
-            'exclude'   => true,
-            'inputType' => 'text',
-            'eval'      => [
+            'label'       => 'name.label',
+            'description' => 'name.description',
+            'sorting'     => true,
+            'flag'        => 3,
+            'length'      => 1,
+            'exclude'     => true,
+            'inputType'   => 'text',
+            'eval'        => [
                 'mandatory' => true,
+                'tl_class'  => 'w50'
             ],
-            'sql'       => "varchar(255) NOT NULL default ''"
+            'sql'         => "varchar(255) NOT NULL default ''"
         ],
         'storageAdapter' => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_notelist']['storageAdapter'],
-            'exclude'   => true,
-            'inputType' => 'select',
-            'eval'      => [
+            'label'       => 'storageAdapter.label',
+            'description' => 'storageAdapter.description',
+            'exclude'     => true,
+            'inputType'   => 'select',
+            'eval'        => [
                 'fetchOptions'       => true,
                 'includeBlankOption' => true,
                 'mandatory'          => true,
@@ -159,33 +163,35 @@ $GLOBALS['TL_DCA']['tl_metamodel_notelist'] = [
                 'doNotCopy'          => true,
                 'tl_class'           => 'w50'
             ],
-            'sql'       => "varchar(64) NOT NULL default ''"
+            'sql'         => "varchar(64) NOT NULL default ''"
         ],
-        'filter' => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_notelist']['filter'],
-            'exclude'   => true,
-            'inputType' => 'select',
-            'eval'      => [
+        'filter'         => [
+            'label'       => 'filter.label',
+            'description' => 'filter.description',
+            'exclude'     => true,
+            'inputType'   => 'select',
+            'eval'        => [
+                'fetchOptions'       => true,
+                'includeBlankOption' => true,
+                'maxlength'          => 64,
+                'doNotCopy'          => true,
+                'tl_class'           => 'clr w50'
+            ],
+            'sql'         => "int(10) unsigned NOT NULL default '0'"
+        ],
+        'form'           => [
+            'label'       => 'form.label',
+            'description' => 'form.description',
+            'exclude'     => true,
+            'inputType'   => 'select',
+            'eval'        => [
                 'fetchOptions'       => true,
                 'includeBlankOption' => true,
                 'maxlength'          => 64,
                 'doNotCopy'          => true,
                 'tl_class'           => 'w50'
             ],
-            'sql' => "int(10) unsigned NOT NULL default '0'"
-        ],
-        'form' => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_notelist']['form'],
-            'exclude'   => true,
-            'inputType' => 'select',
-            'eval'      => [
-                'fetchOptions'       => true,
-                'includeBlankOption' => true,
-                'maxlength'          => 64,
-                'doNotCopy'          => true,
-                'tl_class'           => 'w50'
-            ],
-            'sql' => "int(10) unsigned NOT NULL default '0'"
+            'sql'         => "int(10) unsigned NOT NULL default '0'"
         ],
     ],
 ];

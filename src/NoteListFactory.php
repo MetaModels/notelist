@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,12 +12,13 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle;
 
@@ -25,6 +26,7 @@ use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use MetaModels\Filter\Setting\FilterSettingFactory;
 use MetaModels\IMetaModel;
+use MetaModels\ITranslatedMetaModel;
 use MetaModels\NoteListBundle\Storage\NoteListStorage;
 use MetaModels\NoteListBundle\Storage\StorageAdapterFactory;
 use MetaModels\NoteListBundle\Storage\ValueBag;
@@ -40,35 +42,35 @@ class NoteListFactory
      *
      * @var Connection
      */
-    private $connection;
+    private Connection $connection;
 
     /**
      * The storage factory to use.
      *
      * @var StorageAdapterFactory
      */
-    private $storageFactory;
+    private StorageAdapterFactory $storageFactory;
 
     /**
      * The created instances.
      *
      * @var NoteListStorage[]
      */
-    private $instances = [];
+    private array $instances = [];
 
     /**
      * The filter setting factory.
      *
      * @var FilterSettingFactory
      */
-    private $filterFactory;
+    private FilterSettingFactory $filterFactory;
 
     /**
      * The event dispatcher.
      *
      * @var EventDispatcherInterface
      */
-    private $dispatcher;
+    private EventDispatcherInterface $dispatcher;
 
     /**
      * Create a new instance.
@@ -97,7 +99,7 @@ class NoteListFactory
      *
      * @return array
      */
-    public function getConfiguredListsFor(IMetaModel $metaModel)
+    public function getConfiguredListsFor(IMetaModel $metaModel): array
     {
         $query = $this
             ->connection
@@ -106,18 +108,18 @@ class NoteListFactory
             ->from('tl_metamodel_notelist')
             ->where('pid=:pid')
             ->setParameter('pid', $metaModel->get('id'))
-            ->execute()
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAllAssociative();
 
-        $languages = $metaModel->isTranslated()
+        $languages = ($metaModel instanceof ITranslatedMetaModel)
             ? [
-                $metaModel->getActiveLanguage(),
-                $metaModel->getFallbackLanguage()
+                $metaModel->getLanguage(),
+                $metaModel->getMainLanguage()
             ] : [];
 
         $result = [];
         foreach ($query as $item) {
-            $result[$item['id']] = $this->getName(deserialize($item['name'], true), $languages);
+            $result[$item['id']] = $this->getName(StringUtil::deserialize($item['name'], true), $languages);
         }
 
         return $result;
@@ -133,7 +135,7 @@ class NoteListFactory
      *
      * @throws \LogicException When the notelist does not belong to the MetaModel or could not be retrieved.
      */
-    public function getList(IMetaModel $metaModel, string $identifier)
+    public function getList(IMetaModel $metaModel, string $identifier): NoteListStorage
     {
         if (isset($this->instances[$identifier])) {
             return $this->instances[$identifier];
@@ -147,8 +149,8 @@ class NoteListFactory
             ->from('tl_metamodel_notelist')
             ->where('id=:id')
             ->setParameter('id', $identifier)
-            ->execute()
-            ->fetch(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAssociative();
 
         if (false === $noteList) {
             throw new \LogicException('Notelist ' . $identifier . ' could not be found.');
@@ -179,7 +181,7 @@ class NoteListFactory
      *
      * @return string
      */
-    public function getName(array $names, array $languages)
+    public function getName(array $names, array $languages): string
     {
         if ($languages) {
             if (isset($names[$languages[0]])) {
@@ -190,6 +192,6 @@ class NoteListFactory
             }
         }
 
-        return current($names);
+        return \current($names);
     }
 }

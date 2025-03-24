@@ -17,7 +17,7 @@
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\Storage;
 
@@ -37,16 +37,15 @@ interface AdapterInterface
      *
      * @return array
      */
-    public function getKey(string $key) : array;
+    public function getKey(string $key): array;
 
     /**
      * Set the value in the storage.
      *
      * @param string $key   The key to set.
-     *
      * @param array  $value The value to set.
      *
-     * @return array
+     * @return void
      */
-    public function setKey(string $key, array $value);
+    public function setKey(string $key, array $value): void;
 }

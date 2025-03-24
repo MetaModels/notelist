@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/notelist.
  *
- * (c) 2017 The MetaModels team.
+ * (c) 2017-2025 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,16 +12,18 @@
  *
  * @package    MetaModels
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2017 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2017-2025 The MetaModels team.
  * @license    https://github.com/MetaModels/notelist/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\NoteListBundle\EventListener\DcGeneral;
 
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
+use ContaoCommunityAlliance\DcGeneral\DataDefinition\ContainerInterface;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -34,7 +36,7 @@ class FilterSettingsListListener
      *
      * @var Connection
      */
-    private $connection;
+    private Connection $connection;
 
     /**
      * Create a new instance.
@@ -53,14 +55,17 @@ class FilterSettingsListListener
      *
      * @return void
      */
-    public function getOptions(GetPropertyOptionsEvent $event)
+    public function getOptions(GetPropertyOptionsEvent $event): void
     {
         if (null !== $event->getOptions()) {
             return;
         }
 
-        if (('filter' !== $event->getPropertyName())
-        || ('tl_metamodel_notelist' !== $event->getEnvironment()->getDataDefinition()->getName())) {
+        if (
+            ('filter' !== $event->getPropertyName())
+            || !(($dataDefinition = $event->getEnvironment()->getDataDefinition()) instanceof ContainerInterface)
+            || ('tl_metamodel_notelist' !== $dataDefinition->getName())
+        ) {
             return;
         }
 
@@ -70,8 +75,9 @@ class FilterSettingsListListener
             ->from('tl_metamodel_filter')
             ->where('pid=:pid')
             ->setParameter('pid', $event->getModel()->getProperty('pid'))
-            ->execute()
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAllAssociative();
+
         $result   = [];
         foreach ($adapters as $adapter) {
             $result[$adapter['id']] = $adapter['name'];

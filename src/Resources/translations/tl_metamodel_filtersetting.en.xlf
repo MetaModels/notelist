@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="src/Resources/translations/tl_metamodel_filtersetting.en.xlf">
+    <body>
+      <trans-unit id="typenames.notelist" resname="typenames.notelist">
+        <source>Note list</source>
+      </trans-unit>
+      <trans-unit id="typedesc.notelist" resname="typedesc.notelist">
+        <source><![CDATA[%1$s <strong>%2$s</strong> <em>"%3$s"</em>%4$s]]></source>
+      </trans-unit>
+      <trans-unit id="notelist.label" resname="notelist.label">
+        <source>Note list</source>
+      </trans-unit>
+      <trans-unit id="notelist.description" resname="notelist.description">
+        <source>Please select the note list to filter for.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,57 @@
+<?php
+$translator = \Contao\System::getContainer()->get('translator');
+dump($this->data)
+?>
+<?php if (\count($this->data)): ?>
+
+    <div class="layout_full">
+
+        <?php foreach ($this->data as $item): ?>
+            <?php $this->block('item'); ?>
+            <div class="item <?= $item['class'] ?>">
+                <?php foreach ($item['attributes'] as $field => $name): ?>
+                    <?php if ((null !== ($value = $item[$this->getFormat()][$field] ?? null))
+                               || (null !== ($value = $item['text'][$field] ?? null))): ?>
+                        <div class="field <?= $field ?>">
+                            <?php if (!$this->view->get('hideLabels')): ?>
+                                <div class="label"><?= $translator->trans('field_label', ['%field_label%' => $name], 'metamodels_list') ?></div>
+                            <?php endif; ?>
+                            <div class="value"> <?= $value ?></div>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                <?php $this->block('notelists_payload'); ?>
+                <?php
+                $notelistKeys = \array_keys($item['notelists_names'] ?? []);
+                if (isset($notelistKeys[0], $item['notelists_payload_values'][$notelistKeys[0]])
+                    && \count($item['notelists_payload_values'][$notelistKeys[0]])): ?>
+                <div class="field notelists_payload <?= $notelistKeys[0] ?>">
+                    <?php if (!$this->view->get('hideLabels')): ?>
+                        <div class="label"><?= $translator->trans('notelist.payload.headline', [], 'notelist_default') ?>:</div>
+                    <?php endif; ?>
+                    <div class="value">
+                        <ul>
+                            <?php foreach ($item['notelists_payload_values'][$notelistKeys[0]] as $field => $value): ?>
+                                <li><?= $item['notelists_payload_labels'][$notelistKeys[0]][$field] ?>: <?= \is_array($value) ? \implode(', ', $value) : $value ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+                <?php endif; ?>
+                <?php $this->endblock(); ?>
+                <?php $this->block('actions'); ?>
+                <div class="actions">
+                    <?php foreach ($item['actions'] as $action): ?>
+                        <?php $this->insert('mm_actionbutton', ['action' => $action]); ?>
+                    <?php endforeach; ?>
+                </div>
+                <?php $this->endblock(); ?>
+            </div>
+            <?php $this->endblock(); ?>
+        <?php endforeach; ?>
+    </div>
+<?php else : ?>
+    <?php $this->block('noItem'); ?>
+    <p class="info"><?= $this->noItemsMsg ?></p>
+    <?php $this->endblock(); ?>
+<?php endif; ?>

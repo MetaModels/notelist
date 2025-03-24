@@ -17,7 +17,7 @@
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /** @var \DependencyInjection\Container\PimpleGate $container */
 $container->provideSymfonyService('metamodels-notelist.storage-factory');
@@ -31,7 +31,6 @@ $container->provideSymfonyService('metamodels-notelist.insert-tags');
 /*
  * Backend from here on.
  */
-
 $container->provideSymfonyService('metamodels-notelist.backend.adapter-option-listener');
 $container->provideSymfonyService('metamodels-notelist.backend.notelist-list-option-listener');
 $container->provideSymfonyService('metamodels-notelist.backend.notelist-form-option-listener');
