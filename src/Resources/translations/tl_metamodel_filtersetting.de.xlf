@@ -1,0 +1,22 @@
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="src/Resources/translations/tl_metamodel_filtersetting.en.xlf" target-language="de">
+    <body>
+      <trans-unit id="typenames.notelist" resname="typenames.notelist">
+        <source>Note list</source>
+        <target>Merkliste</target>
+      </trans-unit>
+      <trans-unit id="typedesc.notelist" resname="typedesc.notelist">
+        <source><![CDATA[%1$s <strong>%2$s</strong> <em>"%3$s"</em>%4$s]]></source>
+        <target>%1$s &lt;strong&gt;%2$s&lt;/strong&gt; &lt;em&gt;&quot;%3$s&quot;&lt;/em&gt;%4$s</target>
+      </trans-unit>
+      <trans-unit id="notelist.label" resname="notelist.label">
+        <source>Note list</source>
+        <target>Merkliste</target>
+      </trans-unit>
+      <trans-unit id="notelist.description" resname="notelist.description">
+        <source>Please select the note list to filter for.</source>
+        <target>Bitte wählen Sie die Merkliste aus, nach der Sie filtern möchten.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

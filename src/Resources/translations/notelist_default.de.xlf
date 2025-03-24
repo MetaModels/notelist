@@ -1,0 +1,38 @@
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="src/Resources/translations/notelist_default.en.xlf" target-language="de">
+    <body>
+      <trans-unit id="notelist" resname="notelist">
+        <source>Note lists for &quot;%list_name%&quot;</source>
+        <target>Merklisten von &quot;%s&quot;</target>
+      </trans-unit>
+      <trans-unit id="metamodel_notelist.add" resname="metamodel_notelist.add">
+        <source>Add to &quot;%list_name%&quot;</source>
+        <target>Hinzufügen zu &quot;%list_name%&quot;</target>
+      </trans-unit>
+      <trans-unit id="metamodel_notelist.remove" resname="metamodel_notelist.remove">
+        <source>Remove from &quot;%list_name%&quot;</source>
+        <target>Entfernen von &quot;%list_name%&quot;</target>
+      </trans-unit>
+      <trans-unit id="metamodel_notelist.edit" resname="metamodel_notelist.edit">
+        <source>Edit by &quot;%list_name%&quot;</source>
+        <target>Bearbeiten von &quot;%list_name%&quot;</target>
+      </trans-unit>
+      <trans-unit id="notelist.display_backend" resname="notelist.display_backend">
+        <source>MetaModels note list for MetaModel: %id%</source>
+        <target>MetaModels Merkliste für MetaModel: %id%</target>
+      </trans-unit>
+      <trans-unit id="notelist.adapter.php-session" resname="notelist.adapter.php-session">
+        <source>PHP Session variable</source>
+        <target>PHP Session Variable</target>
+      </trans-unit>
+      <trans-unit id="notelist.adapter.contao-session" resname="notelist.adapter.contao-session">
+        <source>Contao Session (for logged in members)</source>
+        <target>Contao Session (für eingeloggte Mitglieder)</target>
+      </trans-unit>
+      <trans-unit id="notelist.payload.headline" resname="notelist.payload.headline">
+        <source>Form data</source>
+        <target>Formulardaten</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

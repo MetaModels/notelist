@@ -1,0 +1,10 @@
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="src/Resources/translations/metamodels_navigation.en.xlf" target-language="de">
+    <body>
+      <trans-unit id="metamodel_notelist" resname="metamodel_notelist">
+        <source>Note list of &quot;%s&quot;</source>
+        <target>Merklisten von &quot;%s&quot;</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
