@@ -51,7 +51,7 @@
         <source>Delete note list ID %id%.</source>
       </trans-unit>
       <trans-unit id="show.label" resname="show.label">
-        <source>Attribute details details</source>
+        <source>Attribute details</source>
       </trans-unit>
       <trans-unit id="show.description" resname="show.description">
         <source>Show details of note list ID %id%.</source>
