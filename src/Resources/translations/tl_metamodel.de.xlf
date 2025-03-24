@@ -1,0 +1,14 @@
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="src/Resources/translations/tl_metamodel.en.xlf" target-language="de">
+    <body>
+      <trans-unit id="notelist.label" resname="notelist.label">
+        <source>Manage note lists</source>
+        <target>Verwalten von Merklisten</target>
+      </trans-unit>
+      <trans-unit id="notelist.description" resname="notelist.description">
+        <source>Manage note lists for MetaModel %id%.</source>
+        <target>Verwaltung von Merklisten für MetaModel %id%.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
