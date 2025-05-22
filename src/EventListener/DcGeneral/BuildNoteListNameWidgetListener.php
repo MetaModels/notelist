@@ -83,7 +83,7 @@ class BuildNoteListNameWidgetListener
         $metaModel = $this->getMetaModelByModelPid($event->getModel());
         $values    = Helper::decodeLangArray($event->getValue(), $metaModel);
 
-        $event->setValue($values);
+        $event->setValue(unserialize($values, ['allowed_classes' => false]));
     }
 
     /**
