@@ -2,13 +2,14 @@
 .DS_Store
 Thumbs.db
 
-# IDEs 
+# IDEs
 .buildpath
 .project
 .settings/
 .build/
 .external*/
 .idea/
+.phpcq/
 nbproject/
 
 # composer related
@@ -18,3 +19,4 @@ composer.lock
 # build
 build/
 build.properties
+.phpunit.result.cache

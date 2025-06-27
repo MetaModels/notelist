@@ -71,7 +71,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-feature/2.3.0": "2.3.x-dev"
+      "dev-master": "2.3.x-dev"
     },
     "contao-manager-plugin": "MetaModels\\NoteListBundle\\ContaoManager\\Plugin"
   }
